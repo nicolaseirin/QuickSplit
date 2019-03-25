@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace ObligatorioArqBackEnd.WebApi
+namespace QuickSplit.WebApi
 {
     public class Program
     {

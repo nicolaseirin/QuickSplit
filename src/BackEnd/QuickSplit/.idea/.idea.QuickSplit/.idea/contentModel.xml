@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="$USER_HOME$/.Rider2018.2/system/extResources" t="IncludeRecursive" />
-    <e p="$USER_HOME$/.Rider2018.2/system/resharper-host/local/Transient/ReSharperHost/v182/SolutionCaches/_ObligatorioArqBackEnd.660716408.00" t="ExcludeRecursive" />
+    <e p="$USER_HOME$/.Rider2018.3/system/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/.Rider2018.3/system/resharper-host/local/Transient/ReSharperHost/v183/SolutionCaches/_QuickSplit.-634519480.00" t="ExcludeRecursive" />
     <e p="$PROJECT_DIR$" t="IncludeFlat">
-      <e p="ObligatorioArqBackEnd.WebApi" t="IncludeRecursive">
+      <e p="QuickSplit.WebApi" t="IncludeRecursive">
         <e p="Controllers" t="Include">
           <e p="ValuesController.cs" t="Include" />
         </e>
-        <e p="ObligatorioArqBackEnd.WebApi.csproj" t="IncludeRecursive" />
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
         </e>
+        <e p="QuickSplit.WebApi.csproj" t="IncludeRecursive" />
         <e p="Startup.cs" t="Include" />
         <e p="appsettings.Development.json" t="Include" />
         <e p="appsettings.json" t="Include" />
@@ -20,12 +20,12 @@
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp2.2" t="Include">
-              <e p="ObligatorioArqBackEnd.WebApi.AssemblyInfo.cs" t="Include" />
+              <e p="QuickSplit.WebApi.AssemblyInfo.cs" t="Include" />
             </e>
           </e>
         </e>
       </e>
-      <e p="ObligatorioArqBackEnd.sln" t="IncludeFlat" />
+      <e p="QuickSplit.sln" t="IncludeFlat" />
       <e p="packages" t="ExcludeRecursive" />
     </e>
   </component>
