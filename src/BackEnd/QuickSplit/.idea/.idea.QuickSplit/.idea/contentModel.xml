@@ -4,8 +4,56 @@
     <e p="$USER_HOME$/.Rider2018.3/system/extResources" t="IncludeRecursive" />
     <e p="$USER_HOME$/.Rider2018.3/system/resharper-host/local/Transient/ReSharperHost/v183/SolutionCaches/_QuickSplit.-634519480.00" t="ExcludeRecursive" />
     <e p="$PROJECT_DIR$" t="IncludeFlat">
+      <e p="QuickSplit.Application" t="IncludeRecursive">
+        <e p="QuickSplit.Application.csproj" t="IncludeRecursive" />
+        <e p="Values" t="Include">
+          <e p="Commands" t="Include">
+            <e p="CreateValue" t="Include">
+              <e p="CreateValueCommand.cs" t="Include" />
+              <e p="CreateValueCommandHandler.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Queries" t="Include">
+            <e p="GetValues" t="Include">
+              <e p="GetValuesQuery.cs" t="Include" />
+              <e p="GetValuesQueryHandler.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp2.2" t="Include">
+              <e p="QuickSplit.Application.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="QuickSplit.Domain" t="IncludeRecursive">
+        <e p="QuickSplit.Domain.csproj" t="IncludeRecursive" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp2.2" t="Include">
+              <e p="QuickSplit.Domain.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="QuickSplit.Persistence" t="IncludeRecursive">
+        <e p="QuickSplit.Persistence.csproj" t="IncludeRecursive" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp2.2" t="Include">
+              <e p="QuickSplit.Persistence.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
       <e p="QuickSplit.WebApi" t="IncludeRecursive">
         <e p="Controllers" t="Include">
+          <e p="MediatRController.cs" t="Include" />
           <e p="ValuesController.cs" t="Include" />
         </e>
         <e p="Program.cs" t="Include" />

@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using QuickSplit.Application.Values.Commands.CreateValue;
+using QuickSplit.Application.Values.Queries.GetValues;
 
 namespace QuickSplit.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class ValuesController : MediatRController
     {
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public async Task<ActionResult<IEnumerable<string>>> Get()
         {
-            return new string[] {"value1", "value2"};
+            return Ok(await Mediator.Send(new GetValuesQuery()));
         }
 
         // GET api/values/5
@@ -26,8 +28,12 @@ namespace QuickSplit.WebApi.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] string value)
         {
+            return Ok(await Mediator.Send(new CreateValueCommand()
+            {
+                Value = value
+            }));
         }
 
         // PUT api/values/5

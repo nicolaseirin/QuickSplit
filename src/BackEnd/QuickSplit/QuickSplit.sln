@@ -2,6 +2,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickSplit.WebApi", "QuickSplit.WebApi\QuickSplit.WebApi.csproj", "{D621B3F1-82D9-4916-8BA3-4F67F2A6E065}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickSplit.Application", "QuickSplit.Application\QuickSplit.Application.csproj", "{90A96003-52B0-48E6-BD9F-AD59614D3871}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickSplit.Domain", "QuickSplit.Domain\QuickSplit.Domain.csproj", "{3641F2B7-A3A4-4514-9547-DC5C1AFAC97A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickSplit.Persistence", "QuickSplit.Persistence\QuickSplit.Persistence.csproj", "{4043BD7E-1567-45EB-8CED-19A60804D725}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +18,17 @@ Global
 		{D621B3F1-82D9-4916-8BA3-4F67F2A6E065}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D621B3F1-82D9-4916-8BA3-4F67F2A6E065}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D621B3F1-82D9-4916-8BA3-4F67F2A6E065}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90A96003-52B0-48E6-BD9F-AD59614D3871}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90A96003-52B0-48E6-BD9F-AD59614D3871}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90A96003-52B0-48E6-BD9F-AD59614D3871}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90A96003-52B0-48E6-BD9F-AD59614D3871}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3641F2B7-A3A4-4514-9547-DC5C1AFAC97A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3641F2B7-A3A4-4514-9547-DC5C1AFAC97A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3641F2B7-A3A4-4514-9547-DC5C1AFAC97A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3641F2B7-A3A4-4514-9547-DC5C1AFAC97A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4043BD7E-1567-45EB-8CED-19A60804D725}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4043BD7E-1567-45EB-8CED-19A60804D725}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4043BD7E-1567-45EB-8CED-19A60804D725}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4043BD7E-1567-45EB-8CED-19A60804D725}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
