@@ -1,8 +1,9 @@
 using MediatR;
+using QuickSplit.Application.Users.Models;
 
 namespace QuickSplit.Application.Users.Commands.CreateUser
 {
-    public class CreateUserCommand : IRequest
+    public class CreateUserCommand : IRequest<UserModel>
     {     
         public string Name { get; set; }
         

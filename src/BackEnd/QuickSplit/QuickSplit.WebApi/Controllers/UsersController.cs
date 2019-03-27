@@ -5,14 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using QuickSplit.Application.Users.Commands.CreateUser;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Application.Users.Queries.GetUsers;
-using QuickSplit.Application.Values.Commands.CreateValue;
-using QuickSplit.Application.Values.Queries.GetValues;
 
 namespace QuickSplit.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : CQRSController
+    public class UsersController : BaseController
     {
         // GET api/values
         [HttpGet(Name = "GetUser")]
@@ -32,8 +30,8 @@ namespace QuickSplit.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand user)
         {
-            await Mediator.Send(user);
-            return CreatedAtRoute("GetUser", user);
+            UserModel created =  await Mediator.Send(user);
+            return CreatedAtRoute("GetUser", created);
         }
 
         // PUT api/values/5

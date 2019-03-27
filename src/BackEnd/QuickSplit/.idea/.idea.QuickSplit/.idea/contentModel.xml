@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
+    <e p="$APPLICATION_CONFIG_DIR$/scratches" t="IncludeRecursive" />
     <e p="$USER_HOME$/.Rider2018.3/system/extResources" t="IncludeRecursive" />
     <e p="$USER_HOME$/.Rider2018.3/system/resharper-host/local/Transient/ReSharperHost/v183/SolutionCaches/_QuickSplit.-634519480.00" t="ExcludeRecursive" />
     <e p="$PROJECT_DIR$" t="IncludeFlat">
       <e p="QuickSplit.Application" t="IncludeRecursive">
         <e p="Interfaces" t="Include">
           <e p="IQuickSplitContext.cs" t="Include" />
-          <e p="IRepository.cs" t="Include" />
-          <e p="IUnitOfWork.cs" t="Include" />
         </e>
         <e p="QuickSplit.Application.csproj" t="IncludeRecursive" />
         <e p="Users" t="Include">
@@ -25,20 +24,6 @@
             <e p="GetUsers" t="Include">
               <e p="GetUsersQuery.cs" t="Include" />
               <e p="GetUsersQueryHandler.cs" t="Include" />
-            </e>
-          </e>
-        </e>
-        <e p="Values" t="Include">
-          <e p="Commands" t="Include">
-            <e p="CreateValue" t="Include">
-              <e p="CreateValueCommand.cs" t="Include" />
-              <e p="CreateValueCommandHandler.cs" t="Include" />
-            </e>
-          </e>
-          <e p="Queries" t="Include">
-            <e p="GetValues" t="Include">
-              <e p="GetValuesQuery.cs" t="Include" />
-              <e p="GetValuesQueryHandler.cs" t="Include" />
             </e>
           </e>
         </e>
@@ -65,11 +50,8 @@
       </e>
       <e p="QuickSplit.Persistence" t="IncludeRecursive">
         <e p="CrearUsuarioDeBase.sql" t="Include" />
-        <e p="GenericRepository.cs" t="Include" />
         <e p="QuickSplit.Persistence.csproj" t="IncludeRecursive" />
         <e p="QuickSplitContext.cs" t="Include" />
-        <e p="Repositories" t="Include" />
-        <e p="UnitOfWork.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
@@ -81,9 +63,8 @@
       </e>
       <e p="QuickSplit.WebApi" t="IncludeRecursive">
         <e p="Controllers" t="Include">
-          <e p="CQRSController.cs" t="Include" />
+          <e p="BaseController.cs" t="Include" />
           <e p="UsersController.cs" t="Include" />
-          <e p="ValuesController.cs" t="Include" />
         </e>
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">

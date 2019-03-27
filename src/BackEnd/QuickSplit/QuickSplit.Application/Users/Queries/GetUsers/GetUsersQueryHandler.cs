@@ -21,9 +21,9 @@ namespace QuickSplit.Application.Users.Queries.GetUsers
 
         public async Task<IEnumerable<UserModel>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
-            return await context.
-                Users.
-                Select(user => MapToModel(user))
+            return await context
+                .Users
+                .Select(user => MapToModel(user))
                 .ToListAsync();
         }
 
