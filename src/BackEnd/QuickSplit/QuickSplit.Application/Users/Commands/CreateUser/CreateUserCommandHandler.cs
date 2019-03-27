@@ -2,11 +2,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using QuickSplit.Application.Interfaces;
+using QuickSplit.Application.Users.Models;
 using QuickSplit.Domain;
 
 namespace QuickSplit.Application.Users.Commands.CreateUser
 {
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Unit>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserModel>
     {
         private readonly IQuickSplitContext context;
 
@@ -15,7 +16,7 @@ namespace QuickSplit.Application.Users.Commands.CreateUser
             this.context = context;
         }
 
-        public async Task<Unit> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<UserModel> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             User toCreate = new User()
             {
@@ -28,8 +29,8 @@ namespace QuickSplit.Application.Users.Commands.CreateUser
 
             await context.Users.AddAsync(toCreate);
             await context.SaveChangesAsync();
-            
-            return Unit.Value;
+
+            return new UserModel(toCreate);
         }
     }
 }

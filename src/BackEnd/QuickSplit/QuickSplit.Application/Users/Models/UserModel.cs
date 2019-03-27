@@ -1,7 +1,22 @@
+using QuickSplit.Domain;
+
 namespace QuickSplit.Application.Users.Models
 {
     public class UserModel
     {
+        public UserModel()
+        {
+        }
+
+        public UserModel(User user)
+        {
+            Id = user.Id;
+            Name = user.Name;
+            LastName = user.LastName;
+            Mail = user.Mail;
+            Telephone = user.Telephone;
+        }
+
         public int Id { get; set; }
         
         public string Name { get; set; }

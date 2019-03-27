@@ -13,7 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using QuickSplit.Application.Interfaces;
-using QuickSplit.Application.Values.Queries.GetValues;
 using QuickSplit.Domain;
 using QuickSplit.Persistence;
 
@@ -33,10 +32,9 @@ namespace QuickSplit.WebApi
         {
             services.AddTransient<IQuickSplitContext, QuickSplitContext>();
             services.AddDbContext<QuickSplitContext>(GenerateDbOptions);
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
             
             //Add MediatR Commands and Queries
-            services.AddMediatR(typeof(GetValuesQuery).Assembly);
+            services.AddMediatR(typeof(IQuickSplitContext).Assembly);
             
             
             

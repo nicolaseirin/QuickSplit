@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace QuickSplit.WebApi.Controllers
 {
-    public class CQRSController : ControllerBase
+    public class BaseController : ControllerBase
     {
         private IMediator mediator;
         

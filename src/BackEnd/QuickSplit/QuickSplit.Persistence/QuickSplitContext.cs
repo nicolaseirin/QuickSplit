@@ -15,7 +15,7 @@ namespace QuickSplit.Persistence
 
         public DbSet<User> Users { get; set; }
 
-        public  void SaveChanges()
+        public void SaveChanges()
         {
             base.SaveChanges();
         }
