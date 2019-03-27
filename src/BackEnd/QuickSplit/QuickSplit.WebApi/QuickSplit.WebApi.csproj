@@ -10,10 +10,12 @@
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.3" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\QuickSplit.Application\QuickSplit.Application.csproj" />
+      <ProjectReference Include="..\QuickSplit.Persistence\QuickSplit.Persistence.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": null,
+    "lastName": null,
+    "mail": null,
+    "telephone": null
+  },
+  {
+    "id": 2,
+    "name": "Su nombre",
+    "lastName": "Su LastName",
+    "mail": "Su Mail",
+    "telephone": "Su Telephone"
+  },
+  {
+    "id": 3,
+    "name": "Su nombre",
+    "lastName": "Su LastName",
+    "mail": "Su Mail",
+    "telephone": "Su Telephone"
+  }
+]

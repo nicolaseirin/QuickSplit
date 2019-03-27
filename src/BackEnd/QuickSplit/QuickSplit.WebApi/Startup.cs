@@ -7,11 +7,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using QuickSplit.Application.Interfaces;
 using QuickSplit.Application.Values.Queries.GetValues;
+using QuickSplit.Domain;
+using QuickSplit.Persistence;
 
 namespace QuickSplit.WebApi
 {
@@ -27,6 +31,9 @@ namespace QuickSplit.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IQuickSplitContext, QuickSplitContext>();
+            services.AddDbContext<QuickSplitContext>(GenerateDbOptions);
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             
             //Add MediatR Commands and Queries
             services.AddMediatR(typeof(GetValuesQuery).Assembly);
@@ -34,6 +41,11 @@ namespace QuickSplit.WebApi
             
             
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+        }
+
+        private void GenerateDbOptions(IServiceProvider serviceProvider, DbContextOptionsBuilder options)
+        {
+            options.UseSqlServer(Configuration.GetConnectionString("QuickSplitDb"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,5 +64,7 @@ namespace QuickSplit.WebApi
             app.UseHttpsRedirection();
             app.UseMvc();
         }
+
+
     }
 }

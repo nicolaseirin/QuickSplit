@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using QuickSplit.Application.Users.Commands.CreateUser;
+using QuickSplit.Application.Users.Models;
+using QuickSplit.Application.Users.Queries.GetUsers;
 using QuickSplit.Application.Values.Commands.CreateValue;
 using QuickSplit.Application.Values.Queries.GetValues;
 
@@ -10,20 +12,13 @@ namespace QuickSplit.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : CQRSController
+    public class UsersController : CQRSController
     {
         // GET api/values
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<string>>> Get()
+        [HttpGet(Name = "GetUser")]
+        public async Task<ActionResult<IEnumerable<UserModel>>> Get()
         {
-            try
-            {
-                return Ok(await Mediator.Send(new GetValuesQuery()));
-            }
-            catch (Exception e)
-            {
-                return BadRequest();
-            }
+            return Ok(await Mediator.Send(new GetUsersQuery()));
         }
 
         // GET api/values/5
@@ -35,12 +30,10 @@ namespace QuickSplit.WebApi.Controllers
 
         // POST api/values
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] CreateUserCommand user)
         {
-            return Ok(await Mediator.Send(new CreateValueCommand()
-            {
-                Value = value
-            }));
+            await Mediator.Send(user);
+            return CreatedAtRoute("GetUser", user);
         }
 
         // PUT api/values/5

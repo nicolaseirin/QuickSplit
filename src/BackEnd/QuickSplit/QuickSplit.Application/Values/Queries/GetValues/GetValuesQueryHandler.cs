@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +15,6 @@ namespace QuickSplit.Application.Values.Queries.GetValues
 
         public async Task<IEnumerable<string>> Handle(GetValuesQuery request, CancellationToken cancellationToken)
         {
-            
             
             return await GetValuesFromDataBase();
         }

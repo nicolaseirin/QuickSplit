@@ -1,0 +1,47 @@
+POST https://localhost:5001/api/users
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json; charset=utf-8
+
+{
+	"Name" : "Su nombre",
+	"LastName" : "Su LastName",
+	"Mail" : "Su Mail",
+	"Telephone" : "Su Telephone"
+}
+
+<> 2019-03-27T120439.201.json
+
+###
+
+POST https://localhost:5001/api/users
+Accept: */*
+Cache-Control: no-cache
+
+{
+	"Name" : "Su nombre",
+	"LastName" : "Su LastName",
+	"Mail" : "Su Mail",
+	"Telephone" : "Su Telephone"
+}
+
+<> 2019-03-27T120350.415.json
+
+###
+
+GET https://localhost:5001/api/users
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-03-27T120213.200.json
+
+###
+
+GET https://localhost:5001/api/values
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-03-27T120204.200.json
+
+###
+
