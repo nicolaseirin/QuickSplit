@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">QuickSplit</string>
+    <string name="txt_name">Nombre</string>
+    <string name="txt_lastName">Apellido</string>
+    <string name="txt_email">Correo Electrónico</string>
+    <string name="txt_password">Contraseña</string>
+    <string name="txt_repeatPassword">Repetir Contraseña</string>
+    <string name="btn_register">Registrarse</string>
+    <string name="btn_registerActivity">Registrarse</string>
 </resources>

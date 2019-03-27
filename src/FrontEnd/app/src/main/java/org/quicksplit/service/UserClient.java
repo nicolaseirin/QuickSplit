@@ -4,12 +4,10 @@ import org.quicksplit.model.UserModelIn;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
-public interface RegisterUser {
+public interface UserClient {
 
-    @POST("/users")
-    @FormUrlEncoded
+    @POST("users")
     Call<UserModelIn> createAccount(@Body UserModelIn userIn);
 }
