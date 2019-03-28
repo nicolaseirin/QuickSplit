@@ -42,10 +42,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         UserModelIn user = new UserModelIn();
 
-        user.setName(mTextName.toString());
-        user.setLastName(mTextLastName.toString());
-        user.setEmail(mTextEmail.toString());
-        user.setPassword(mTextPassword.toString());
+        user.setName(mTextName.getText().toString());
+        user.setLastName(mTextLastName.getText().toString());
+        user.setEmail(mTextEmail.getText().toString());
+        user.setPassword(mTextPassword.getText().toString());
 
         UserClient client = ServiceGenerator.createService(UserClient.class);
         Call<UserModelIn> call = client.createAccount(user);
