@@ -59,7 +59,6 @@ namespace QuickSplit.WebApi
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseMvc();
         }
 
