@@ -2,13 +2,35 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d97bed2-8ed5-4f94-8273-9bf84b58c4a2" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../FrontEnd/app/src/main/java/org/quicksplit/RegisterActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../FrontEnd/app/src/main/java/org/quicksplit/ServiceGenerator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../FrontEnd/app/src/main/java/org/quicksplit/model/UserModelIn.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../FrontEnd/app/src/main/java/org/quicksplit/service/UserClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../FrontEnd/app/src/main/res/drawable/ic_logo.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../FrontEnd/app/src/main/res/layout/activity_register.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../FrontEnd/app/src/main/res/xml/network_security_config.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.QuickSplit/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.QuickSplit/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.QuickSplit/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.QuickSplit/.idea/indexLayout.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.QuickSplit/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.QuickSplit/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.QuickSplit/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.QuickSplit/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/2019-03-27T120204.200.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/2019-03-27T120213.200.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/2019-03-27T120350.415.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/2019-03-27T120439.201.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/2019-03-27T123332.201.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QuickSplit.Application/Users/Commands/CreateUser/CreateUserCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/QuickSplit.Application/Users/Commands/CreateUser/CreateUserCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QuickSplit.Application/Users/Commands/CreateUser/CreateUserCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/QuickSplit.Application/Users/Commands/CreateUser/CreateUserCommandHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QuickSplit.Domain/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/QuickSplit.Domain/User.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/QuickSplit.WebApi/Startup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/QuickSplit.WebApi/Startup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FrontEnd/.idea/codeStyles/Project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FrontEnd/.idea/gradle.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FrontEnd/.idea/runConfigurations.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FrontEnd/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../../FrontEnd/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FrontEnd/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../FrontEnd/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FrontEnd/app/src/main/java/org/quicksplit/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../FrontEnd/app/src/main/java/org/quicksplit/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FrontEnd/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../FrontEnd/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FrontEnd/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../FrontEnd/app/src/main/res/values/colors.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FrontEnd/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../FrontEnd/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.idea/httpRequests/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,7 +44,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/QuickSplit.Application/Users/Commands/CreateUser/CreateUserCommandHandler.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
+            <state relative-caret-position="624">
               <caret line="45" column="51" selection-start-line="45" selection-start-column="51" selection-end-line="45" selection-end-column="51" />
               <folding>
                 <marker date="1553984005162" expanded="false" signature="6:218" ph="..." />
@@ -43,18 +65,18 @@
         <entry file="file://$PROJECT_DIR$/QuickSplit.WebApi/Startup.cs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="320">
-              <caret line="48" column="55" lean-forward="true" selection-start-line="48" selection-start-column="55" selection-end-line="48" selection-end-column="55" />
+              <caret line="48" column="55" selection-start-line="48" selection-start-column="55" selection-end-line="48" selection-end-column="55" />
               <folding>
-                <marker date="1554064700211" expanded="false" signature="6:550" ph="..." />
-                <marker date="1554064700211" expanded="true" signature="612:2414" ph="{...}" />
-                <marker date="1554064700211" expanded="true" signature="639:2412" ph="{...}" />
-                <marker date="1554064700211" expanded="true" signature="698:761" ph="{...}" />
-                <marker date="1554064700211" expanded="true" signature="984:1455" ph="{...}" />
-                <marker date="1554064700211" expanded="true" signature="1508:1584" ph="{...}" />
-                <marker date="1554064700211" expanded="true" signature="1691:1796" ph="{...}" />
-                <marker date="1554064700211" expanded="true" signature="1984:2404" ph="{...}" />
-                <marker date="1554064700211" expanded="true" signature="2031:2108" ph="{...}" />
-                <marker date="1554064700211" expanded="true" signature="2125:2328" ph="{...}" />
+                <marker date="1554066128702" expanded="false" signature="6:550" ph="..." />
+                <marker date="1554066128702" expanded="true" signature="612:2376" ph="{...}" />
+                <marker date="1554066128702" expanded="true" signature="639:2349" ph="{...}" />
+                <marker date="1554066128702" expanded="true" signature="698:761" ph="{...}" />
+                <marker date="1554066128702" expanded="true" signature="984:1455" ph="{...}" />
+                <marker date="1554066128702" expanded="true" signature="1508:1584" ph="{...}" />
+                <marker date="1554066128702" expanded="true" signature="1691:1796" ph="{...}" />
+                <marker date="1554066128702" expanded="true" signature="1984:2349" ph="{...}" />
+                <marker date="1554066128702" expanded="true" signature="2031:2108" ph="{...}" />
+                <marker date="1554066128702" expanded="true" signature="2125:2328" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -79,7 +101,7 @@
         <entry file="file://$PROJECT_DIR$/QuickSplit.WebApi/Filters/ExceptionFilter.cs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="368">
-              <caret line="24" column="38" lean-forward="true" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
+              <caret line="24" column="38" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
               <folding>
                 <marker date="1554063354345" expanded="true" signature="6:216" ph="..." />
                 <marker date="1554063354345" expanded="true" signature="253:957" ph="{...}" />
@@ -126,7 +148,7 @@
         <entry file="file://$PROJECT_DIR$/QuickSplit.Domain/User.cs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="912">
-              <caret line="57" column="33" lean-forward="true" selection-start-line="57" selection-start-column="33" selection-end-line="57" selection-end-column="33" />
+              <caret line="57" column="33" selection-start-line="57" selection-start-column="33" selection-end-line="57" selection-end-column="33" />
               <folding>
                 <marker date="1554064996547" expanded="true" signature="66:1746" ph="{...}" />
                 <marker date="1554064996547" expanded="true" signature="90:1744" ph="{...}" />
@@ -169,7 +191,7 @@
         <entry file="file://$PROJECT_DIR$/QuickSplit.Application/Exceptions/InternalErrorException.cs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="368">
-              <caret line="23" column="1" lean-forward="true" selection-start-line="23" selection-start-column="1" selection-end-line="23" selection-end-column="1" />
+              <caret line="23" column="1" selection-start-line="23" selection-start-column="1" selection-end-line="23" selection-end-column="1" />
               <folding>
                 <marker date="1554061564331" expanded="true" signature="6:49" ph="..." />
                 <marker date="1554061564331" expanded="true" signature="94:588" ph="{...}" />
@@ -276,6 +298,9 @@
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="1" />
   </component>
   <component name="ProjectView">
     <navigator currentView="SolutionExplorer" proportions="" version="1">
@@ -499,12 +524,12 @@
       <workItem from="1553633040174" duration="17628000" />
       <workItem from="1553699474382" duration="2743000" />
       <workItem from="1553979580749" duration="3822000" />
-      <workItem from="1554061187781" duration="4787000" />
+      <workItem from="1554061187781" duration="4975000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="36628000" />
+    <option name="totallyTimeSpent" value="36816000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -526,7 +551,7 @@
       <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32899022" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32899022" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3995657" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -774,7 +799,7 @@
     <entry file="file://$PROJECT_DIR$/QuickSplit.Application/Exceptions/InternalErrorException.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="368">
-          <caret line="23" column="1" lean-forward="true" selection-start-line="23" selection-start-column="1" selection-end-line="23" selection-end-column="1" />
+          <caret line="23" column="1" selection-start-line="23" selection-start-column="1" selection-end-line="23" selection-end-column="1" />
           <folding>
             <marker date="1554061564331" expanded="true" signature="6:49" ph="..." />
             <marker date="1554061564331" expanded="true" signature="94:588" ph="{...}" />
@@ -834,18 +859,18 @@
     <entry file="file://$PROJECT_DIR$/QuickSplit.WebApi/Startup.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="320">
-          <caret line="48" column="55" lean-forward="true" selection-start-line="48" selection-start-column="55" selection-end-line="48" selection-end-column="55" />
+          <caret line="48" column="55" selection-start-line="48" selection-start-column="55" selection-end-line="48" selection-end-column="55" />
           <folding>
-            <marker date="1554064700211" expanded="false" signature="6:550" ph="..." />
-            <marker date="1554064700211" expanded="true" signature="612:2414" ph="{...}" />
-            <marker date="1554064700211" expanded="true" signature="639:2412" ph="{...}" />
-            <marker date="1554064700211" expanded="true" signature="698:761" ph="{...}" />
-            <marker date="1554064700211" expanded="true" signature="984:1455" ph="{...}" />
-            <marker date="1554064700211" expanded="true" signature="1508:1584" ph="{...}" />
-            <marker date="1554064700211" expanded="true" signature="1691:1796" ph="{...}" />
-            <marker date="1554064700211" expanded="true" signature="1984:2404" ph="{...}" />
-            <marker date="1554064700211" expanded="true" signature="2031:2108" ph="{...}" />
-            <marker date="1554064700211" expanded="true" signature="2125:2328" ph="{...}" />
+            <marker date="1554066128702" expanded="false" signature="6:550" ph="..." />
+            <marker date="1554066128702" expanded="true" signature="612:2376" ph="{...}" />
+            <marker date="1554066128702" expanded="true" signature="639:2349" ph="{...}" />
+            <marker date="1554066128702" expanded="true" signature="698:761" ph="{...}" />
+            <marker date="1554066128702" expanded="true" signature="984:1455" ph="{...}" />
+            <marker date="1554066128702" expanded="true" signature="1508:1584" ph="{...}" />
+            <marker date="1554066128702" expanded="true" signature="1691:1796" ph="{...}" />
+            <marker date="1554066128702" expanded="true" signature="1984:2349" ph="{...}" />
+            <marker date="1554066128702" expanded="true" signature="2031:2108" ph="{...}" />
+            <marker date="1554066128702" expanded="true" signature="2125:2328" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -853,7 +878,7 @@
     <entry file="file://$PROJECT_DIR$/QuickSplit.Domain/User.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="912">
-          <caret line="57" column="33" lean-forward="true" selection-start-line="57" selection-start-column="33" selection-end-line="57" selection-end-column="33" />
+          <caret line="57" column="33" selection-start-line="57" selection-start-column="33" selection-end-line="57" selection-end-column="33" />
           <folding>
             <marker date="1554064996547" expanded="true" signature="66:1746" ph="{...}" />
             <marker date="1554064996547" expanded="true" signature="90:1744" ph="{...}" />
@@ -876,7 +901,7 @@
     <entry file="file://$PROJECT_DIR$/QuickSplit.WebApi/Filters/ExceptionFilter.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="368">
-          <caret line="24" column="38" lean-forward="true" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
+          <caret line="24" column="38" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
           <folding>
             <marker date="1554063354345" expanded="true" signature="6:216" ph="..." />
             <marker date="1554063354345" expanded="true" signature="253:957" ph="{...}" />
@@ -918,7 +943,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/QuickSplit.Application/Users/Commands/CreateUser/CreateUserCommandHandler.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
+        <state relative-caret-position="624">
           <caret line="45" column="51" selection-start-line="45" selection-start-column="51" selection-end-line="45" selection-end-column="51" />
           <folding>
             <marker date="1553984005162" expanded="false" signature="6:218" ph="..." />
