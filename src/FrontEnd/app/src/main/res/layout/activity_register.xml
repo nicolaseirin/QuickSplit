@@ -1,104 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp"
     tools:context=".RegisterActivity">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".RegisterActivity"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="55dp">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/txtEmail"
-            android:layout_width="312dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:hint="@string/txt_email"
-            android:inputType="textEmailAddress"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.602"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtLastName" />
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="104dp"
+            android:layout_height="119dp"
+            app:srcCompat="@drawable/ic_logo" />
 
-        <EditText
-            android:id="@+id/txtRepeatPassword"
-            android:layout_width="312dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:hint="@string/txt_repeatPassword"
-            android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.602"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtPassword" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:text="QuickSplit Registro"
+            android:textSize="45dp" />
+    </LinearLayout>
 
-        <EditText
-            android:id="@+id/txtPassword"
-            android:layout_width="312dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:hint="@string/txt_password"
-            android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.602"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
-
-        <EditText
-            android:id="@+id/txtLastName"
-            android:layout_width="312dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:hint="@string/txt_lastName"
-            android:inputType="textPersonName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.602"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtName" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/txtName"
-            android:layout_width="312dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="70dp"
-            android:layout_marginEnd="8dp"
-            android:ems="10"
+            android:layout_marginTop="16dp"
             android:hint="@string/txt_name"
             android:inputType="textPersonName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.602"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toTopOf="@+id/txtLastName" />
+
+        <EditText
+            android:id="@+id/txtLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/txt_lastName"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toTopOf="@+id/txtEmail"
+            app:layout_constraintTop_toBottomOf="@+id/txtName" />
+
+        <EditText
+            android:id="@+id/txtEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/txt_email"
+            android:inputType="textEmailAddress"
+            app:layout_constraintBottom_toTopOf="@+id/txtPassword"
+            app:layout_constraintTop_toBottomOf="@+id/txtLastName" />
+
+        <EditText
+            android:id="@+id/txtPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/txt_password"
+            android:inputType="textPassword"
+            app:layout_constraintBottom_toTopOf="@+id/txtRepeatPassword"
+            app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
+
+
+        <EditText
+            android:id="@+id/txtRepeatPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/txt_repeatPassword"
+            android:inputType="textPassword"
+            app:layout_constraintTop_toBottomOf="@+id/txtPassword" />
 
         <Button
             android:id="@+id/btn_register"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/btn_register"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:text="@string/txt_register"
             app:layout_constraintTop_toBottomOf="@+id/txtRepeatPassword" />
-    </android.support.constraint.ConstraintLayout>
 
-</android.support.constraint.ConstraintLayout>
+    </LinearLayout>
+</LinearLayout>
