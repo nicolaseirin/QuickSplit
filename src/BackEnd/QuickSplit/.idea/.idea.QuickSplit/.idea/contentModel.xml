@@ -6,6 +6,12 @@
     <e p="$USER_HOME$/.Rider2018.3/system/resharper-host/local/Transient/ReSharperHost/v183/SolutionCaches/_QuickSplit.-634519480.00" t="ExcludeRecursive" />
     <e p="$PROJECT_DIR$" t="IncludeFlat">
       <e p="QuickSplit.Application" t="IncludeRecursive">
+        <e p="Exceptions" t="Include">
+          <e p="ApplicationException.cs" t="Include" />
+          <e p="InternalErrorException.cs" t="Include" />
+          <e p="InvalidCommandException.cs" t="Include" />
+          <e p="InvalidQueryException.cs" t="Include" />
+        </e>
         <e p="Interfaces" t="Include">
           <e p="IQuickSplitContext.cs" t="Include" />
         </e>
@@ -37,6 +43,7 @@
         </e>
       </e>
       <e p="QuickSplit.Domain" t="IncludeRecursive">
+        <e p="DomainException.cs" t="Include" />
         <e p="QuickSplit.Domain.csproj" t="IncludeRecursive" />
         <e p="User.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
@@ -65,6 +72,9 @@
         <e p="Controllers" t="Include">
           <e p="BaseController.cs" t="Include" />
           <e p="UsersController.cs" t="Include" />
+        </e>
+        <e p="Filters" t="Include">
+          <e p="ExceptionFilter.cs" t="Include" />
         </e>
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">

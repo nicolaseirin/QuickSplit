@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Domain;
 using QuickSplit.Persistence;
+using QuickSplit.WebApi.Filters;
 
 namespace QuickSplit.WebApi
 {
@@ -38,7 +39,14 @@ namespace QuickSplit.WebApi
             
             
             
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services
+                .AddMvc(AddFilters)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+        }
+
+        private void AddFilters(MvcOptions options)
+        {
+            options.Filters.Add(new ExceptionFilter());
         }
 
         private void GenerateDbOptions(IServiceProvider serviceProvider, DbContextOptionsBuilder options)

@@ -5,6 +5,103 @@ Content-Type: application/json; charset=utf-8
 
 { 	"Name" : "Su nombre", 	"LastName" : "Su LastName", 	"Mail" : "Su Mail", 	"Telephone" : "Su Telephone" }
 
+<> 2019-03-31T051640.500.html
+
+###
+
+POST https://localhost:5001/api/users
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json; charset=utf-8
+
+{ 	"Name" : "Su nombre", 	"LastName" : "Su LastName", 	"Mail" : "Su Mail", 	"Telephone" : "Su Telephone" }
+
+###
+
+POST https://localhost:5001/api/users
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json; charset=utf-8
+
+{ 	"Name" : "Su nombre", 	"LastName" : "Su LastName", 	"Mail" : "Su Mail", 	"Telephone" : "Su Telephone" }
+
+<> 2019-03-27T124028.201.json
+
+###
+
+POST https://localhost:5001/api/users
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json; charset=utf-8
+
+{ 	"Name" : "Su nombre", 	"LastName" : "Su LastName", 	"Mail" : "Su Mail", 	"Telephone" : "Su Telephone" }
+
+<> 2019-03-27T124027.201.json
+
+###
+
+POST https://localhost:5001/api/users
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json; charset=utf-8
+
+{ 	"Name" : "Su nombre", 	"LastName" : "Su LastName", 	"Mail" : "Su Mail", 	"Telephone" : "Su Telephone" }
+
+<> 2019-03-27T124026.201.json
+
+###
+
+POST https://localhost:5001/api/users
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json; charset=utf-8
+
+{ 	"Name" : "Su nombre", 	"LastName" : "Su LastName", 	"Mail" : "Su Mail", 	"Telephone" : "Su Telephone" }
+
+<> 2019-03-27T124025.201.json
+
+###
+
+POST https://localhost:5001/api/users
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json; charset=utf-8
+
+{ 	"Name" : "Su nombre", 	"LastName" : "Su LastName", 	"Mail" : "Su Mail", 	"Telephone" : "Su Telephone" }
+
+<> 2019-03-27T124024.201.json
+
+###
+
+POST https://localhost:5001/api/users
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json; charset=utf-8
+
+{ 	"Name" : "Su nombre", 	"LastName" : "Su LastName", 	"Mail" : "Su Mail", 	"Telephone" : "Su Telephone" }
+
+<> 2019-03-27T124018.201.json
+
+###
+
+POST https://localhost:5001/api/users
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json; charset=utf-8
+
+{ 	"Name" : "Su nombre", 	"LastName" : "Su LastName", 	"Mail" : "Su Mail", 	"Telephone" : "Su Telephone" }
+
+<> 2019-03-27T124000.201.json
+
+###
+
+POST https://localhost:5001/api/users
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json; charset=utf-8
+
+{ 	"Name" : "Su nombre", 	"LastName" : "Su LastName", 	"Mail" : "Su Mail", 	"Telephone" : "Su Telephone" }
+
 <> 2019-03-27T123332.201.json
 
 ###

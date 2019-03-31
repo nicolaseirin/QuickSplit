@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Domain;
@@ -17,6 +18,21 @@ namespace QuickSplit.Application.Users.Commands.CreateUser
         }
 
         public async Task<UserModel> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        {
+            UserModel response = null;
+            try
+            {
+                response = await TryToHandle(request);
+            }
+            catch (DomainException ex)
+            {
+                throw new InvalidCommandException(ex.Message);
+            }
+
+            return response;
+        }
+
+        private async Task<UserModel> TryToHandle(CreateUserCommand request)
         {
             User toCreate = new User()
             {
