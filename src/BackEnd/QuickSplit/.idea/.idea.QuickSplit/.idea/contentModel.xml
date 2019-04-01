@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="$APPLICATION_CONFIG_DIR$/scratches" t="IncludeRecursive" />
-    <e p="$USER_HOME$/.Rider2018.3/system/extResources" t="IncludeRecursive" />
-    <e p="$USER_HOME$/.Rider2018.3/system/resharper-host/local/Transient/ReSharperHost/v183/SolutionCaches/_QuickSplit.-634519480.00" t="ExcludeRecursive" />
+    <e p="$USER_HOME$/.Rider2018.2/system/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/.Rider2018.2/system/resharper-host/local/Transient/ReSharperHost/v182/SolutionCaches/_QuickSplit.-634519480.00" t="ExcludeRecursive" />
     <e p="$PROJECT_DIR$" t="IncludeFlat">
       <e p="QuickSplit.Application" t="IncludeRecursive">
         <e p="Exceptions" t="Include">
@@ -21,6 +20,10 @@
             <e p="CreateUser" t="Include">
               <e p="CreateUserCommand.cs" t="Include" />
               <e p="CreateUserCommandHandler.cs" t="Include" />
+            </e>
+            <e p="UpdateUser" t="Include">
+              <e p="UpdateUserCommand.cs" t="Include" />
+              <e p="UpdateUserCommandHandler.cs" t="Include" />
             </e>
           </e>
           <e p="Models" t="Include">
