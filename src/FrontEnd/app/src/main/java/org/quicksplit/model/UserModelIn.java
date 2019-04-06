@@ -3,7 +3,7 @@ package org.quicksplit.model;
 public class UserModelIn {
     private String name;
     private String lastName;
-    private String email;
+    private String mail;
     private String password;
 
     public String getName() {
@@ -22,12 +22,12 @@ public class UserModelIn {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getMail() {
+        return mail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setMail(String email) {
+        this.mail = email;
     }
 
     public String getPassword() {

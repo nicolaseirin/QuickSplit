@@ -44,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         user.setName(mTextName.getText().toString());
         user.setLastName(mTextLastName.getText().toString());
-        user.setEmail(mTextEmail.getText().toString());
+        user.setMail(mTextEmail.getText().toString());
         user.setPassword(mTextPassword.getText().toString());
 
         UserClient client = ServiceGenerator.createService(UserClient.class);
