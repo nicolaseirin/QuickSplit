@@ -24,11 +24,7 @@ namespace QuickSplit.Domain
         public string LastName
         {
             get => lastName;
-            set
-            {
-                ValidateNotNullOrEmpty(value, "LastName");
-                lastName = value;
-            }
+            set => lastName = value ?? throw new DomainException($"LastName is required");
         }
 
         public string Mail
@@ -36,14 +32,8 @@ namespace QuickSplit.Domain
             get => mail;
             set
             {
-                if (IsValidMailString(value))
-                {
-                    mail = value;
-                }
-                else
-                {
-                    throw new DomainException($"User mail isn't valid");
-                }
+                IsValidMailString(value, "Mail");
+                mail = value;
             }
         }
 
@@ -59,10 +49,13 @@ namespace QuickSplit.Domain
             }
         }
 
-        private bool IsValidMailString(string value)
+        private void IsValidMailString(string value, string propertyName)
         {
+            ValidateNotNullOrEmpty(value, propertyName);
             Regex isValidMail = new Regex(@"^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$");
-            return isValidMail.IsMatch(value);
+            if(!isValidMail.IsMatch(value))
+                throw new DomainException($"{value} is not a valid email address");
+            
         }
         
         private void ValidateNotNullOrEmpty(string value, string propertyName)
