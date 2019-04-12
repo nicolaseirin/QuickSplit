@@ -23,11 +23,11 @@ namespace QuickSplit.Test.Application
                 Password = "Password123",
                 Mail = "jonny@gmail.com"
             };
-            var handler = new CreateUserCommandHandler(_context);
+            var handler = new CreateUserCommandHandler(Context);
 
             UserModel user = await handler.Handle(command, CancellationToken.None);
 
-            Assert.Contains(_users, u => u.Id == user.Id);
+            Assert.Contains(Users, u => u.Id == user.Id);
         }
         
         [Fact]
@@ -39,7 +39,7 @@ namespace QuickSplit.Test.Application
                 Password = "Password123",
                 Mail = "jonny@gmail.com"
             };
-            var handler = new CreateUserCommandHandler(_context);
+            var handler = new CreateUserCommandHandler(Context);
 
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
@@ -53,11 +53,11 @@ namespace QuickSplit.Test.Application
                 Password = "Password123",
                 Mail = "jonny@gmail.com"
             };
-            var handler = new CreateUserCommandHandler(_context);
+            var handler = new CreateUserCommandHandler(Context);
 
             UserModel user = await handler.Handle(command, CancellationToken.None);
 
-            Assert.Contains(_users, u => u.Id == user.Id);
+            Assert.Contains(Users, u => u.Id == user.Id);
         }
         
         [Fact]
@@ -69,7 +69,7 @@ namespace QuickSplit.Test.Application
                 LastName = "Doe",
                 Mail = "jonny@gmail.com"
             };
-            var handler = new CreateUserCommandHandler(_context);
+            var handler = new CreateUserCommandHandler(Context);
 
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
@@ -83,7 +83,7 @@ namespace QuickSplit.Test.Application
                 LastName = "Doe",
                 Password = "123123"
             };
-            var handler = new CreateUserCommandHandler(_context);
+            var handler = new CreateUserCommandHandler(Context);
 
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }

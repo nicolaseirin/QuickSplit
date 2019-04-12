@@ -6,13 +6,13 @@ namespace QuickSplit.Test.Application
 {
     public abstract class CommandsTestBase
     {
-        protected readonly IQuickSplitContext _context;
-        protected readonly DbSet<User> _users;
+        protected readonly IQuickSplitContext Context;
+        protected readonly DbSet<User> Users;
 
         protected CommandsTestBase()
         {
-            _context = TestingFactory.CreateInMemoryContext();
-            _users = _context.Users;
+            Context = TestingFactory.CreateInMemoryContext();
+            Users = Context.Users;
         }
     }
 }
