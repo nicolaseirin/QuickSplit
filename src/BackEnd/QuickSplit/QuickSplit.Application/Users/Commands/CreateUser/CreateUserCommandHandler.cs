@@ -34,12 +34,11 @@ namespace QuickSplit.Application.Users.Commands.CreateUser
 
         private async Task<UserModel> TryToHandle(CreateUserCommand request)
         {
-            User toCreate = new User()
+            var toCreate = new User()
             {
                 Name = request.Name,
                 LastName = request.LastName,
                 Mail = request.Mail,
-                Telephone = request.Telephone,
                 Password = request.Password
             };
 
