@@ -11,7 +11,7 @@ using Xunit;
 
 namespace QuickSplit.Test.Application
 {
-    public class CreateCommandTests : CommandsTestBase
+    public class CreateCommandTest : CommandsTestBase
     {
         [Fact]
         public async void CreateValidUserTest()

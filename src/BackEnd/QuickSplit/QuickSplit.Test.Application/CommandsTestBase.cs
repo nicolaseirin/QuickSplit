@@ -4,12 +4,12 @@ using QuickSplit.Domain;
 
 namespace QuickSplit.Test.Application
 {
-    public class CommandsTestBase
+    public abstract class CommandsTestBase
     {
         protected readonly IQuickSplitContext _context;
         protected readonly DbSet<User> _users;
 
-        public CommandsTestBase()
+        protected CommandsTestBase()
         {
             _context = TestingFactory.CreateInMemoryContext();
             _users = _context.Users;
