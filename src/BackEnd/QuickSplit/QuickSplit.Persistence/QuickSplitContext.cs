@@ -14,6 +14,7 @@ namespace QuickSplit.Persistence
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Group> Groups { get; set; }
 
         public void SaveChanges()
         {
@@ -29,7 +30,11 @@ namespace QuickSplit.Persistence
             modelBuilder.Entity<User>()
                 .Property(user => user.Id)
                 .ValueGeneratedOnAdd();
-            
+
+            modelBuilder.Entity<Group>()
+                .Property(group => group.Id)
+                .ValueGeneratedOnAdd();
+
         }
 
     }
