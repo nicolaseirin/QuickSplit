@@ -1,5 +1,6 @@
 package org.quicksplit;
 
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,10 +18,15 @@ import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private TextInputLayout mLabelErrorName;
     private EditText mTextName;
+    private TextInputLayout mLabelErrorLastName;
     private EditText mTextLastName;
+    private TextInputLayout mLabelErrorEmail;
     private EditText mTextEmail;
+    private TextInputLayout mLabelErrorPassword;
     private EditText mTextPassword;
+    private TextInputLayout mLabelErrorRepeatPassword;
     private EditText mTextRepeatPassword;
     private TextView mLabelErrorMessage;
     private Button mButtonregister;
@@ -30,16 +36,28 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        mLabelErrorName = (TextInputLayout) findViewById(R.id.lblError_txtName);
         mTextName = (EditText) findViewById(R.id.txtName);
+
+        mLabelErrorLastName = (TextInputLayout) findViewById(R.id.lblError_txtLastName);
         mTextLastName = (EditText) findViewById(R.id.txtLastName);
+
+        mLabelErrorEmail = (TextInputLayout) findViewById(R.id.lblError_txtEmail);
         mTextEmail = (EditText) findViewById(R.id.txtEmail);
+
+        mLabelErrorPassword = (TextInputLayout) findViewById(R.id.lblError_txtPassword);
         mTextPassword = (EditText) findViewById(R.id.txtPassword);
+
+        mLabelErrorRepeatPassword = (TextInputLayout) findViewById(R.id.lblError_txtRepeatPassword);
         mTextRepeatPassword = (EditText) findViewById(R.id.txtRepeatPassword);
+
         mLabelErrorMessage = (TextView) findViewById(R.id.lbl_errorMessage);
+
         mButtonregister = (Button) findViewById(R.id.btn_register);
 
         mButtonregister.setOnClickListener(this);
     }
+
 
     @Override
     public void onClick(View view) {
@@ -49,6 +67,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         user.setLastName(mTextLastName.getText().toString());
         user.setMail(mTextEmail.getText().toString());
         user.setPassword(mTextPassword.getText().toString());
+
+        if (!validateFieldsAndShowErrors())
+            return;
 
         UserClient client = ServiceGenerator.createService(UserClient.class);
         Call<UserModelIn> call = client.createAccount(user);
@@ -77,5 +98,58 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 Toast.makeText(RegisterActivity.this, "Error al registrar Usuario", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private boolean validateFieldsAndShowErrors() {
+
+        boolean isValid = false;
+
+        String name = mTextName.getText().toString();
+        String lastName = mTextLastName.getText().toString();
+        String email = mTextEmail.getText().toString();
+        String password = mTextPassword.getText().toString();
+        String repeatPassword = mTextRepeatPassword.getText().toString();
+
+        if (name.isEmpty()) {
+            mLabelErrorName.setError("El nombre es requerido.");
+            isValid = false;
+        } else {
+            mLabelErrorName.setError("");
+            isValid = true;
+        }
+
+        if (lastName.isEmpty()) {
+            mLabelErrorLastName.setError("El apellido es requerido.");
+            isValid = false;
+        } else {
+            mLabelErrorLastName.setError("");
+            isValid &= true;
+        }
+
+        if (email.isEmpty()) {
+            mLabelErrorEmail.setError("El email es requerido.");
+            isValid = false;
+        } else {
+            mLabelErrorEmail.setError("");
+            isValid &= true;
+        }
+
+        if (password.isEmpty()) {
+            mLabelErrorPassword.setError("La contraseña es requerida.");
+            isValid = false;
+        } else {
+            mLabelErrorPassword.setError("");
+            isValid &= true;
+        }
+
+        if (!password.equals(repeatPassword)) {
+            mLabelErrorRepeatPassword.setError("Las contraseñas no coinciden.");
+            isValid = false;
+        } else {
+            mLabelErrorRepeatPassword.setError("");
+            isValid &= true;
+        }
+
+        return isValid;
     }
 }
