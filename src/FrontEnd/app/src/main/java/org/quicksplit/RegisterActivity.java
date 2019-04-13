@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.quicksplit.model.UserModelIn;
@@ -21,6 +22,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText mTextEmail;
     private EditText mTextPassword;
     private EditText mTextRepeatPassword;
+    private TextView mLabelErrorMessage;
     private Button mButtonregister;
 
     @Override
@@ -33,6 +35,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mTextEmail = (EditText) findViewById(R.id.txtEmail);
         mTextPassword = (EditText) findViewById(R.id.txtPassword);
         mTextRepeatPassword = (EditText) findViewById(R.id.txtRepeatPassword);
+        mLabelErrorMessage = (TextView) findViewById(R.id.lbl_errorMessage);
         mButtonregister = (Button) findViewById(R.id.btn_register);
 
         mButtonregister.setOnClickListener(this);
@@ -52,7 +55,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         call.enqueue(new Callback<UserModelIn>() {
             @Override
             public void onResponse(Call<UserModelIn> call, Response<UserModelIn> response) {
-                Toast.makeText(RegisterActivity.this, "Usuario registrado", Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful()) {
+                    Toast.makeText(RegisterActivity.this, "Usuario registrado", Toast.LENGTH_SHORT).show();
+                } else {
+                    showErrorMessage(response);
+                }
+            }
+
+            private void showErrorMessage(Response<UserModelIn> response) {
+                try {
+                    String errorMessage = response.errorBody().string();
+                    mLabelErrorMessage.setVisibility(View.VISIBLE);
+                    mLabelErrorMessage.setText(errorMessage);
+                } catch (Exception e) {
+
+                }
             }
 
             @Override
