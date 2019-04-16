@@ -15,9 +15,9 @@ namespace QuickSplit.Persistence
 
         public DbSet<User> Users { get; set; }
 
-        public void SaveChanges()
+        public async void SaveChanges()
         {
-            base.SaveChanges();
+            await SaveChangesAsync();
         }
         public async Task SaveChangesAsync()
         {

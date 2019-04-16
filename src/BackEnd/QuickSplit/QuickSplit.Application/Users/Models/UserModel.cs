@@ -14,7 +14,6 @@ namespace QuickSplit.Application.Users.Models
             Name = user.Name;
             LastName = user.LastName;
             Mail = user.Mail;
-            Telephone = user.Telephone;
         }
 
         public int Id { get; set; }
@@ -24,7 +23,5 @@ namespace QuickSplit.Application.Users.Models
         public string LastName { get; set; }
         
         public string Mail { get; set; }
-        
-        public string Telephone { get; set; }
     }
 }
