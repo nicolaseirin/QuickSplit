@@ -9,6 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.quicksplit.model.Login;
+import org.quicksplit.model.User;
+import org.quicksplit.service.UserClient;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextInputLayout mLabelErrorUserName;
@@ -23,15 +31,73 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mLabelErrorUserName = (TextInputLayout) findViewById(R.id.lblError_txtUserName);
+        mTextUserName = (EditText) findViewById(R.id.txtUserName);
+
+        mLabelErrorPassword = (TextInputLayout) findViewById(R.id.lblError_txtPassword);
+        mTextPassword = (EditText) findViewById(R.id.txtPassword);
+
         mTextViewRegister = (TextView) this.findViewById(R.id.txtView_register);
         mTextViewRegister.setOnClickListener(this);
 
         mButtonLogin = (Button) this.findViewById(R.id.btn_login);
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                login();
+            }
+        });
+    }
+
+    private void login() {
+
+        Login login = new Login();
+
+        login.setUserName(mTextUserName.getText().toString());
+        login.setPassword(mTextPassword.getText().toString());
+
+        if (!validateFieldsAndShowErrors())
+            return;
+
+        UserClient client = ServiceGenerator.createService(UserClient.class);
+        Call<User> call = client.login(login);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
 
             }
         });
+        //call backend and storage token here
+    }
+
+    private boolean validateFieldsAndShowErrors() {
+
+        boolean isValid = false;
+
+        String userName = mTextUserName.getText().toString();
+        String password = mTextPassword.getText().toString();
+
+        if (userName.isEmpty()) {
+            mLabelErrorUserName.setError("El correo electrónico es requerido.");
+            isValid = false;
+        } else {
+            mLabelErrorUserName.setError("");
+            isValid = true;
+        }
+
+        if (password.isEmpty()) {
+            mLabelErrorPassword.setError("La contraseña es requerida.");
+            isValid = false;
+        } else {
+            mLabelErrorPassword.setError("");
+            isValid = true;
+        }
+
+        return isValid;
     }
 
     @Override
