@@ -15,7 +15,16 @@
 
     <ItemGroup>
       <ProjectReference Include="..\QuickSplit.Application\QuickSplit.Application.csproj" />
+      <ProjectReference Include="..\QuickSplit.PasswordHasher\QuickSplit.PasswordHasher.csproj" />
       <ProjectReference Include="..\QuickSplit.Persistence\QuickSplit.Persistence.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="out\web.config" />
+      <_ContentIncludedByDefault Remove="out\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="out\appsettings.json" />
+      <_ContentIncludedByDefault Remove="out\QuickSplit.WebApi.deps.json" />
+      <_ContentIncludedByDefault Remove="out\QuickSplit.WebApi.runtimeconfig.json" />
     </ItemGroup>
 
 </Project>

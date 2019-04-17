@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickSplit.Test.Domain", "Q
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickSplit.Test.Application", "QuickSplit.Test.Application\QuickSplit.Test.Application.csproj", "{21854569-7C7A-48F2-BE72-98901966269B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{F05013A5-3E87-4EDD-8EDB-EB4346C671D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickSplit.PasswordHasher", "QuickSplit.PasswordHasher\QuickSplit.PasswordHasher.csproj", "{7BAE7166-B288-40B2-9023-9FB651AF5FA7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,9 +48,14 @@ Global
 		{21854569-7C7A-48F2-BE72-98901966269B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21854569-7C7A-48F2-BE72-98901966269B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21854569-7C7A-48F2-BE72-98901966269B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BAE7166-B288-40B2-9023-9FB651AF5FA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BAE7166-B288-40B2-9023-9FB651AF5FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BAE7166-B288-40B2-9023-9FB651AF5FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BAE7166-B288-40B2-9023-9FB651AF5FA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{641464DE-F52B-4F8F-98DD-3D67D34A1408} = {B84F7D01-10ED-4607-9531-B15146A2CA27}
 		{21854569-7C7A-48F2-BE72-98901966269B} = {B84F7D01-10ED-4607-9531-B15146A2CA27}
+		{7BAE7166-B288-40B2-9023-9FB651AF5FA7} = {F05013A5-3E87-4EDD-8EDB-EB4346C671D6}
 	EndGlobalSection
 EndGlobal

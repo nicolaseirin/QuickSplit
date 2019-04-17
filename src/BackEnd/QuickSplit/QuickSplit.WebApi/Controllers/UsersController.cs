@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuickSplit.Application.Users.Commands.CreateUser;
 using QuickSplit.Application.Users.Commands.UpdateUser;
@@ -14,6 +15,7 @@ namespace QuickSplit.WebApi.Controllers
     public class UsersController : BaseController
     {
         // GET api/values
+        [Authorize]
         [HttpGet(Name = "GetUser")]
         public async Task<ActionResult<IEnumerable<UserModel>>> Get()
         {
@@ -22,6 +24,7 @@ namespace QuickSplit.WebApi.Controllers
         }
 
         // GET api/values/5
+        [Authorize]
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
@@ -29,6 +32,7 @@ namespace QuickSplit.WebApi.Controllers
         }
 
         // POST api/values
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand user)
         {
@@ -37,6 +41,7 @@ namespace QuickSplit.WebApi.Controllers
         }
 
         // PUT api/values/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult<UserModel>> Put(int id, [FromBody] UpdateUserCommand command)
         {
@@ -46,6 +51,7 @@ namespace QuickSplit.WebApi.Controllers
         }
 
         // DELETE api/values/5
+        [Authorize]
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
