@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.quicksplit.model.Login;
 import org.quicksplit.model.User;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Login login = new Login();
 
-        login.setUserName(mTextUserName.getText().toString());
+        login.setMail(mTextUserName.getText().toString());
         login.setPassword(mTextPassword.getText().toString());
 
         if (!validateFieldsAndShowErrors())
@@ -63,15 +64,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                
+                if (response.isSuccessful()) {
+                    //call backend and storage token here
+                    System.out.println("Entré al if");
+                } else {
+                    //Invalid user and password
+                    System.out.println("No entré");
+                }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-
+                Toast.makeText(MainActivity.this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
             }
         });
-        //call backend and storage token here
     }
 
     private boolean validateFieldsAndShowErrors() {

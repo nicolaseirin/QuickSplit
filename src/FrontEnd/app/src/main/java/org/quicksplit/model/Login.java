@@ -1,19 +1,19 @@
 package org.quicksplit.model;
 
 public class Login {
-    String userName;
+    String mail;
     String password;
 
-    public String getUserName() {
-        return userName;
+    public String getMail() {
+        return mail;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public void setPassword(String password) {
