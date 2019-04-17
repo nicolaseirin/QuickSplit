@@ -29,7 +29,9 @@ namespace QuickSplit.Persistence
             modelBuilder.Entity<User>()
                 .Property(user => user.Id)
                 .ValueGeneratedOnAdd();
-            
+
+            modelBuilder.Entity<User>()
+                .HasAlternateKey(user => user.Mail);
         }
 
     }

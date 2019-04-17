@@ -22,12 +22,12 @@ namespace QuickSplit.WebApi.Controllers
             bool validLogin =  await Mediator.Send(query);
 
             if (validLogin)
-                return Ok(CreateToken(query.Id, query.Password));
+                return Ok(CreateToken(query.Mail, query.Password));
             else
                 return BadRequest("Combinacion de usuario y contraseña invalida.");
         }
 
-        private string CreateToken(int userId, string password)
+        private string CreateToken(string mail, string password)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Secret"]));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -35,7 +35,7 @@ namespace QuickSplit.WebApi.Controllers
                 //issuer: "http://localhost:5000",
                 //audience: "http://localhost:5000",
                 claims: new List<Claim>{
-                    new Claim("Id", userId.ToString()),
+                    new Claim("Id", mail),
                     new Claim("Password", password),
                 },
                 expires: DateTime.Now.AddDays(1),

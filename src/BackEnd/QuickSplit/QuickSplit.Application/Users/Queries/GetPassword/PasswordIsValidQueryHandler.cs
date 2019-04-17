@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -24,7 +25,7 @@ namespace QuickSplit.Application.Users.Queries.GetPassword
 
         public async Task<bool> Handle(PasswordIsValidQuery request, CancellationToken cancellationToken)
         {
-            User user = await _users.FindAsync(request.Id);
+            User user = await _users.FirstOrDefaultAsync(u => string.Equals(u.Mail, request.Mail, StringComparison.OrdinalIgnoreCase));
             
             string hashedPassword = _hasher.Hash(request.Password);
 
