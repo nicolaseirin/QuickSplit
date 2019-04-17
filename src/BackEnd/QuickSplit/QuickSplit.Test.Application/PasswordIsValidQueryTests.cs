@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using QuickSplit.Application.Users.Queries.GetPassword;
 using QuickSplit.Domain;
@@ -7,7 +8,6 @@ namespace QuickSplit.Test.Application
 {
     public class PasswordIsValidQueryTests : CommandsTestBase
     {
-
         [Fact]
         public void HashedPasswordTrueTest()
         {
@@ -21,10 +21,11 @@ namespace QuickSplit.Test.Application
                 Password = hashed
             };
             Users.Add(user);
-            
+            Context.SaveChanges();
+
             var query = new PasswordIsValidQuery()
             {
-                Id = 1,
+                Mail = "mail@gmail.com",
                 Password = password
             };
             var handler = new PasswordIsValidQueryHandler(Context, PasswordHasher);
@@ -40,16 +41,16 @@ namespace QuickSplit.Test.Application
             string hashed = PasswordHasher.Hash(password);
             var user = new User()
             {
-                Id = 1,
                 Name = "John",
                 Mail = "mail@gmail.com",
                 Password = hashed
             };
             Users.Add(user);
+            Context.SaveChanges();
             
             var query = new PasswordIsValidQuery()
             {
-                Id = 1,
+                Mail = "mail@gmail.com",
                 Password = "Password124"
             };
             var handler = new PasswordIsValidQueryHandler(Context, PasswordHasher);
@@ -66,7 +67,7 @@ namespace QuickSplit.Test.Application
 
             var query = new PasswordIsValidQuery()
             {
-                Id = 1,
+                Mail = "mail2@gmail.com",
                 Password = password
             };
             var handler = new PasswordIsValidQueryHandler(Context, PasswordHasher);
