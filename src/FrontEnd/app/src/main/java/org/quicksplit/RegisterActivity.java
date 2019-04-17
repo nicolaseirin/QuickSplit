@@ -1,5 +1,6 @@
 package org.quicksplit;
 
+import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.quicksplit.model.UserModelIn;
+import org.quicksplit.model.User;
 import org.quicksplit.service.UserClient;
 
 import retrofit2.Call;
@@ -30,6 +31,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText mTextRepeatPassword;
     private TextView mLabelErrorMessage;
     private Button mButtonregister;
+    private TextView mTextViewLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,14 +56,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mLabelErrorMessage = (TextView) findViewById(R.id.lbl_errorMessage);
 
         mButtonregister = (Button) findViewById(R.id.btn_register);
+        mButtonregister.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                registerUser();
+            }
+        });
 
-        mButtonregister.setOnClickListener(this);
+        mTextViewLogin = (TextView) findViewById(R.id.txtView_login);
+        mTextViewLogin.setOnClickListener(this);
     }
 
-
-    @Override
-    public void onClick(View view) {
-        UserModelIn user = new UserModelIn();
+    private void registerUser() {
+        User user = new User();
 
         user.setName(mTextName.getText().toString());
         user.setLastName(mTextLastName.getText().toString());
@@ -72,10 +78,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             return;
 
         UserClient client = ServiceGenerator.createService(UserClient.class);
-        Call<UserModelIn> call = client.createAccount(user);
-        call.enqueue(new Callback<UserModelIn>() {
+        Call<User> call = client.createAccount(user);
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<UserModelIn> call, Response<UserModelIn> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(RegisterActivity.this, "Usuario registrado", Toast.LENGTH_SHORT).show();
                 } else {
@@ -83,7 +89,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
 
-            private void showErrorMessage(Response<UserModelIn> response) {
+            private void showErrorMessage(Response<User> response) {
                 try {
                     String errorMessage = response.errorBody().string();
                     mLabelErrorMessage.setVisibility(View.VISIBLE);
@@ -94,7 +100,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
 
             @Override
-            public void onFailure(Call<UserModelIn> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(RegisterActivity.this, "Error al registrar Usuario", Toast.LENGTH_SHORT).show();
             }
         });
@@ -152,4 +158,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         return isValid;
     }
+
+    @Override
+    public void onClick(View view) {
+        Intent loginIntent = new Intent(this, MainActivity.class);
+        startActivity(loginIntent);
+    }
+
+
 }
