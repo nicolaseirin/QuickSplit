@@ -1,6 +1,8 @@
+using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Application.Users.Models;
@@ -29,6 +31,10 @@ namespace QuickSplit.Application.Users.Commands.CreateUser
             catch (DomainException ex)
             {
                 throw new InvalidCommandException(ex.Message);
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidCommandException($"User with email {request.Mail} already exists.");
             }
 
             return response;
