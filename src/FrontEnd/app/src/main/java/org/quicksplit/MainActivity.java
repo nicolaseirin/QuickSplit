@@ -127,6 +127,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         Intent registerIntent = new Intent(this, RegisterActivity.class);
+        registerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        registerIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(registerIntent);
     }
 }
