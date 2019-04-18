@@ -14,7 +14,7 @@ namespace QuickSplit.WebApi.Controllers
     [ApiController]
     public class UsersController : BaseController
     {
-        // GET api/values
+    
         [Authorize]
         [HttpGet(Name = "GetUser")]
         public async Task<ActionResult<IEnumerable<UserModel>>> Get()
@@ -23,7 +23,6 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(users);
         }
 
-        // GET api/values/5
         [Authorize]
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
@@ -31,8 +30,6 @@ namespace QuickSplit.WebApi.Controllers
             return "value";
         }
 
-        // POST api/values
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand user)
         {
@@ -40,7 +37,6 @@ namespace QuickSplit.WebApi.Controllers
             return CreatedAtRoute("GetUser", created);
         }
 
-        // PUT api/values/5
         [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult<UserModel>> Put(int id, [FromBody] UpdateUserCommand command)
@@ -50,7 +46,6 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(updated);
         }
 
-        // DELETE api/values/5
         [Authorize]
         [HttpDelete("{id}")]
         public void Delete(int id)

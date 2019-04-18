@@ -170,6 +170,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/txtRepeatPassword" />
 
                 <TextView
+                    android:id="@+id/txtView_login"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
