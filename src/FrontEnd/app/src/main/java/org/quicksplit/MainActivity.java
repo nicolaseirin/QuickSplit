@@ -1,6 +1,8 @@
 package org.quicksplit;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.quicksplit.model.Login;
-import org.quicksplit.model.User;
+import org.quicksplit.model.Token;
 import org.quicksplit.service.UserClient;
 
 import retrofit2.Call;
@@ -20,12 +22,14 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static String token;
     private TextInputLayout mLabelErrorUserName;
     private EditText mTextUserName;
     private TextInputLayout mLabelErrorPassword;
     private EditText mTextPassword;
     private Button mButtonLogin;
     private TextView mTextViewRegister;
+    private TextView mLabelErrorMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 login();
             }
         });
+
+        mLabelErrorMessage = (TextView) this.findViewById(R.id.lbl_errorMessage);
     }
 
     private void login() {
@@ -60,21 +66,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
 
         UserClient client = ServiceGenerator.createService(UserClient.class);
-        Call<User> call = client.login(login);
-        call.enqueue(new Callback<User>() {
+        Call<Token> call = client.login(login);
+        call.enqueue(new Callback<Token>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<Token> call, Response<Token> response) {
                 if (response.isSuccessful()) {
-                    //call backend and storage token here
-                    System.out.println("Entré al if");
+                    token = response.body().getToken();
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("token", token);
+                    editor.commit();
                 } else {
-                    //Invalid user and password
-                    System.out.println("No entré");
+                    showErrorMessage(response);
+                }
+            }
+
+            private void showErrorMessage(Response<Token> response) {
+                try {
+                    String errorMessage = response.errorBody().string();
+                    mLabelErrorMessage.setVisibility(View.VISIBLE);
+                    mLabelErrorMessage.setText(errorMessage);
+                } catch (Exception e) {
+
                 }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<Token> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
             }
         });

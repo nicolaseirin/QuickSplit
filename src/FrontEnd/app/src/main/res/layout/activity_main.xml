@@ -112,6 +112,12 @@
                     android:gravity="center"
                     android:text="¿No registrado? Registrarse" />
 
+                <TextView
+                    android:id="@+id/lbl_errorMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
             </LinearLayout>
 
         </LinearLayout>

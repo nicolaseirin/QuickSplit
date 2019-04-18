@@ -1,6 +1,7 @@
 package org.quicksplit.service;
 
 import org.quicksplit.model.Login;
+import org.quicksplit.model.Token;
 import org.quicksplit.model.User;
 
 import retrofit2.Call;
@@ -13,5 +14,5 @@ public interface UserClient {
     Call<User> createAccount(@Body User userIn);
 
     @POST("authentications")
-    Call<User> login(@Body Login login);
+    Call<Token> login(@Body Login login);
 }
