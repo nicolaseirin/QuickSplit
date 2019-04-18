@@ -13,4 +13,8 @@
       <ProjectReference Include="..\QuickSplit.Domain\QuickSplit.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Groups\NewFolder\" />
+    </ItemGroup>
+
 </Project>
