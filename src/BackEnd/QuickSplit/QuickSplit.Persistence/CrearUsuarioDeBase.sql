@@ -5,3 +5,8 @@ GRANT CREATE ANY DATABASE TO QuickSplit;
 CREATE USER QuickSplitUser FOR LOGIN QuickSplit
 
 exec sp_addrolemember 'db_owner', 'QuickSplitUser'
+
+
+DELETE FROM USERS;
+
+INSERT INTO Users VALUE
