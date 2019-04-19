@@ -45,8 +45,8 @@ namespace QuickSplit.Tests.Integration
                 // Build the service provider.
                 ServiceProvider sp = services.BuildServiceProvider();
 
-                // Create a scope to obtain a reference to the database
-                // context (ApplicationDbContext).
+
+                // Reseteo la base de datos y le agrego el admin
                 using (IServiceScope scope = sp.CreateScope())
                 {
                     IServiceProvider scopedServices = scope.ServiceProvider;
@@ -57,21 +57,8 @@ namespace QuickSplit.Tests.Integration
                     foreach (string table in _tables)
                     {
                         db.Database.ExecuteSqlCommand(@"TRUNCATE TABLE dbo." + table);
-                        db.Database.ExecuteSqlCommand(@"INSERT INTO dbo." +  table + " (Name, LastName, Mail, Password) VALUES ('admin', 'admin', 'admin@gmail.com','DVOZUIQnznlVbNpxkYAgwejRW1M=')");
                     }
-
-                    //db.SaveChanges();
-                    //var users = db.Users.ToList();
-                    //db.RemoveRange(users);
-//                    db.Users.Add(new User()
-//                    {
-//                        Id = 1,
-//                        Name = "Admin",
-//                        LastName = "Admin",
-//                        Mail = "admin@gmail.com",
-//                        Password = "123"
-//                    });
-//                    db.SaveChanges();
+                    db.Database.ExecuteSqlCommand(@"INSERT INTO dbo.Users (Name, LastName, Mail, Password) VALUES ('admin', 'admin', 'admin@gmail.com','DVOZUIQnznlVbNpxkYAgwejRW1M=')");
                 }
             });
         }

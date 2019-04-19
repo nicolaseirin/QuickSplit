@@ -42,6 +42,9 @@ namespace QuickSplit.Application.Users.Commands.CreateUser
 
         private async Task<UserModel> TryToHandle(CreateUserCommand request)
         {
+            if (string.IsNullOrWhiteSpace(request.Password))
+                throw new InvalidCommandException($"Password is required");
+
             var toCreate = new User()
             {
                 Name = request.Name,

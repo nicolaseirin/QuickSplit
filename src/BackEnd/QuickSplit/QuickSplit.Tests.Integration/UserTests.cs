@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
@@ -23,8 +25,7 @@ namespace QuickSplit.Tests.Integration
     {
         private const string UsersUrl = "/api/users";
         private readonly HttpClient _client;
-
-        private string _token = "";
+        
         private CreateUserCommand _johnSnow;
         private CreateUserCommand _robbStark;
         
@@ -84,7 +85,6 @@ namespace QuickSplit.Tests.Integration
         [Fact, Priority(2)]
         public async void AddFirstUser()
         {
-
             HttpResponseMessage response = await _client.PostObjectAsync(UsersUrl, _johnSnow);
 
             response.EnsureSuccessStatusCode();
@@ -101,8 +101,8 @@ namespace QuickSplit.Tests.Integration
             HttpResponseMessage response = await _client.GetAsync(UsersUrl);
 
             response.EnsureSuccessStatusCode();
+            
             IEnumerable<UserModel> users =  await response.DeserializeCollection<UserModel>();
-
             Assert.Equal(2, users.Count());
             Assert.Contains(users, model => model.Mail == _johnSnow.Mail);
         }
@@ -127,12 +127,109 @@ namespace QuickSplit.Tests.Integration
             HttpResponseMessage response = await _client.GetAsync(UsersUrl);
 
             response.EnsureSuccessStatusCode();
-            IEnumerable<UserModel> users =  await response.DeserializeCollection<UserModel>();
             
+            IEnumerable<UserModel> users =  await response.DeserializeCollection<UserModel>();
             Assert.Equal(3, users.Count());
             Assert.Single(users, model => model.Mail == _robbStark.Mail);
             Assert.Single(users, model => model.Mail == _robbStark.Mail);
         }
         
+        [Fact, Priority(6)]
+        public async void GetJohnSnow()
+        {
+            HttpResponseMessage response = await _client.GetAsync(UsersUrl + "/2");
+
+            response.EnsureSuccessStatusCode();
+
+            UserModel responseUser =  await response.DeserializeObject<UserModel>();
+            Assert.Equal(_johnSnow.Name, responseUser.Name);
+            Assert.Equal(_johnSnow.LastName, responseUser.LastName);
+            Assert.Equal(_johnSnow.Mail, responseUser.Mail);
+        }
+        
+        [Fact, Priority(6)]
+        public async void CreateUserWithoutPassword()
+        {
+            var user = new CreateUserCommand()
+            {
+              Name  = "Hodor",
+              LastName = "Hodor",
+              Mail = "hodor@gmail.com"
+            };
+
+            HttpResponseMessage response = await _client.PostObjectAsync(UsersUrl, user);
+            
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+        
+        [Fact, Priority(6)]
+        public async void CreateUserWithoutMail()
+        {
+            var user = new CreateUserCommand()
+            {
+                Name  = "Hodor",
+                LastName = "Hodor",
+                Password = "123"
+            };
+
+            HttpResponseMessage response = await _client.PostObjectAsync(UsersUrl, user);
+            
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+        
+        [Fact, Priority(6)]
+        public async void CreateUserWithoutName()
+        {
+            var user = new CreateUserCommand()
+            {
+                Name  = "Hodor",
+                LastName = "Hodor",
+                Password = "123",
+                Mail = "hodor@gmail.com"
+            };
+
+            HttpResponseMessage response = await _client.PostObjectAsync(UsersUrl, user);
+            
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+        
+        [Fact, Priority(6)]
+        public async void CreateUserWithoutLastName()
+        {
+            var user = new CreateUserCommand()
+            {
+                Name  = "Hodor",
+                Password = "123",
+                Mail = "hodor@gmail.com"
+            };
+
+            HttpResponseMessage response = await _client.PostObjectAsync(UsersUrl, user);
+            
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        }
+        
+        [Fact, Priority(6)]
+        public async void CreateUserWithoutExistingMail()
+        {
+            var user = new CreateUserCommand()
+            {
+                Name  = "Hodor",
+                LastName = "Hodor",
+                Password = "123",
+                Mail = "admin@gmail.com"
+            };
+
+            HttpResponseMessage response = await _client.PostObjectAsync(UsersUrl, user);
+            
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact, Priority(6)]
+        public async void GetNonExistantUser()
+        {
+            HttpResponseMessage response = await _client.GetAsync(UsersUrl + "/911");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
     }
 }

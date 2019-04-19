@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuickSplit.Application.Users.Commands.CreateUser;
 using QuickSplit.Application.Users.Commands.UpdateUser;
 using QuickSplit.Application.Users.Models;
+using QuickSplit.Application.Users.Queries.GetUserById;
 using QuickSplit.Application.Users.Queries.GetUsers;
 
 namespace QuickSplit.WebApi.Controllers
@@ -25,11 +27,16 @@ namespace QuickSplit.WebApi.Controllers
 
         [Authorize]
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public async Task<ActionResult<UserModel>> Get(int id)
         {
-            return "value";
+            UserModel user = await Mediator.Send(new GetUserByIdQuery()
+            {
+                Id = id
+            });
+            return Ok(user);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand user)
         {
