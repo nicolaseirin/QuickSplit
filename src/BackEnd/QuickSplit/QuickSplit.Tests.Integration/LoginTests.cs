@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using QuickSplit.Application.Users.Commands.CreateUser;
 using QuickSplit.Application.Users.Models;
+using QuickSplit.Tests.Integration.Internal;
 using Xunit;
 
 namespace QuickSplit.Tests.Integration

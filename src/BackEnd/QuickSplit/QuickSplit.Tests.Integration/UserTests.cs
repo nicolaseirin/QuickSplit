@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using QuickSplit.Application.Users.Commands.CreateUser;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Application.Users.Queries.GetPassword;
+using QuickSplit.Tests.Integration.Internal;
 using QuickSplit.WebApi;
 using Xunit;
 using Xunit.Priority;

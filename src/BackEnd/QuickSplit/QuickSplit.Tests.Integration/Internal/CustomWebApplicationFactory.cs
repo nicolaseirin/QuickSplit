@@ -1,20 +1,16 @@
 using System;
-using System.Linq;
-using System.Net.Http;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using QuickSplit.Application.Interfaces;
-using QuickSplit.Domain;
 using QuickSplit.Persistence;
 using QuickSplit.WebApi;
 using QuickSplit.WebApi.Filters;
 
-namespace QuickSplit.Tests.Integration
+namespace QuickSplit.Tests.Integration.Internal
 {
     public class CustomWebApplicationFactory : WebApplicationFactory<Startup>
     {
