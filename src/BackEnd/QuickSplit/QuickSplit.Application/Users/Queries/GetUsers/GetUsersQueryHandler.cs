@@ -34,7 +34,6 @@ namespace QuickSplit.Application.Users.Queries.GetUsers
                 Id = user.Id,
                 Name = user.Name,
                 LastName = user.LastName,
-                Telephone = user.Telephone,
                 Mail = user.Mail
             };
         }
