@@ -42,13 +42,12 @@ namespace QuickSplit.Test.Application
         {
             var command = new CreateGroupCommand()
             {
-                Name = "La pedrera"
+                Name = "La pedrera",
+                Admin = null,
             };
             var handler = new CreateGroupCommandHandler(Context);
 
-            GroupModel user = await handler.Handle(command, CancellationToken.None);
-
-            Assert.Contains(Users, u => u.Id == user.Id);
+            Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
     }
 }
