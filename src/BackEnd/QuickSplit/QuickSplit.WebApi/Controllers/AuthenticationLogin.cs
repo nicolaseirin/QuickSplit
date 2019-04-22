@@ -27,7 +27,7 @@ namespace QuickSplit.WebApi.Controllers
                 return BadRequest("Combinacion de usuario y contraseña invalida.");
         }
 
-        private object CreateToken(string mail, string password)
+        public object CreateToken(string mail, string password)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Secret"]));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
