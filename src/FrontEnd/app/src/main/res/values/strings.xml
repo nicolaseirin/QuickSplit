@@ -9,4 +9,6 @@
     <string name="lbl_quicksplit">QuickSplit</string>
     <string name="modifyUser">Modificar Usuario</string>
     <string name="saveChanges">Guardar Cambios</string>
+    <string name="lbl_register">Registrarse</string>
+    <string name="lbl_login">Iniciar Sesión</string>
 </resources>

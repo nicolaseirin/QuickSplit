@@ -1,6 +1,6 @@
 package org.quicksplit.model;
 
-public class UserModelIn {
+public class User {
     private String name;
     private String lastName;
     private String mail;

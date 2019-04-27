@@ -37,8 +37,6 @@ namespace QuickSplit.Domain
             }
         }
 
-        public string Telephone { get; set; }
-
         public string Password
         {
             get => password;
