@@ -126,7 +126,7 @@ namespace QuickSplit.Tests.Integration
                 LastName = "NotAdmin"
             };
 
-            HttpResponseMessage response = await _client.PutObjectAsync(UsersUrl, update);
+            HttpResponseMessage response = await _client.PutObjectAsync(UsersUrl + "/1", update);
 
             response.EnsureSuccessStatusCode();
             UserModel user = await response.DeserializeObject<UserModel>();
@@ -143,7 +143,7 @@ namespace QuickSplit.Tests.Integration
                 Mail = "admin123@gmail.com"
             };
 
-            HttpResponseMessage response = await _client.PutObjectAsync(UsersUrl, update);
+            HttpResponseMessage response = await _client.PutObjectAsync(UsersUrl + "/1", update);
 
             response.EnsureSuccessStatusCode();
             UserModel user = await response.DeserializeObject<UserModel>();
