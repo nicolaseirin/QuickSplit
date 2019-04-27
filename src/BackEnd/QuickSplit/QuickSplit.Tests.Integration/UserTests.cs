@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.InteropServices.ComTypes;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -116,6 +115,5 @@ namespace QuickSplit.Tests.Integration
             Assert.Single(users, model => model.Mail == _robbStark.Mail);
             Assert.Single(users, model => model.Mail == _robbStark.Mail);
         }
-        
     }
 }
