@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using QuickSplit.Application.Users.Commands.AddFriendCommand;
 using QuickSplit.Application.Users.Commands.CreateUser;
 using QuickSplit.Application.Users.Commands.UpdateUser;
 using QuickSplit.Application.Users.Models;
@@ -57,6 +58,14 @@ namespace QuickSplit.WebApi.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        [Authorize]
+        [HttpPost("{id}/friends")]
+        public async Task<IActionResult> GetFriends([FromBody] AddFriendCommand command)
+        {
+            await Mediator.Publish(command);
+            return Ok();
         }
     }
 }

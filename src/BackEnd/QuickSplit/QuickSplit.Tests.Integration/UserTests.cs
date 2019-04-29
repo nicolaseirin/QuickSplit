@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using QuickSplit.Application.Users.Commands.AddFriendCommand;
 using QuickSplit.Application.Users.Commands.CreateUser;
 using QuickSplit.Application.Users.Commands.UpdateUser;
 using QuickSplit.Application.Users.Models;
@@ -22,6 +23,7 @@ namespace QuickSplit.Tests.Integration
 
         private CreateUserCommand _johnSnow;
         private CreateUserCommand _robbStark;
+        private CreateUserCommand _ghost; 
 
         public UserTests(CustomWebApplicationFactory factory)
         {
@@ -61,6 +63,13 @@ namespace QuickSplit.Tests.Integration
                 Name = "Robb",
                 LastName = "Stark",
                 Mail = "Robb@gmail.com",
+                Password = "123"
+            };
+            
+            _robbStark = new CreateUserCommand()
+            {
+                Name = "Ghost",
+                Mail = "ghost@gmail.com",
                 Password = "123"
             };
         }
@@ -305,6 +314,47 @@ namespace QuickSplit.Tests.Integration
             IEnumerable<UserModel> users = await response.DeserializeCollection<UserModel>();
 
             Assert.DoesNotContain(users, user => user.Name == _johnSnow.Name && user.LastName == _johnSnow.LastName);
-        }        
+        }
+        
+        [Fact, Priority(6)]
+        public async void AddGhost()
+        {
+            HttpResponseMessage response = await _client.PostObjectAsync(UsersUrl, _ghost);
+
+            response.EnsureSuccessStatusCode();
+
+            UserModel responseUser = await response.DeserializeObject<UserModel>();
+            Assert.Equal(_ghost.Name, responseUser.Name);
+            Assert.Equal(_ghost.LastName, responseUser.LastName);
+            Assert.Equal(_ghost.Mail, responseUser.Mail);
+        }
+        
+        [Fact, Priority(7)]
+        public async void AddJohnAndGhostAsFriends()
+        {
+            var body = new AddFriendCommand()
+            {
+                CurrentUserId = 1,
+                FriendUserId = 3
+            };
+            
+            HttpResponseMessage response = await _client.PostObjectAsync(UsersUrl + "/1/friends", body);
+
+            response.EnsureSuccessStatusCode();
+        }
+        
+        [Fact, Priority(7)]
+        public async void AddJohnAndRobbAsFriends()
+        {
+            var body = new AddFriendCommand()
+            {
+                CurrentUserId = 1,
+                FriendUserId = 2
+            };
+            
+            HttpResponseMessage response = await _client.PostObjectAsync(UsersUrl + "/1/friends", body);
+
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

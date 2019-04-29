@@ -8,7 +8,8 @@ namespace QuickSplit.Application.Interfaces
     public interface IQuickSplitContext : IDisposable
     {
         DbSet<User> Users { get; }
-
+        DbSet<Friendship> Friendships { get; }
+        
         void SaveChanges();
         Task SaveChangesAsync();
     }
