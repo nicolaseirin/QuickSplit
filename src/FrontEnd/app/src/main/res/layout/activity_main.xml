@@ -4,6 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp"
     tools:context=".MainActivity">
 
     <TextView
@@ -13,5 +18,11 @@
         android:layout_marginTop="5dp"
         android:text="WELCOME PAPÁ"
         android:textSize="45dp" />
+
+    <Button
+        android:id="@+id/btnTestGotoEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test Modify User" />
 
 </LinearLayout>
