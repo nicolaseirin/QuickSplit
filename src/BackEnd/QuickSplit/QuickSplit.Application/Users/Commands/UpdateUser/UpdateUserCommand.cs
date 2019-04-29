@@ -13,8 +13,6 @@ namespace QuickSplit.Application.Users.Commands.UpdateUser
         
         public string Mail { get; set; }
         
-        public string Telephone { get; set; }
-        
         public string Password { get; set; }   
     }
 }

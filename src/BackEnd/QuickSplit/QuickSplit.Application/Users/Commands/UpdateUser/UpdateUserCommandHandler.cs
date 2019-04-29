@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Domain;
@@ -17,6 +18,18 @@ namespace QuickSplit.Application.Users.Commands.UpdateUser
         }
 
         public async Task<UserModel> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await TryToUpdate(request);
+            }
+            catch (DomainException ex)
+            {
+                throw new InvalidCommandException(ex.Message);
+            }
+        }
+
+        private async Task<UserModel> TryToUpdate(UpdateUserCommand request)
         {
             int id = request.Id;
             User toUpdate = await _context.Users.FindAsync(id);
