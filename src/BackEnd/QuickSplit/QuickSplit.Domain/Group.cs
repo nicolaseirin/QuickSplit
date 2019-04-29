@@ -7,8 +7,9 @@ namespace QuickSplit.Domain
     public class Group
     {
         private string name;
-        private string admin;
+        private int admin;
 
+        public ICollection<Membership> Memberships { get; set; }
         public int Id { get; set; }
 
         public string Name
@@ -21,14 +22,18 @@ namespace QuickSplit.Domain
             }
         }
 
-        public string Admin
+        public int Admin
         {
             get => admin;
             set
             {
-                ValidateNotNullOrEmpty(value, "Administrator");
-                name = value;
+                admin = value;
             }
+        }
+
+        public Group()
+        {
+            Memberships = new List<Membership>();
         }
 
         private void ValidateNotNullOrEmpty(string value, string propertyName)

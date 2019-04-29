@@ -9,6 +9,7 @@ namespace QuickSplit.Application.Interfaces
     {
         DbSet<User> Users { get; }
         DbSet<Group> Groups { get; }
+        DbSet<Domain.Membership> Memberships { get; }
 
         void SaveChanges();
         Task SaveChangesAsync();

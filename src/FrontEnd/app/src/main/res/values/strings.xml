@@ -8,4 +8,5 @@
     <string name="txt_register">Registrarse</string>
     <string name="lbl_quicksplit">QuickSplit</string>
     <string name="lbl_register">Registrarse</string>
+    <string name="lbl_create">Crear</string>
 </resources>

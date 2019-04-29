@@ -8,7 +8,7 @@ import retrofit2.http.POST;
 public interface GroupClient {
 
     @POST("groups")
-    Call<GroupModelIn> createAccount(@Body GroupModelIn userIn);
+    Call<GroupModelIn> createGroup(@Body GroupModelIn groupIn);
 
 }
 

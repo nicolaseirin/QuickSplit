@@ -1,7 +1,5 @@
-﻿using System;
+﻿using QuickSplit.Domain;
 using System.Collections.Generic;
-using System.Text;
-using QuickSplit.Domain;
 
 namespace QuickSplit.Application.Groups.Models
 {
@@ -9,6 +7,7 @@ namespace QuickSplit.Application.Groups.Models
     {
         public GroupModel()
         {
+            Memberships = new List<int>(); 
         }
 
         public GroupModel(Group group)
@@ -16,12 +15,25 @@ namespace QuickSplit.Application.Groups.Models
             Id = group.Id;
             Name = group.Name;
             Admin = group.Admin;
+            GetMemberships(group.Memberships);
         }
 
         public int Id { get; set; }
 
         public string Name { get; set; }
 
-        public string Admin { get; set; }
+        public int Admin { get; set; }
+
+        public ICollection<int> Memberships { get; set; }
+
+        private void GetMemberships(ICollection<Domain.Membership> memberships)
+        {
+            foreach (Domain.Membership m in memberships)
+            {
+                Memberships.Add(m.GroupId);
+            }
+
+        }
+
     }
 }

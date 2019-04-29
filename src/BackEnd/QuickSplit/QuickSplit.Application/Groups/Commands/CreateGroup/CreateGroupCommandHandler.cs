@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,13 +42,24 @@ namespace QuickSplit.Application.Groups.Commands.CreateGroup
             {
                 Id = request.Id,
                 Name = request.Name,
-                Admin = request.Admin
+                Admin = request.Admin,
+                Memberships = GetMemberships(request.Memberships)
             };
 
             await _context.Groups.AddAsync(toCreate);
             await _context.SaveChangesAsync();
 
             return new GroupModel(toCreate);
+        }
+
+        private ICollection<Domain.Membership> GetMemberships(ICollection<int> memberships)
+        {
+            ICollection<Domain.Membership> toReturn = new List<Domain.Membership>();
+            foreach (int userId in memberships)
+            {
+                toReturn.Concat(_context.Memberships.Where(me => me.UserId == userId));
+            }
+            return toReturn;
         }
     }
 }
