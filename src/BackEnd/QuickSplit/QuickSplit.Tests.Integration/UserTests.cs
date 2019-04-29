@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Query.ExpressionTranslators.Internal;
 using QuickSplit.Application.Users.Commands.CreateUser;
 using QuickSplit.Application.Users.Commands.UpdateUser;
@@ -162,11 +164,36 @@ namespace QuickSplit.Tests.Integration
         [Fact, Priority(5)]
         public async void DeleteJohnSnow()
         {
+            HttpResponseMessage response = await _client.DeleteAsync(UsersUrl + "/1");
             
+            response.EnsureSuccessStatusCode();
         }
         
+        [Fact, Priority(5)]
+        public async void DeleteNonExistantUser()
+        {
+            HttpResponseMessage response = await _client.DeleteAsync(UsersUrl + "/911");
+            
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
         
+        [Fact, Priority(6)]
+        public async void DeleteAgainJohnSnow()
+        {
+            HttpResponseMessage response = await _client.DeleteAsync(UsersUrl + "/1");
+            
+            response.EnsureSuccessStatusCode();
+        }
         
-        
+        [Fact, Priority(6)]
+        public async void VerifyJohnSnowDoesntExist()
+        {
+            HttpResponseMessage response = await _client.GetAsync(UsersUrl);
+
+            response.EnsureSuccessStatusCode();
+            IEnumerable<UserModel> users = await response.DeserializeCollection<UserModel>();
+
+            Assert.DoesNotContain(users, user => user.Name == _johnSnow.Name && user.LastName == _johnSnow.LastName);
+        }        
     }
 }
