@@ -19,6 +19,7 @@ namespace QuickSplit.Persistence
         {
             base.SaveChanges();
         }
+        
         public async Task SaveChangesAsync()
         {
             await base.SaveChangesAsync();
@@ -29,7 +30,10 @@ namespace QuickSplit.Persistence
             modelBuilder.Entity<User>()
                 .Property(user => user.Id)
                 .ValueGeneratedOnAdd();
-            
+
+            modelBuilder.Entity<User>()
+                .HasIndex(user => user.Mail)
+                .IsUnique();
         }
 
     }

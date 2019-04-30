@@ -19,12 +19,13 @@ namespace QuickSplit.Application.Users.Commands.DeleteUser
 
         public async Task<Unit> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
-            User toDelete = await _context.Users.FindAsync(request.Id);   
-            if(toDelete == null)
-                throw new InvalidCommandException($"Not existe el usuario con id {request.Id}");
-            
-            _context.Users.Remove(toDelete);
-            await _context.SaveChangesAsync();
+            User toDelete = await _context.Users.FindAsync(request.Id);
+
+            if (toDelete != null)
+            {
+                _context.Users.Remove(toDelete);
+                await _context.SaveChangesAsync();
+            }
 
             return Unit.Value;
         }

@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>netcoreapp2.2</TargetFramework>
-
+        <NoWarn>CS1998;</NoWarn>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\QuickSplit.Application\QuickSplit.Application.csproj" />
+      <ProjectReference Include="..\QuickSplit.PasswordHasher\QuickSplit.PasswordHasher.csproj" />
       <ProjectReference Include="..\QuickSplit.Persistence\QuickSplit.Persistence.csproj" />
     </ItemGroup>
 

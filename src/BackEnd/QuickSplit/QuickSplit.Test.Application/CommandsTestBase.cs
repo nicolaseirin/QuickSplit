@@ -6,13 +6,16 @@ namespace QuickSplit.Test.Application
 {
     public abstract class CommandsTestBase
     {
-        protected readonly IQuickSplitContext Context;
-        protected readonly DbSet<User> Users;
+        protected IQuickSplitContext Context;
+        protected IPasswordHasher PasswordHasher;
+        protected DbSet<User> Users;
+        
 
         protected CommandsTestBase()
         {
             Context = TestingFactory.CreateInMemoryContext();
             Users = Context.Users;
+            PasswordHasher = new PasswordHasher.PasswordHasher();
         }
     }
 }

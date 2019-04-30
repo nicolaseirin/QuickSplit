@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,7 +9,7 @@
     android:paddingTop="16dp"
     android:paddingRight="16dp"
     android:paddingBottom="16dp"
-    tools:context=".RegisterActivity">
+    tools:context=".ModifyUserActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -49,8 +48,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="@string/lbl_register"
-                        android:textSize="40dp" />
+                        android:text="@string/modifyUser"
+                        android:textSize="30dp" />
 
                 </LinearLayout>
 
@@ -166,22 +165,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="@string/txt_register"
+                    android:text="@string/saveChanges"
                     app:layout_constraintTop_toBottomOf="@+id/txtRepeatPassword" />
-
-                <TextView
-                    android:id="@+id/txtView_login"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:gravity="center"
-                    android:text="¿Ya registrado? Iniciar Sesión" />
-
             </LinearLayout>
 
         </LinearLayout>
 
     </ScrollView>
+    >
 
 </LinearLayout>
