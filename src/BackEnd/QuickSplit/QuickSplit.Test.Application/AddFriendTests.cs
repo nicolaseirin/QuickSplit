@@ -1,5 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using MediatR;
+using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Users.Commands.AddFriendCommand;
+using QuickSplit.Application.Users.Models;
+using QuickSplit.Application.Users.Queries.GetFriends;
 using QuickSplit.Domain;
 using Xunit;
 
@@ -42,6 +49,20 @@ namespace QuickSplit.Test.Application
         }
 
         [Fact]
+        public async void CheckNoFriendshipsTest()
+        {
+            var handler = new GetFriendsQueryHandler(Context);
+
+            IEnumerable<UserModel> friends1 = await handler.Handle(new GetFriendsQuery() {UserId = 1}, CancellationToken.None);
+            IEnumerable<UserModel> friends2 = await handler.Handle(new GetFriendsQuery() {UserId = 2}, CancellationToken.None);
+            IEnumerable<UserModel> friends3 = await handler.Handle(new GetFriendsQuery() {UserId = 3}, CancellationToken.None);
+
+            Assert.Empty(friends1);
+            Assert.Empty(friends2);
+            Assert.Empty(friends3);
+        }
+        
+        [Fact]
         public async void AddFriendTest()
         {
             var command = new AddFriendCommand()
@@ -50,9 +71,16 @@ namespace QuickSplit.Test.Application
                 CurrentUserId = 2 
             };
             var handler = new AddFriendCommandHandler(Context);
+            var getHandler = new GetFriendsQueryHandler(Context);
 
             await handler.Handle(command, CancellationToken.None);
+            IEnumerable<UserModel> friends1 = await getHandler.Handle(new GetFriendsQuery() {UserId = 1}, CancellationToken.None);
+            IEnumerable<UserModel> friends2 = await getHandler.Handle(new GetFriendsQuery() {UserId = 2}, CancellationToken.None);
+            IEnumerable<UserModel> friends3 = await getHandler.Handle(new GetFriendsQuery() {UserId = 3}, CancellationToken.None);
 
+            Assert.Single(friends1, user => user.Id == 2);
+            Assert.Single(friends2, user => user.Id == 1);
+            Assert.Empty(friends3);
             Assert.Contains(Friendships, friendship => friendship.Friend1Id == 1 && friendship.Friend2Id == 2);
             Assert.DoesNotContain(Friendships, friendship => friendship.Friend1Id == 3 || friendship.Friend2Id == 3);
             Assert.NotEmpty(_jon.Friends);
@@ -77,10 +105,17 @@ namespace QuickSplit.Test.Application
                 CurrentUserId = 3 
             };
             var handler = new AddFriendCommandHandler(Context);
+            var getHandler = new GetFriendsQueryHandler(Context);
 
             await handler.Handle(command1, CancellationToken.None);
             await handler.Handle(command2, CancellationToken.None);
+            IEnumerable<UserModel> friends1 = await getHandler.Handle(new GetFriendsQuery() {UserId = 1}, CancellationToken.None);
+            IEnumerable<UserModel> friends2 = await getHandler.Handle(new GetFriendsQuery() {UserId = 2}, CancellationToken.None);
+            IEnumerable<UserModel> friends3 = await getHandler.Handle(new GetFriendsQuery() {UserId = 3}, CancellationToken.None);
 
+            Assert.True(friends1.All(user => user.Id == 2 || user.Id == 3));
+            Assert.Single(friends2, user => user.Id == 1);
+            Assert.Single(friends3, user => user.Id == 1);
             Assert.Contains(Friendships, friendship => friendship.Friend1Id == 1 && friendship.Friend2Id == 2);
             Assert.Contains(Friendships, friendship => friendship.Friend1Id == 1 && friendship.Friend2Id == 3);
             Assert.NotEmpty(_jon.Friends);
@@ -89,6 +124,19 @@ namespace QuickSplit.Test.Application
             Assert.NotEmpty(_danny.FriendsOf);
             Assert.NotEmpty(_ghost.Friends);
             Assert.NotEmpty(_ghost.FriendsOf);
+        }
+
+        [Fact]
+        public async void AddNonExistantFriend()
+        {
+            var command = new AddFriendCommand()
+            {
+                FriendUserId = 911,
+                CurrentUserId = 912 
+            };
+            var handler = new AddFriendCommandHandler(Context);
+            
+            Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
     }
 }

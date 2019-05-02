@@ -13,33 +13,17 @@ namespace QuickSplit.Domain
         public Friendship(User friend1, User friend2)
         {
             Friend1 = friend1;
+            Friend1Id = friend1.Id;
             Friend2 = friend2;
+            Friend2Id = friend2.Id;
         }
 
         public int Friend1Id { get; private set; }
         public int Friend2Id { get; private set; }
 
-        public User Friend1
-        {
-            get { return friend1; }
-            set
-            {
-                ValidateNotNull(value);
-                friend1 = value;
-                Friend1Id = value.Id;
-            }
-        }
+        public User Friend1 { get; set; }
 
-        public User Friend2
-        {
-            get { return friend2; }
-            set
-            {
-                ValidateNotNull(value);
-                friend2 = value;
-                Friend2Id = value.Id;
-            }
-        }
+        public User Friend2 { get; set; }
 
         private void ValidateNotNull(User user)
         {

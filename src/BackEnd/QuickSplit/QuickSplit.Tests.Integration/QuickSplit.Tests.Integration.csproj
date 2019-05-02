@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp2.2</TargetFramework>
-
+        <NoWarn>CS1998;EF1000</NoWarn>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 

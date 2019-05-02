@@ -18,9 +18,9 @@ namespace QuickSplit.Persistence
         public DbSet<User> Users { get; set; }
         public DbSet<Friendship> Friendships { get; set; }
 
-        public async void SaveChanges()
+        public void SaveChanges()
         {
-            await SaveChangesAsync();
+            base.SaveChanges();
         }
 
         public async Task SaveChangesAsync()
@@ -39,15 +39,18 @@ namespace QuickSplit.Persistence
         {
             builder.HasKey(f => new {f.Friend1Id, f.Friend2Id});
             
+            
             builder
                 .HasOne(u => u.Friend1)
                 .WithMany(user => user.FriendsOf)
-                .HasForeignKey(friendship => friendship.Friend1Id);
+                .HasForeignKey(friendship => friendship.Friend1Id)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder
                 .HasOne(u => u.Friend2)
                 .WithMany(user => user.Friends)
-                .HasForeignKey(friendship => friendship.Friend2Id);
+                .HasForeignKey(friendship => friendship.Friend2Id)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         }
 
         private void ConfigureUser(EntityTypeBuilder<User> builder)
@@ -57,7 +60,18 @@ namespace QuickSplit.Persistence
                 .ValueGeneratedOnAdd();
 
             builder
-                .HasAlternateKey(user => user.Mail);           
+                .HasMany(user => user.Friends)
+                .WithOne(friendship => friendship.Friend2);
+                //.OnDelete(DeleteBehavior.ClientSetNull);
+            
+            builder
+                .HasMany(user => user.FriendsOf)
+                .WithOne(friendship => friendship.Friend1);
+                //.OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder
+                .HasIndex(user => user.Mail)
+                .IsUnique();
         }
     }
 }

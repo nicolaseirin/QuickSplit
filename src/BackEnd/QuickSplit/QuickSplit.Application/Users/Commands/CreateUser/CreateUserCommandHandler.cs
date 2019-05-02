@@ -1,3 +1,4 @@
+using System;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace QuickSplit.Application.Users.Commands.CreateUser
             {
                 throw new InvalidCommandException(ex.Message);
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException)
             {
                 throw new InvalidCommandException($"User with email {request.Mail} already exists.");
             }
@@ -44,6 +45,8 @@ namespace QuickSplit.Application.Users.Commands.CreateUser
         {
             if (string.IsNullOrWhiteSpace(request.Password))
                 throw new InvalidCommandException($"Password is required");
+            if (await _context.Users.AnyAsync(user => user.Mail == request.Mail))
+                throw new InvalidCommandException($"User with email {request.Mail} already exists.");
 
             var toCreate = new User()
             {

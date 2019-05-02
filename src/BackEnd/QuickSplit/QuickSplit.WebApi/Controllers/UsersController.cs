@@ -1,13 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuickSplit.Application.Users.Commands.AddFriendCommand;
 using QuickSplit.Application.Users.Commands.CreateUser;
+using QuickSplit.Application.Users.Commands.DeleteUser;
 using QuickSplit.Application.Users.Commands.UpdateUser;
 using QuickSplit.Application.Users.Models;
+using QuickSplit.Application.Users.Queries.GetFriends;
 using QuickSplit.Application.Users.Queries.GetUserById;
 using QuickSplit.Application.Users.Queries.GetUsers;
 
@@ -17,7 +18,6 @@ namespace QuickSplit.WebApi.Controllers
     [ApiController]
     public class UsersController : BaseController
     {
-    
         [Authorize]
         [HttpGet(Name = "GetUser")]
         public async Task<ActionResult<IEnumerable<UserModel>>> Get()
@@ -30,7 +30,7 @@ namespace QuickSplit.WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserModel>> Get(int id)
         {
-            UserModel user = await Mediator.Send(new GetUserByIdQuery()
+            UserModel user = await Mediator.Send(new GetUserByIdQuery
             {
                 Id = id
             });
@@ -41,7 +41,7 @@ namespace QuickSplit.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand user)
         {
-            UserModel created =  await Mediator.Send(user);
+            UserModel created = await Mediator.Send(user);
             return CreatedAtRoute("GetUser", created);
         }
 
@@ -56,15 +56,30 @@ namespace QuickSplit.WebApi.Controllers
 
         [Authorize]
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            await Mediator.Send(new DeleteUserCommand
+            {
+                Id = id
+            });
+
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("{id}/friends")]
+        public async Task<IActionResult> GetFriends(int id)
+        {
+            IEnumerable<UserModel> friends = await Mediator.Send(new GetFriendsQuery() { UserId = id });
+            return Ok(friends);
         }
 
         [Authorize]
         [HttpPost("{id}/friends")]
-        public async Task<IActionResult> GetFriends([FromBody] AddFriendCommand command)
+        public async Task<IActionResult> AddFriend(int id, [FromBody] AddFriendCommand command)
         {
-            await Mediator.Publish(command);
+            command.CurrentUserId = id;
+            await Mediator.Send(command);
             return Ok();
         }
     }

@@ -1,13 +1,15 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Application.Users.Commands.UpdateUser;
 using QuickSplit.Domain;
 
 namespace QuickSplit.Application.Users.Commands.AddFriendCommand
 {
-    public class AddFriendCommandHandler : IRequestHandler<AddFriendCommand, Unit>
+    public class AddFriendCommandHandler : IRequestHandler<AddFriendCommand>
     {
         private readonly IQuickSplitContext _context;
 
@@ -18,10 +20,15 @@ namespace QuickSplit.Application.Users.Commands.AddFriendCommand
 
         public async Task<Unit> Handle(AddFriendCommand request, CancellationToken cancellationToken)
         {
-            User current = await _context.Users.FindAsync(request.CurrentUserId);
-            User toAdd = await _context.Users.FindAsync(request.FriendUserId);
+            Task<User> current = _context.Users.FindAsync(request.CurrentUserId);
+            Task<User> toAdd = _context.Users.FindAsync(request.FriendUserId);
+            User currentUser = await current;
+            User userToAdd = await toAdd;
             
-            current.AddFriend(toAdd);
+            if(currentUser == null || userToAdd == null)
+                throw new InvalidCommandException("Usuarios no existen");
+            
+            currentUser.AddFriend(userToAdd);
 
             await _context.SaveChangesAsync();
             return Unit.Value;
