@@ -4,8 +4,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 
+import android.support.v7.widget.LinearLayoutCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -15,6 +18,7 @@ import org.quicksplit.model.GroupModelIn;
 import org.quicksplit.service.GroupClient;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,27 +29,24 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
 
     private EditText mTextName;
     private EditText mTextAdmin;
-    private ArrayList<String> members;
-    private ListView users;
     private Button createGroupButton;
+    ArrayList<String> users;
+    RecyclerView recycler;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
+        recycler = (RecyclerView) findViewById(R.id.RecyclerUsersId);
+        recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
+        users = new ArrayList<String>();
+
+        /*foreach(s in usersFfromService)
+            users.add(s.Name);*/
+
 
         mTextName = (EditText) findViewById(R.id.txtGroupName);
-        users = (ListView) findViewById(R.id.usersList);
-
-        ArrayList<String> aux = new ArrayList<>();
-        aux.add("Juan");
-        aux.add("Pedro");
-        aux.add("PEpe");
-
-        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,aux);
-
-        users.setAdapter(adapter);
 
         createGroupButton = (Button) findViewById(R.id.btn_register);
 
@@ -57,7 +58,6 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         GroupModelIn group = new GroupModelIn();
 
         group.setName(mTextName.getText().toString());
-
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class);
         Call<GroupModelIn> call = client.createGroup(group);

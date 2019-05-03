@@ -32,7 +32,6 @@ namespace QuickSplit.Application.Groups.Models
             {
                 Memberships.Add(m.GroupId);
             }
-
         }
 
     }

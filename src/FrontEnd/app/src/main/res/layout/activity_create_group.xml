@@ -13,25 +13,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Nombre del grupo" />
+        android:hint="Nombre del grupo"
+        android:layout_marginBottom="20dp"/>
 
-    <ListView
-        android:id="@+id/usersList"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/RecyclerUsersId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <CheckedTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Juan"
-        android:checkMark="?android:attr/listChoiceIndicatorMultiple"/>
-    <CheckedTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Sofia"
-        android:checkMark="?android:attr/listChoiceIndicatorMultiple"/>
+
     <Button
         android:id="@+id/btn_register"
         android:layout_width="match_parent"
