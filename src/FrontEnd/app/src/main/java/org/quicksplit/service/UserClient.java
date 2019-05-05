@@ -9,15 +9,16 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Url;
 
 public interface UserClient {
 
-    @GET
-    Call<User> getUser(@Url String userId);
+    @GET("users/{id}")
+    Call<User> getUser(@Path("id") String id);
 
-    @PUT
-    Call<User> editUser(@Url String userId, @Body User user);
+    @PUT("users/{id}")
+    Call<User> editUser(@Path("id") String id, @Body User user);
 
     @POST("users")
     Call<User> createAccount(@Body User userIn);

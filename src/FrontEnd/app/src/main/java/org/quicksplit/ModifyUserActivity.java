@@ -82,7 +82,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         userId = subscriptionMetaData.asString();
 
         UserClient client = ServiceGenerator.createService(UserClient.class, token);
-        Call<User> call = client.getUser("users/" + userId);
+        Call<User> call = client.getUser(userId);
 
         call.enqueue(new Callback<User>() {
             @Override
@@ -111,12 +111,29 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private void updateUserData() {
         User newUser = new User();
         newUser.setName(mTextName.getText().toString());
-        newUser.setName(mTextLastName.getText().toString());
-        newUser.setName(mTextEmail.getText().toString());
+        newUser.setLastName(mTextLastName.getText().toString());
+        newUser.setMail(mTextEmail.getText().toString());
         newUser.setPassword(mTextPassword.getText().toString());
 
         UserClient client = ServiceGenerator.createService(UserClient.class, token);
-        Call<User> call = client.editUser("users/ " + userId, user);
+        Call<User> call = client.editUser(userId, newUser);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(ModifyUserActivity.this, "Datos modificados correctamente.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ModifyUserActivity.this, "Error al intentar modificar datos.", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(ModifyUserActivity.this, "Error al modificar datos del usuario.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
