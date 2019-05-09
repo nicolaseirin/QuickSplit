@@ -30,9 +30,9 @@ namespace QuickSplit.Test.Application
                 Password = password
             };
             var handler = new PasswordIsValidQueryHandler(Context, PasswordHasher);
-            bool result =  handler.Handle(query, CancellationToken.None).Result;
+            var result =  handler.Handle(query, CancellationToken.None).Result;
 
-            Assert.True(result);
+            Assert.NotNull(result);
         }
         
         [Fact]
@@ -55,9 +55,9 @@ namespace QuickSplit.Test.Application
                 Password = "Password124"
             };
             var handler = new PasswordIsValidQueryHandler(Context, PasswordHasher);
-            bool result =  handler.Handle(query, CancellationToken.None).Result;
+            var result =  handler.Handle(query, CancellationToken.None).Result;
 
-            Assert.False(result);
+            Assert.Null(result);
         }
         
         [Fact]
@@ -72,9 +72,9 @@ namespace QuickSplit.Test.Application
                 Password = password
             };
             var handler = new PasswordIsValidQueryHandler(Context, PasswordHasher);
-            bool result =  handler.Handle(query, CancellationToken.None).Result;
+            var result =  handler.Handle(query, CancellationToken.None).Result;
 
-            Assert.False(result);
+            Assert.Null(result);
         }
     }
 }

@@ -37,7 +37,8 @@ namespace QuickSplit.Persistence
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<User>()
-                .HasAlternateKey(user => user.Mail);
+                .HasIndex(user => user.Mail)
+                .IsUnique();
         }
 
     }
