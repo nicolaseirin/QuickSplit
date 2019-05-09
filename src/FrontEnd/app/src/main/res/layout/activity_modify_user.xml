@@ -49,7 +49,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:text="@string/modifyUser"
-                        android:textSize="30dp" />
+                        android:textSize="25dp" />
 
                 </LinearLayout>
 
@@ -160,7 +160,7 @@
                     android:visibility="gone" />
 
                 <Button
-                    android:id="@+id/btn_register"
+                    android:id="@+id/btn_saveChanges"
                     style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -172,6 +172,5 @@
         </LinearLayout>
 
     </ScrollView>
-    >
 
 </LinearLayout>
