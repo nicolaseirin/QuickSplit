@@ -36,9 +36,10 @@ namespace QuickSplit.Application.Users.Commands.UpdateUser
             
             toUpdate.Name = request.Name ?? toUpdate.Name;
             toUpdate.LastName = request.LastName ?? toUpdate.LastName;
-            toUpdate.Password = request.Password ?? toUpdate.Password;
             toUpdate.Mail = request.Mail ?? toUpdate.Mail;
-
+            if (!string.IsNullOrEmpty(request.Password))
+                toUpdate.Password = request.Password;
+            
             await _context.SaveChangesAsync();
             
             return new UserModel(toUpdate);
