@@ -71,6 +71,7 @@ namespace QuickSplit.Tests.Integration
             HttpResponseMessage response = await _client.GetAsync(UsersUrl);
 
             response.EnsureSuccessStatusCode();
+            
             IEnumerable<UserModel> users =  await response.DeserializeCollection<UserModel>();
             
             Assert.Single(users);
@@ -113,7 +114,7 @@ namespace QuickSplit.Tests.Integration
             Assert.Equal(_robbStark.LastName, responseUser.LastName);
             Assert.Equal(_robbStark.Mail, responseUser.Mail);
         }
-        
+
         [Fact, Priority(5)]
         public async void VerifySecondUserAdded()
         {
@@ -128,7 +129,7 @@ namespace QuickSplit.Tests.Integration
         }
 
         [Fact, Priority(4)]
-        public async void ChangeAdminNameAndLastNameAdded()
+        public async void ChangeAdminNameAndLastName()
         {
             var update = new UpdateUserCommand()
             {
@@ -136,7 +137,7 @@ namespace QuickSplit.Tests.Integration
                 LastName = "NotAdmin"
             };
 
-            HttpResponseMessage response = await _client.PutObjectAsync(UsersUrl, update);
+            HttpResponseMessage response = await _client.PutObjectAsync(UsersUrl + "/1", update);
 
             response.EnsureSuccessStatusCode();
             UserModel user = await response.DeserializeObject<UserModel>();
@@ -146,14 +147,14 @@ namespace QuickSplit.Tests.Integration
         }
         
         [Fact, Priority(4)]
-        public async void ChangeAdminMailAndLastNameAdded()
+        public async void ChangeJohnSnowMail()
         {
             var update = new UpdateUserCommand()
             {
-                Mail = "admin123@gmail.com"
+                Mail = "jonny@gmail.com"
             };
 
-            HttpResponseMessage response = await _client.PutObjectAsync(UsersUrl, update);
+            HttpResponseMessage response = await _client.PutObjectAsync(UsersUrl + "/2", update);
 
             response.EnsureSuccessStatusCode();
             UserModel user = await response.DeserializeObject<UserModel>();
@@ -161,18 +162,21 @@ namespace QuickSplit.Tests.Integration
             Assert.Equal(update.Mail, user.Mail);
         }
         
-        [Fact, Priority(5)]
-        public async void VerifyAdminDataChanged()
+        
+        [Fact, Priority(4)]
+        public async void ChangeJohnSnowMailBackToOriginal()
         {
-            HttpResponseMessage response = await _client.GetAsync(UsersUrl);
+            var update = new UpdateUserCommand()
+            {
+                Mail = "snow@gmail.com"
+            };
+
+            HttpResponseMessage response = await _client.PutObjectAsync(UsersUrl + "/2", update);
 
             response.EnsureSuccessStatusCode();
-            IEnumerable<UserModel> users = await response.DeserializeCollection<UserModel>();
-            UserModel admin = users.Single(u => u.Id == 1);
+            UserModel user = await response.DeserializeObject<UserModel>();
 
-            Assert.Equal("NotAdmin", admin.Name);
-            Assert.Equal("NotAdmin", admin.LastName);
-            Assert.Equal("admin123@gmail.com", admin.Mail);
+            Assert.Equal(update.Mail, user.Mail);
         }
 
         [Fact, Priority(5)]
