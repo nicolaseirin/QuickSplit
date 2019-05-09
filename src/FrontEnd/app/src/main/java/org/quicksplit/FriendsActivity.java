@@ -7,16 +7,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.quicksplit.model.Token;
+import org.quicksplit.model.User;
 import org.quicksplit.service.UserClient;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FriendsActivity extends ListActivity {
 
+    private String token;
     private ListView listFriends;
 
     //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
@@ -39,6 +45,26 @@ public class FriendsActivity extends ListActivity {
 
     private void getUserListItems() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(FriendsActivity.this);
-        UserClient client = ServiceGenerator.createService(UserClient.class, "token");
+        token = preferences.getString("token", null);
+        UserClient client = ServiceGenerator.createService(UserClient.class, token);
+
+        Call<List<User>> call = client.getUsers();
+        call.enqueue(new Callback<List<User>>() {
+
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (response.isSuccessful()) {
+                    //storageTokenAccess(response);
+
+                } else {
+                    //showErrorMessage(response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Toast.makeText(FriendsActivity.this, "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
