@@ -54,7 +54,6 @@
 
                 </LinearLayout>
 
-
             </LinearLayout>
 
             <LinearLayout
@@ -62,54 +61,104 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/txtName"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/lblError_txtName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="@string/txt_name"
-                    android:inputType="textPersonName"
-                    app:layout_constraintBottom_toTopOf="@+id/txtLastName" />
+                    app:errorEnabled="true">
 
-                <EditText
-                    android:id="@+id/txtLastName"
+                    <EditText
+                        android:id="@+id/txtName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="@string/txt_name"
+                        android:inputType="textPersonName"
+                        app:layout_constraintBottom_toTopOf="@+id/txtLastName" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/lblError_txtLastName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="@string/txt_lastName"
-                    android:inputType="textPersonName"
-                    app:layout_constraintBottom_toTopOf="@+id/txtEmail"
-                    app:layout_constraintTop_toBottomOf="@+id/txtName" />
+                    app:errorEnabled="true">
 
-                <EditText
-                    android:id="@+id/txtEmail"
+                    <EditText
+                        android:id="@+id/txtLastName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="@string/txt_lastName"
+                        android:inputType="textPersonName"
+                        app:layout_constraintBottom_toTopOf="@+id/txtEmail"
+                        app:layout_constraintTop_toBottomOf="@+id/txtName" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/lblError_txtEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="@string/txt_email"
-                    android:inputType="textEmailAddress"
-                    app:layout_constraintBottom_toTopOf="@+id/txtPassword"
-                    app:layout_constraintTop_toBottomOf="@+id/txtLastName" />
+                    app:errorEnabled="true">
 
-                <EditText
-                    android:id="@+id/txtPassword"
+                    <EditText
+                        android:id="@+id/txtEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="@string/txt_email"
+                        android:inputType="textEmailAddress"
+                        app:layout_constraintBottom_toTopOf="@+id/txtPassword"
+                        app:layout_constraintTop_toBottomOf="@+id/txtLastName" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/lblError_txtPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="@string/txt_password"
-                    android:inputType="textPassword"
-                    app:layout_constraintBottom_toTopOf="@+id/txtRepeatPassword"
-                    app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
+                    app:errorEnabled="true">
 
+                    <EditText
+                        android:id="@+id/txtPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="@string/txt_password"
+                        android:inputType="textPassword"
+                        app:layout_constraintBottom_toTopOf="@+id/txtRepeatPassword"
+                        app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
 
-                <EditText
-                    android:id="@+id/txtRepeatPassword"
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/lblError_txtRepeatPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="@string/txt_repeatPassword"
-                    android:inputType="textPassword"
-                    app:layout_constraintTop_toBottomOf="@+id/txtPassword" />
+                    app:errorEnabled="true">
+
+                    <EditText
+                        android:id="@+id/txtRepeatPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="@string/txt_repeatPassword"
+                        android:inputType="textPassword"
+                        app:layout_constraintTop_toBottomOf="@+id/txtPassword" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/lbl_errorMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/btn_register"
@@ -121,13 +170,18 @@
                     app:layout_constraintTop_toBottomOf="@+id/txtRepeatPassword" />
 
                 <TextView
+                    android:id="@+id/txtView_login"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     android:gravity="center"
                     android:text="¿Ya registrado? Iniciar Sesión" />
+
             </LinearLayout>
+
         </LinearLayout>
+
     </ScrollView>
+
 </LinearLayout>

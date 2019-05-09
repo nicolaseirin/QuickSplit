@@ -17,9 +17,9 @@ namespace QuickSplit.Persistence
         public DbSet<Group> Groups { get; set; }
         public DbSet<Membership> Memberships { get; set; }
 
-        public void SaveChanges()
+        public async void SaveChanges()
         {
-            base.SaveChanges();
+            await SaveChangesAsync();
         }
         public async Task SaveChangesAsync()
         {
@@ -36,6 +36,8 @@ namespace QuickSplit.Persistence
                 .Property(group => group.Id)
                 .ValueGeneratedOnAdd();
 
+            modelBuilder.Entity<User>()
+                .HasAlternateKey(user => user.Mail);
         }
 
     }

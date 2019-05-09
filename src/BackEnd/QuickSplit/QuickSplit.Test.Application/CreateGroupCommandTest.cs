@@ -16,7 +16,7 @@ namespace QuickSplit.Test.Application
             var command = new CreateGroupCommand()
             {
                 Name = "La pedrera",
-                Admin = "John"
+                Admin = 1
             };
             var handler = new CreateGroupCommandHandler(Context);
 
@@ -30,7 +30,7 @@ namespace QuickSplit.Test.Application
         {
             var command = new CreateGroupCommand()
             {
-                Admin = "Doe",
+                Admin = 1,
             };
             var handler = new CreateGroupCommandHandler(Context);
 
@@ -43,7 +43,6 @@ namespace QuickSplit.Test.Application
             var command = new CreateGroupCommand()
             {
                 Name = "La pedrera",
-                Admin = null,
             };
             var handler = new CreateGroupCommandHandler(Context);
 

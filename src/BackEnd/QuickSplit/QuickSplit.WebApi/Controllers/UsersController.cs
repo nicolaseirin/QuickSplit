@@ -1,10 +1,13 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuickSplit.Application.Users.Commands.CreateUser;
 using QuickSplit.Application.Users.Commands.UpdateUser;
 using QuickSplit.Application.Users.Models;
+using QuickSplit.Application.Users.Queries.GetUserById;
 using QuickSplit.Application.Users.Queries.GetUsers;
 
 namespace QuickSplit.WebApi.Controllers
@@ -13,7 +16,8 @@ namespace QuickSplit.WebApi.Controllers
     [ApiController]
     public class UsersController : BaseController
     {
-        // GET api/values
+    
+        [Authorize]
         [HttpGet(Name = "GetUser")]
         public async Task<ActionResult<IEnumerable<UserModel>>> Get()
         {
@@ -21,14 +25,18 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(users);
         }
 
-        // GET api/values/5
+        [Authorize]
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public async Task<ActionResult<UserModel>> Get(int id)
         {
-            return "value";
+            UserModel user = await Mediator.Send(new GetUserByIdQuery()
+            {
+                Id = id
+            });
+            return Ok(user);
         }
 
-        // POST api/values
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand user)
         {
@@ -36,7 +44,7 @@ namespace QuickSplit.WebApi.Controllers
             return CreatedAtRoute("GetUser", created);
         }
 
-        // PUT api/values/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult<UserModel>> Put(int id, [FromBody] UpdateUserCommand command)
         {
@@ -45,7 +53,7 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(updated);
         }
 
-        // DELETE api/values/5
+        [Authorize]
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGenerator {
 
-    private static final String BASE_URL = "http://10.0.2.2:5000/api/";
+    private static final String BASE_URL = "http://192.168.1.4:5000/api/";
 
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
@@ -26,5 +26,26 @@ public class ServiceGenerator {
 
 
         return retrofit.create(serviceClass);
+    }
+
+    public static <S> S createService(
+            Class<S> serviceClass, final String authToken) {
+        if (!authToken.isEmpty()) {
+            AuthenticationInterceptor interceptor =
+                    new AuthenticationInterceptor(authToken);
+
+            if (!httpClient.interceptors().contains(interceptor)) {
+                httpClient.addInterceptor(interceptor);
+
+                builder.client(httpClient.build());
+                retrofit = builder.build();
+            }
+        }
+
+        return retrofit.create(serviceClass);
+    }
+
+    public static Retrofit retrofit() {
+        return retrofit;
     }
 }

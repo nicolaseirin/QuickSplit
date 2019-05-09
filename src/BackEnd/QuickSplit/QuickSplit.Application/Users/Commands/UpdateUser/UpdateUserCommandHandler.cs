@@ -23,7 +23,6 @@ namespace QuickSplit.Application.Users.Commands.UpdateUser
             
             toUpdate.Name = request.Name ?? toUpdate.Name;
             toUpdate.LastName = request.LastName ?? toUpdate.LastName;
-            toUpdate.Telephone = request.Telephone ?? toUpdate.Telephone;
             toUpdate.Password = request.Password ?? toUpdate.Password;
             toUpdate.Mail = request.Mail ?? toUpdate.Mail;
 

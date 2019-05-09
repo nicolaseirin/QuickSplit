@@ -14,7 +14,10 @@
         android:theme="@style/AppTheme">
         <activity android:name=".CreateGroupActivity"></activity>
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"/>
+        <activity android:name=".LoginActivity" />
+
+        <activity android:name=".MainEmptyActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
