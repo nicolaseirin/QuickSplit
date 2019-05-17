@@ -51,19 +51,22 @@ namespace QuickSplit.Application.Groups.Commands.CreateGroup
             return new GroupModel(toCreate);
         }
 
-        private void SetMemberships(int groupId, ICollection<int> memberships)
+        private async void SetMemberships(int groupId, ICollection<int> memberships)
         {
             Group groupToSet = _context.Groups.First(g => g.Id == groupId);
             foreach (int userId in memberships)
             {
-                Domain.Membership toCreate = new Domain.Membership()
+                Domain.Membership newMembership = new Domain.Membership()
                 {
                     UserId = userId,
                     GroupId = groupId,
                     User = _context.Users.First(u => u.Id == userId),
                     Group = groupToSet
                 };
+                groupToSet.Memberships.Add(newMembership);
             }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

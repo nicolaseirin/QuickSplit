@@ -41,7 +41,7 @@ namespace QuickSplit.Persistence
                 .IsUnique();
 
             modelBuilder.Entity<Membership>()
-                .Property(membership => new { membership.UserId, membership.GroupId });
+                .HasKey(membership => new { membership.UserId, membership.GroupId });
         }
 
     }

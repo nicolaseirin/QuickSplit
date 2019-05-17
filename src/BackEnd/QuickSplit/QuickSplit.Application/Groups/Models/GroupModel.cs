@@ -23,6 +23,7 @@ namespace QuickSplit.Application.Groups.Models
             Id = group.Id;
             Name = group.Name;
             Admin = group.Admin;
+            Memberships = new List<int>();
             SetMemberships(group.Memberships);
         }
 

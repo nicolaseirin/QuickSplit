@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using QuickSplit.Application.Groups.Commands.CreateGroup;
 using QuickSplit.Application.Groups.Models;
@@ -16,7 +17,8 @@ namespace QuickSplit.Test.Application
             var command = new CreateGroupCommand()
             {
                 Name = "La pedrera",
-                Admin = 1
+                Admin = 1,
+                Memberships = new List<int>()
             };
             var handler = new CreateGroupCommandHandler(Context);
 
@@ -37,17 +39,6 @@ namespace QuickSplit.Test.Application
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
 
-        [Fact]
-        public async void CreategroupWithoutAdmin()
-        {
-            var command = new CreateGroupCommand()
-            {
-                Name = "La pedrera",
-            };
-            var handler = new CreateGroupCommandHandler(Context);
-
-            Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
-        }
     }
 }
 
