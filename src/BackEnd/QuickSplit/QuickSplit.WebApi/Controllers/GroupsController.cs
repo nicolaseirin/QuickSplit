@@ -11,11 +11,11 @@ namespace QuickSplit.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GroupController: BaseController
+    public class GroupsController: BaseController
     {
         //POST
         [HttpPost]
-        public async Task<ActionResult<GroupModel>> CreateGroup(int id, [FromBody] CreateGroupCommand command)
+        public async Task<ActionResult<GroupModel>> CreateGroup([FromBody] CreateGroupCommand command)
         {
             GroupModel newGroup = await Mediator.Send(command);
             return Ok(newGroup);

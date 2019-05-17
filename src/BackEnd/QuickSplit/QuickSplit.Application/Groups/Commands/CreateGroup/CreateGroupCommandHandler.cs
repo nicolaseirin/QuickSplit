@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ using MediatR;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Interfaces;
+using QuickSplit.Application.Membership.Queries.GetMemberships;
 using QuickSplit.Domain;
 
 namespace QuickSplit.Application.Groups.Commands.CreateGroup
@@ -38,35 +40,34 @@ namespace QuickSplit.Application.Groups.Commands.CreateGroup
 
         private async Task<GroupModel> TryToHandle(CreateGroupCommand request)
         {
-            Group toCreate = new Group()
+            User admin = await _context.Users.FindAsync(request.Admin) ?? throw new InvalidCommandException($"El usuario administrador con id {request.Admin} no existe");
+            
+            var toCreate = new Group()
             {
                 Name = request.Name,
-                Admin = request.Admin,
+                Admin = await _context.Users.FindAsync(request.Admin),
             };
-
             await _context.Groups.AddAsync(toCreate);
             await _context.SaveChangesAsync();
 
-            SetMemberships(toCreate.Id, request.Memberships);
+            Domain.Membership[] memberships = await Task.WhenAll(request.Memberships.Select(i => GetMemberships(i, toCreate)));
+            toCreate.Memberships = memberships;
+            await _context.SaveChangesAsync();
+
             return new GroupModel(toCreate);
         }
 
-        private async void SetMemberships(int groupId, ICollection<int> memberships)
+        private async Task<Domain.Membership> GetMemberships(int userId, Group group)
         {
-            Group groupToSet = _context.Groups.First(g => g.Id == groupId);
-            foreach (int userId in memberships)
-            {
-                Domain.Membership newMembership = new Domain.Membership()
-                {
-                    UserId = userId,
-                    GroupId = groupId,
-                    User = _context.Users.First(u => u.Id == userId),
-                    Group = groupToSet
-                };
-                groupToSet.Memberships.Add(newMembership);
-            }
+            User user = await _context.Users.FindAsync(userId) ?? throw new InvalidCommandException($"Miembro del grupo con id {userId} no existe");;
 
-            await _context.SaveChangesAsync();
+            return new Domain.Membership()
+            {
+                User = user,
+                UserId = user.Id,
+                Group = group,
+                GroupId = group.Id
+            };
         }
     }
 }

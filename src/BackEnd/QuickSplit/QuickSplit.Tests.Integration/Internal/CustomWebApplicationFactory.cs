@@ -14,8 +14,6 @@ namespace QuickSplit.Tests.Integration.Internal
 {
     public class CustomWebApplicationFactory : WebApplicationFactory<Startup>
     {
-        // Pone aca todas las tablas de la base
-        private readonly string[] _tables = new[] {"Users"};
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -32,8 +30,8 @@ namespace QuickSplit.Tests.Integration.Internal
                 // database for testing.
                 services.AddDbContext<QuickSplitContext>(options =>
                 {
-                    //options.UseSqlServer("Server=localhost;Database=QuickSplitDbTesting;Trusted_Connection=False;User ID=QuickSplit;Password=QuickSplit123;");
-                    options.UseSqlServer("Server=DESKTOP-DN1E4B9\\SQLSERVER_R14;Database=QuickSplitDbTest;Trusted_Connection=True;");
+                    options.UseSqlServer("Server=localhost;Database=QuickSplitDbTesting;Trusted_Connection=False;User ID=QuickSplit;Password=QuickSplit123;");
+                    //options.UseSqlServer("Server=DESKTOP-DN1E4B9\\SQLSERVER_R14;Database=QuickSplitDbTest;Trusted_Connection=True;");
                     options.UseInternalServiceProvider(serviceProvider);
                 });
 
@@ -50,11 +48,8 @@ namespace QuickSplit.Tests.Integration.Internal
                     var db = scopedServices.GetRequiredService<QuickSplitContext>();
 
                     // Resets Database
+                    db.Database.EnsureDeleted();
                     db.Database.EnsureCreated();
-                    foreach (string table in _tables)
-                    {
-                        db.Database.ExecuteSqlCommand(@"TRUNCATE TABLE dbo." + table);
-                    }
                     db.Database.ExecuteSqlCommand(@"INSERT INTO dbo.Users (Name, LastName, Mail, Password) VALUES ('admin', 'admin', 'admin@gmail.com','DVOZUIQnznlVbNpxkYAgwejRW1M=')");
                 }
             });

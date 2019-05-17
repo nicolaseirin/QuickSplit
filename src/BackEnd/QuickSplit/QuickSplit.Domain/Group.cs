@@ -7,7 +7,6 @@ namespace QuickSplit.Domain
     public class Group
     {
         private string name;
-        private int admin;
 
         public ICollection<Membership> Memberships { get; set; }
         public int Id { get; set; }
@@ -22,14 +21,7 @@ namespace QuickSplit.Domain
             }
         }
 
-        public int Admin
-        {
-            get => admin;
-            set
-            {
-                admin = value;
-            }
-        }
+        public User Admin { get; set; }
 
         public Group()
         {

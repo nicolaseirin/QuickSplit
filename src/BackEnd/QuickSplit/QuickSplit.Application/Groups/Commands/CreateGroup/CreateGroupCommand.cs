@@ -13,7 +13,7 @@ namespace QuickSplit.Application.Groups.Commands.CreateGroup
 
         public int Admin { get; set; }
 
-        public ICollection<int> Memberships {get; set;}
+        public ICollection<int> Memberships {get; set;} = new List<int>();
     }
 }
 
