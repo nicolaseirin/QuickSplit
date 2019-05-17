@@ -15,7 +15,7 @@ namespace QuickSplit.WebApi.Controllers
     {
         //POST
         [HttpPost]
-        public async Task<ActionResult<GroupModel>> Put(int id, [FromBody] CreateGroupCommand command)
+        public async Task<ActionResult<GroupModel>> CreateGroup(int id, [FromBody] CreateGroupCommand command)
         {
             GroupModel newGroup = await Mediator.Send(command);
             return Ok(newGroup);

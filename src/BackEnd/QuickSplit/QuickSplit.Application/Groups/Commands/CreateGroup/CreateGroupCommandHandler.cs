@@ -40,26 +40,30 @@ namespace QuickSplit.Application.Groups.Commands.CreateGroup
         {
             Group toCreate = new Group()
             {
-                Id = request.Id,
                 Name = request.Name,
                 Admin = request.Admin,
-                Memberships = GetMemberships(request.Memberships)
             };
 
             await _context.Groups.AddAsync(toCreate);
             await _context.SaveChangesAsync();
 
+            SetMemberships(toCreate.Id, request.Memberships);
             return new GroupModel(toCreate);
         }
 
-        private ICollection<Domain.Membership> GetMemberships(ICollection<int> memberships)
+        private void SetMemberships(int groupId, ICollection<int> memberships)
         {
-            ICollection<Domain.Membership> toReturn = new List<Domain.Membership>();
+            Group groupToSet = _context.Groups.First(g => g.Id == groupId);
             foreach (int userId in memberships)
             {
-                toReturn.Concat(_context.Memberships.Where(me => me.UserId == userId));
+                Domain.Membership toCreate = new Domain.Membership()
+                {
+                    UserId = userId,
+                    GroupId = groupId,
+                    User = _context.Users.First(u => u.Id == userId),
+                    Group = groupToSet
+                };
             }
-            return toReturn;
         }
     }
 }

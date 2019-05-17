@@ -20,7 +20,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        Intent modifyUser = new Intent(this, ModifyUserActivity.class);
-        startActivity(modifyUser);
+        //Intent modifyUser = new Intent(this, ModifyUserActivity.class);
+        //startActivity(modifyUser);
+        Intent createGroup = new Intent(this, CreateGroupActivity.class);
+        startActivity(createGroup);
     }
 }

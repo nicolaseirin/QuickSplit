@@ -9,8 +9,6 @@ namespace QuickSplit.Application.Groups.Commands.CreateGroup
 {
     public class CreateGroupCommand : IRequest<GroupModel>
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
         public int Admin { get; set; }

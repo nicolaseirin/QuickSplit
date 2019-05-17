@@ -39,6 +39,9 @@ namespace QuickSplit.Persistence
             modelBuilder.Entity<User>()
                 .HasIndex(user => user.Mail)
                 .IsUnique();
+
+            modelBuilder.Entity<Membership>()
+                .Property(membership => new { membership.UserId, membership.GroupId });
         }
 
     }
