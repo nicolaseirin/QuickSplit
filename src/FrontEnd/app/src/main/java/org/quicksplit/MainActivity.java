@@ -1,11 +1,5 @@
 package org.quicksplit;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -15,7 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity {
 
     private ActionBar toolbar;
 
@@ -23,11 +17,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
 
-
-    @Override
-    public void onClick(View v) {
         toolbar = getSupportActionBar();
 
         //load the purchases fragment by default
@@ -78,5 +68,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         transaction.addToBackStack(null);
         transaction.commit();
     }
-
 }
