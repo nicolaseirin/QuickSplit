@@ -18,6 +18,8 @@
     <string name="title_friends">Amigos</string>
     <string name="title_groups">Grupos</string>
     <string name="title_settings">Preferencias</string>
+    <string name="title_deleteAccount">Borrar Cuenta</string>
+    <string name="title_logout">Cerrar Sesión</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

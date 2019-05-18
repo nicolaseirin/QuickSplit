@@ -127,9 +127,10 @@ public class FriendsFragment extends Fragment {
     private void getUserListItems() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         token = preferences.getString("token", null);
-        UserClient client = ServiceGenerator.createService(UserClient.class, token);
 
+        UserClient client = ServiceGenerator.createService(UserClient.class, token);
         Call<List<User>> call = client.getUsers();
+
         call.enqueue(new Callback<List<User>>() {
 
             @Override
