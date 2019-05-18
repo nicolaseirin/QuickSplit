@@ -11,13 +11,14 @@
     <string name="saveChanges">Guardar Cambios</string>
     <string name="lbl_register">Registrarse</string>
     <string name="lbl_login">Iniciar Sesión</string>
-
     <string name="element_text">Element</string>
     <string name="grid_layout_manager">Grid Layout Manager</string>
     <string name="linear_layout_manager">Linear Layout Manager</string>
-    <string name="title_activity_main_botton_navegation">MainBottonNavegationActivity</string>
-    <string name="title_home">Compras</string>
-    <string name="title_dashboard">Amigos</string>
-    <string name="title_notifications">Grupos</string>
+    <string name="title_purchases">Compras</string>
+    <string name="title_friends">Amigos</string>
+    <string name="title_groups">Grupos</string>
     <string name="title_settings">Preferencias</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

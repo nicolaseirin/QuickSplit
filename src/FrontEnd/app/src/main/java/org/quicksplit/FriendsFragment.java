@@ -1,12 +1,24 @@
 package org.quicksplit;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import org.quicksplit.model.User;
+import org.quicksplit.service.UserClient;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -18,6 +30,10 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class FriendsFragment extends Fragment {
+
+    private String token;
+    private List<User> users;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -58,6 +74,8 @@ public class FriendsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        getUserListItems();
     }
 
     @Override
@@ -77,12 +95,12 @@ public class FriendsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
+        /*if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
-        }
+        }*/
     }
 
     @Override
@@ -104,5 +122,29 @@ public class FriendsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void getUserListItems() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        token = preferences.getString("token", null);
+        UserClient client = ServiceGenerator.createService(UserClient.class, token);
+
+        Call<List<User>> call = client.getUsers();
+        call.enqueue(new Callback<List<User>>() {
+
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (response.isSuccessful()) {
+                    users = response.body();
+                } else {
+                    Toast.makeText(getActivity(), "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Toast.makeText(getActivity(), "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

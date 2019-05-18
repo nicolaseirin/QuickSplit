@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main_botton_navegation"></activity>
+            android:label="@string/app_name"></activity>
         <activity android:name=".UserRecyclerViewFragment" />
         <activity android:name=".FriendsActivity" />
         <activity android:name=".LoginActivity" />
