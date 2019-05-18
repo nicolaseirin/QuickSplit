@@ -1,45 +1,30 @@
 package org.quicksplit;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
-import org.quicksplit.model.Token;
 import org.quicksplit.model.User;
 import org.quicksplit.service.UserClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FriendsActivity extends ListActivity {
+public class FriendsActivity extends Activity {
 
     private String token;
-    private ListView listFriends;
-
-    //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
-    ArrayList<String> listItems = new ArrayList<String>();
-
-    //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
-    ArrayAdapter<String> adapter;
-
-    //RECORDING HOW MANY TIMES THE BUTTON HAS BEEN CLICKED
-    int clickCounter = 0;
+    private List<User> users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
 
-        listFriends = (ListView) findViewById(R.id.listFriends);
         getUserListItems();
     }
 
@@ -54,10 +39,9 @@ public class FriendsActivity extends ListActivity {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
-                    //storageTokenAccess(response);
-
+                    users = response.body();
                 } else {
-                    //showErrorMessage(response);
+                    Toast.makeText(FriendsActivity.this, "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
                 }
             }
 
