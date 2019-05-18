@@ -13,14 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainBottonNavegationActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_main_botton_navegation"></activity>
         <activity android:name=".UserRecyclerViewFragment" />
         <activity android:name=".FriendsActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".ModifyUserActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".MainActivity" />
         <activity android:name=".MainEmptyActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
