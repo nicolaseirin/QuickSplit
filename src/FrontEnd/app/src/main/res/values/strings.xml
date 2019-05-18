@@ -19,4 +19,5 @@
     <string name="title_home">Compras</string>
     <string name="title_dashboard">Amigos</string>
     <string name="title_notifications">Grupos</string>
+    <string name="title_settings">Preferencias</string>
 </resources>
