@@ -14,9 +14,6 @@ namespace QuickSplit.Tests.Integration.Internal
 {
     public class CustomWebApplicationFactory : WebApplicationFactory<Startup>
     {
-        // Pone aca todas las tablas de la base
-        private readonly string[] _tables = new[] {"Users"};
-
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(services =>
@@ -49,11 +46,13 @@ namespace QuickSplit.Tests.Integration.Internal
                     var db = scopedServices.GetRequiredService<QuickSplitContext>();
 
                     // Resets Database
+                    db.Database.EnsureDeleted();
                     db.Database.EnsureCreated();
-                    foreach (string table in _tables)
-                    {
-                        db.Database.ExecuteSqlCommand(@"TRUNCATE TABLE dbo." + table);
-                    }
+                    //db.Database.ExecuteSqlCommand(WipeDbScript);
+//                    foreach (string table in _tables)
+//                    {
+//                        db.Database.ExecuteSqlCommand(@"TRUNCATE TABLE dbo." + table);
+//                    }
                     db.Database.ExecuteSqlCommand(@"INSERT INTO dbo.Users (Name, LastName, Mail, Password) VALUES ('admin', 'admin', 'admin@gmail.com','DVOZUIQnznlVbNpxkYAgwejRW1M=')");
                 }
             });
@@ -63,5 +62,27 @@ namespace QuickSplit.Tests.Integration.Internal
         {
             options.Filters.Add(new ExceptionFilter());
         }
+        
+        private const string WipeDbScript = @"
+            SET QUOTED_IDENTIFIER ON;
+            EXEC sp_MSforeachtable 'SET QUOTED_IDENTIFIER ON; ALTER TABLE ? NOCHECK CONSTRAINT ALL'
+            EXEC sp_MSforeachtable 'SET QUOTED_IDENTIFIER ON; ALTER TABLE ? DISABLE TRIGGER ALL'
+            EXEC sp_MSforeachtable 'SET QUOTED_IDENTIFIER ON; DELETE FROM ?'
+            EXEC sp_MSforeachtable 'SET QUOTED_IDENTIFIER ON; ALTER TABLE ? CHECK CONSTRAINT ALL'
+            EXEC sp_MSforeachtable 'SET QUOTED_IDENTIFIER ON; ALTER TABLE ? ENABLE TRIGGER ALL'
+            EXEC sp_MSforeachtable 'SET QUOTED_IDENTIFIER ON';
+
+            IF NOT EXISTS (
+                    SELECT
+                        *
+                    FROM
+                        SYS.IDENTITY_COLUMNS
+                            JOIN SYS.TABLES ON SYS.IDENTITY_COLUMNS.Object_ID = SYS.TABLES.Object_ID
+                    WHERE
+                            SYS.TABLES.Object_ID = OBJECT_ID('?') AND SYS.IDENTITY_COLUMNS.Last_Value IS NULL
+                )
+                AND OBJECTPROPERTY( OBJECT_ID('?'), 'TableHasIdentity' ) = 1
+
+                DBCC CHECKIDENT ('?', RESEED, 0) WITH NO_INFOMSGS;";
     }
 }

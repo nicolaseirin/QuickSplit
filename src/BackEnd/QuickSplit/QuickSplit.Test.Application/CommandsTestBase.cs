@@ -9,12 +9,13 @@ namespace QuickSplit.Test.Application
         protected IQuickSplitContext Context;
         protected IPasswordHasher PasswordHasher;
         protected DbSet<User> Users;
-        
+        protected DbSet<Friendship> Friendships;
 
         protected CommandsTestBase()
         {
             Context = TestingFactory.CreateInMemoryContext();
             Users = Context.Users;
+            Friendships = Context.Friendships;
             PasswordHasher = new PasswordHasher.PasswordHasher();
         }
     }
