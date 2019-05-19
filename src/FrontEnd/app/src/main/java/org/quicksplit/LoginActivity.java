@@ -92,6 +92,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("token", token);
         editor.commit();
+
+        redirect();
     }
 
     private void redirect() {

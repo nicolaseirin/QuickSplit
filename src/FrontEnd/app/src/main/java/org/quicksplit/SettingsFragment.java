@@ -13,6 +13,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.auth0.android.jwt.Claim;
+import com.auth0.android.jwt.JWT;
+
+import org.quicksplit.model.User;
+import org.quicksplit.service.UserClient;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -25,7 +36,11 @@ import android.widget.Button;
  */
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
+    private String token;
+    private String userId;
+
     private Button mButtonModifyData;
+    private Button mButtonDeleteAccount;
     private Button mButtonLogout;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -79,6 +94,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         mButtonModifyData = (Button) view.findViewById(R.id.btn_modify);
         mButtonModifyData.setOnClickListener(this);
 
+        mButtonDeleteAccount = (Button) view.findViewById(R.id.btn_delete);
+        mButtonDeleteAccount.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                tryDeleteAccount();
+            }
+        });
+
         mButtonLogout = (Button) view.findViewById(R.id.btn_logout);
         mButtonLogout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -118,6 +140,61 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         editor.remove("token");
         editor.commit();
 
+        redirectToLogin();
+    }
+
+
+    private void tryDeleteAccount() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Yes button clicked
+                        deleteAccount();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("¿Quiere borrar su cuenta? Esta acción es inrreversible y se perderán todos los datos.").setPositiveButton("Sí", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+    }
+
+    private void deleteAccount() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        token = preferences.getString("token", null);
+
+        JWT parsedJWT = new JWT(token);
+        Claim subscriptionMetaData = parsedJWT.getClaim("Id");
+        userId = subscriptionMetaData.asString();
+
+        UserClient client = ServiceGenerator.createService(UserClient.class, token);
+        Call<Void> call = client.deleteUser(userId);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    redirectToLogin();
+                } else {
+                    Toast.makeText(getActivity(), "Error al solicitar el borrado de la cuenta.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(getActivity(), "Error en la conexión al borrar la cuenta.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void redirectToLogin() {
         Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
         loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
