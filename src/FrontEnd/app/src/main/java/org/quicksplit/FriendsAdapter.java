@@ -20,7 +20,8 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
 
     public interface OnItemClickListener {
         void onItemClick(int i);
-        void onDeleteClick(int i);
+
+        void onDeleteClick(User user);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -31,7 +32,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
     @Override
     public FriendsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_friend, viewGroup, false);
-        FriendsViewHolder friendsViewHolder = new FriendsViewHolder(view, mListener);
+        FriendsViewHolder friendsViewHolder = new FriendsViewHolder(view, mListener, users);
         return friendsViewHolder;
     }
 
@@ -58,7 +59,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
         public TextView mTextViewEmail;
         public ImageView mImageViewDelete;
 
-        public FriendsViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
+        public FriendsViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<User> users) {
             super(itemView);
 
             mImageView = itemView.findViewById(R.id.imageView);
@@ -84,7 +85,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
                     if (listener != null) {
                         int i = getAdapterPosition();
                         if (i != RecyclerView.NO_POSITION) {
-                            listener.onDeleteClick(i);
+                            listener.onDeleteClick(users.get(i));
                         }
                     }
                 }

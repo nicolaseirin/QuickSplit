@@ -14,6 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.auth0.android.jwt.Claim;
+import com.auth0.android.jwt.JWT;
+
 import org.quicksplit.model.User;
 import org.quicksplit.service.UserClient;
 
@@ -36,6 +39,7 @@ import retrofit2.Response;
 public class FriendsFragment extends Fragment {
 
     private String token;
+    private String userId;
     private List<User> users;
     private RecyclerView mRecyclerViewFriends;
     private FriendsAdapter mRecycleViewAdapter;
@@ -179,11 +183,43 @@ public class FriendsFragment extends Fragment {
             }
 
             @Override
-            public void onDeleteClick(int i) {
-                //TODO: Delete friend here, and then refresh the firend list
+            public void onDeleteClick(User user) {
+                //TODO: Delete friend here, and then refresh the friend list
+
+                JWT parsedJWT = new JWT(token);
+                Claim subscriptionMetaData = parsedJWT.getClaim("Id");
+                userId = subscriptionMetaData.asString();
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                token = preferences.getString("token", null);
+
+                UserClient client = ServiceGenerator.createService(UserClient.class, token);
+                //TODO: Pass the real idFriend
+                Call<Void> call = client.deleteFriend(userId, "1");
+
+                final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+
+                call.enqueue(new Callback<Void>() {
+
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            //Todo: Refresh recycler view here
+                            loading.dismiss();
+                        } else {
+                            loading.dismiss();
+                            Toast.makeText(getActivity(), "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        loading.dismiss();
+                        Toast.makeText(getActivity(), "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
         });
-
-
     }
 }
