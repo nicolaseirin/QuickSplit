@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = getSupportActionBar();
 
-        //load the purchases fragment by default
         toolbar.setTitle(R.string.title_purchases);
         loadFragment(new PurchasesFragment());
 

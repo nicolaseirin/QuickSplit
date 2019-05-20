@@ -1,5 +1,6 @@
 package org.quicksplit;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -177,18 +178,23 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         UserClient client = ServiceGenerator.createService(UserClient.class, token);
         Call<Void> call = client.deleteUser(userId);
 
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Recuperando datos", "Espere...", false, false);
+
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    redirectToLogin();
+                    logout();
+                    loading.dismiss();
                 } else {
+                    loading.dismiss();
                     Toast.makeText(getActivity(), "Error al solicitar el borrado de la cuenta.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
+                loading.dismiss();
                 Toast.makeText(getActivity(), "Error en la conexión al borrar la cuenta.", Toast.LENGTH_SHORT).show();
             }
         });

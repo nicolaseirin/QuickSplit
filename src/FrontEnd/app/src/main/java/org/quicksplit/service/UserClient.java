@@ -34,4 +34,7 @@ public interface UserClient {
 
     @DELETE("users/{id}")
     Call<Void> deleteUser(@Path("id") String id);
+
+    @POST("users/{id}/friends")
+    Call<List<User>> getFriends(@Path("id") String id);
 }

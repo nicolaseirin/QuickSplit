@@ -1,5 +1,6 @@
 package org.quicksplit;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -67,20 +68,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         UserClient client = ServiceGenerator.createService(UserClient.class);
         Call<Token> call = client.login(login);
+
+        final ProgressDialog loading = ProgressDialog.show(this, "Recuperando datos", "Espere...", false, false);
+
         call.enqueue(new Callback<Token>() {
 
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
                 if (response.isSuccessful()) {
                     storageTokenAccess(response);
+                    loading.dismiss();
 
                 } else {
+                    loading.dismiss();
                     showErrorMessage(response);
                 }
             }
 
             @Override
             public void onFailure(Call<Token> call, Throwable t) {
+                loading.dismiss();
                 Toast.makeText(LoginActivity.this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
             }
         });

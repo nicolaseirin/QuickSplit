@@ -1,5 +1,6 @@
 package org.quicksplit;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -37,7 +38,7 @@ public class FriendsFragment extends Fragment {
     private String token;
     private List<User> users;
     private RecyclerView mRecyclerViewFriends;
-    private RecyclerView.Adapter mRecycleViewAdapter;
+    private FriendsAdapter mRecycleViewAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -140,26 +141,49 @@ public class FriendsFragment extends Fragment {
         UserClient client = ServiceGenerator.createService(UserClient.class, token);
         Call<List<User>> call = client.getUsers();
 
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+
         call.enqueue(new Callback<List<User>>() {
 
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
                     users = response.body();
-                    mRecyclerViewFriends.setHasFixedSize(true);
-                    mRecyclerViewManager = new LinearLayoutManager(getContext());
-                    mRecycleViewAdapter = new FriendsAdapter(users);
-                    mRecyclerViewFriends.setLayoutManager(mRecyclerViewManager);
-                    mRecyclerViewFriends.setAdapter(mRecycleViewAdapter);
+                    buildRecyclerViewAdapter();
+                    loading.dismiss();
                 } else {
+                    loading.dismiss();
                     Toast.makeText(getActivity(), "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
+                loading.dismiss();
                 Toast.makeText(getActivity(), "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void buildRecyclerViewAdapter() {
+        mRecyclerViewFriends.setHasFixedSize(true);
+        mRecyclerViewManager = new LinearLayoutManager(getContext());
+        mRecycleViewAdapter = new FriendsAdapter(users);
+        mRecyclerViewFriends.setLayoutManager(mRecyclerViewManager);
+        mRecyclerViewFriends.setAdapter(mRecycleViewAdapter);
+
+        mRecycleViewAdapter.setOnItemClickListener(new FriendsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int i) {
+
+            }
+
+            @Override
+            public void onDeleteClick(int i) {
+                //TODO: Delete friend here, and then refresh the firend list
+            }
+        });
+
+
     }
 }
