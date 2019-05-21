@@ -1,4 +1,4 @@
-package org.quicksplit;
+package org.quicksplit.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

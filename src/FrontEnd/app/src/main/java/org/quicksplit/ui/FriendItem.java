@@ -1,4 +1,4 @@
-package org.quicksplit;
+package org.quicksplit.ui;
 
 public class FriendItem {
 

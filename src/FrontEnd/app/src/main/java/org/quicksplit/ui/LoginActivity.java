@@ -1,4 +1,4 @@
-package org.quicksplit;
+package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -13,8 +13,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.quicksplit.model.Login;
-import org.quicksplit.model.Token;
+import org.quicksplit.R;
+import org.quicksplit.ServiceGenerator;
+import org.quicksplit.models.Login;
+import org.quicksplit.models.Token;
 import org.quicksplit.service.UserClient;
 
 import retrofit2.Call;

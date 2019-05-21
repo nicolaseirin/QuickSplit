@@ -1,4 +1,4 @@
-package org.quicksplit;
+package org.quicksplit.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.quicksplit.model.User;
+import org.quicksplit.R;
+import org.quicksplit.models.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsViewHolder> {

@@ -1,4 +1,4 @@
-package org.quicksplit;
+package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,10 +17,12 @@ import android.widget.Toast;
 import com.auth0.android.jwt.Claim;
 import com.auth0.android.jwt.JWT;
 
-import org.quicksplit.model.User;
+import org.quicksplit.R;
+import org.quicksplit.ServiceGenerator;
+import org.quicksplit.adapters.FriendsAdapter;
+import org.quicksplit.models.User;
 import org.quicksplit.service.UserClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -195,7 +197,7 @@ public class FriendsFragment extends Fragment {
 
                 UserClient client = ServiceGenerator.createService(UserClient.class, token);
                 //TODO: Pass the real idFriend
-                Call<Void> call = client.deleteFriend(userId, "1");
+                Call<Void> call = client.deleteFriend(userId, user.getId());
 
                 final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
 
@@ -208,14 +210,14 @@ public class FriendsFragment extends Fragment {
                             loading.dismiss();
                         } else {
                             loading.dismiss();
-                            Toast.makeText(getActivity(), "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Error al borrar usuario", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
                         loading.dismiss();
-                        Toast.makeText(getActivity(), "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Error en la comunicación al borrar usuario", Toast.LENGTH_SHORT).show();
                     }
                 });
 

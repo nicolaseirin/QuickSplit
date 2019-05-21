@@ -1,4 +1,4 @@
-package org.quicksplit;
+package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -19,7 +19,8 @@ import android.widget.Toast;
 import com.auth0.android.jwt.Claim;
 import com.auth0.android.jwt.JWT;
 
-import org.quicksplit.model.User;
+import org.quicksplit.R;
+import org.quicksplit.ServiceGenerator;
 import org.quicksplit.service.UserClient;
 
 import retrofit2.Call;

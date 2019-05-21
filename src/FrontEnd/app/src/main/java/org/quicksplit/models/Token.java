@@ -1,4 +1,4 @@
-package org.quicksplit.model;
+package org.quicksplit.models;
 
 public class Token{
 

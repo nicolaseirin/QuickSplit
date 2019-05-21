@@ -1,8 +1,8 @@
 package org.quicksplit.service;
 
-import org.quicksplit.model.Login;
-import org.quicksplit.model.Token;
-import org.quicksplit.model.User;
+import org.quicksplit.models.Login;
+import org.quicksplit.models.Token;
+import org.quicksplit.models.User;
 
 import java.util.List;
 
@@ -13,7 +13,6 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
-import retrofit2.http.Url;
 
 public interface UserClient {
 
