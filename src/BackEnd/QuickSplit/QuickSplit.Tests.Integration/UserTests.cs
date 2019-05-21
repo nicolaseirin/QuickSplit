@@ -7,10 +7,7 @@ using QuickSplit.Application.Users.Commands.AddFriendCommand;
 using QuickSplit.Application.Users.Commands.CreateUser;
 using QuickSplit.Application.Users.Commands.UpdateUser;
 using QuickSplit.Application.Users.Models;
-<<<<<<< HEAD
-=======
 using QuickSplit.Application.Users.Queries.GetFriends;
->>>>>>> feature/AddFriends
 using QuickSplit.Application.Users.Queries.GetPassword;
 using QuickSplit.Tests.Integration.Internal;
 using QuickSplit.WebApi;
@@ -84,11 +81,7 @@ namespace QuickSplit.Tests.Integration
             HttpResponseMessage response = await _client.GetAsync(UsersUrl);
 
             response.EnsureSuccessStatusCode();
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> feature/AddFriends
             IEnumerable<UserModel> users =  await response.DeserializeCollection<UserModel>();
             
             Assert.Single(users);
@@ -179,10 +172,7 @@ namespace QuickSplit.Tests.Integration
             Assert.Equal(update.Mail, user.Mail);
         }
         
-<<<<<<< HEAD
-        
-=======
->>>>>>> feature/AddFriends
+
         [Fact, Priority(4)]
         public async void ChangeJohnSnowMailBackToOriginal()
         {
@@ -198,20 +188,8 @@ namespace QuickSplit.Tests.Integration
 
             Assert.Equal(update.Mail, user.Mail);
         }
-<<<<<<< HEAD
 
-        [Fact, Priority(5)]
-        public async void DeleteJohnSnow()
-        {
-            HttpResponseMessage response = await _client.DeleteAsync(UsersUrl + "/1");
-            
-            response.EnsureSuccessStatusCode();
-        }
-        
-=======
-        
-        
->>>>>>> feature/AddFriends
+
         [Fact, Priority(6)]
         public async void GetJohnSnow()
         {
