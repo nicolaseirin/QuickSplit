@@ -1,14 +1,12 @@
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Domain;
 
-namespace QuickSplit.Application.Users.Commands.DeleteUser
+namespace QuickSplit.Application.Users.Commands
 {
     public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
     {
@@ -33,5 +31,10 @@ namespace QuickSplit.Application.Users.Commands.DeleteUser
 
             return Unit.Value;
         }
+    }
+    
+    public class DeleteUserCommand : IRequest
+    {
+        public int Id { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 using System.Threading;
-using QuickSplit.Application.Users.Commands.DeleteUser;
+using QuickSplit.Application.Users.Commands;
 using QuickSplit.Domain;
 using Xunit;
 

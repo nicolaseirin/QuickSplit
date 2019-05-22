@@ -21,9 +21,9 @@ namespace QuickSplit.Domain
         public int Friend1Id { get; private set; }
         public int Friend2Id { get; private set; }
 
-        public User Friend1 { get; set; }
+        public virtual User Friend1 { get; set; }
 
-        public User Friend2 { get; set; }
+        public virtual User Friend2 { get; set; }
 
         private void ValidateNotNull(User user)
         {

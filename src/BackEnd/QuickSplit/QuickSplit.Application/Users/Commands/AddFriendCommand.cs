@@ -1,13 +1,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Interfaces;
-using QuickSplit.Application.Users.Commands.UpdateUser;
 using QuickSplit.Domain;
 
-namespace QuickSplit.Application.Users.Commands.AddFriendCommand
+namespace QuickSplit.Application.Users.Commands
 {
     public class AddFriendCommandHandler : IRequestHandler<AddFriendCommand>
     {
@@ -33,5 +31,12 @@ namespace QuickSplit.Application.Users.Commands.AddFriendCommand
             await _context.SaveChangesAsync();
             return Unit.Value;
         }
+    }
+    
+    public class AddFriendCommand : IRequest
+    {
+        public int CurrentUserId { get; set; }
+        
+        public int FriendUserId { get; set; }
     }
 }

@@ -1,5 +1,3 @@
-using System;
-using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -9,7 +7,7 @@ using QuickSplit.Application.Interfaces;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Domain;
 
-namespace QuickSplit.Application.Users.Commands.CreateUser
+namespace QuickSplit.Application.Users.Commands
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserModel>
     {
@@ -61,5 +59,16 @@ namespace QuickSplit.Application.Users.Commands.CreateUser
 
             return new UserModel(toCreate);
         }
+    }
+    
+    public class CreateUserCommand : IRequest<UserModel>
+    {
+        public string Name { get; set; }
+
+        public string LastName { get; set; } = "";
+        
+        public string Mail { get; set; }
+        
+        public string Password { get; set; }
     }
 }
