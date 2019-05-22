@@ -69,7 +69,7 @@ namespace QuickSplit.WebApi.Controllers
         [HttpGet("{id}/friends")]
         public async Task<IActionResult> GetFriends(int id)
         {
-            IEnumerable<UserModel> friends = await Mediator.Send(new GetFriendsQuery() { UserId = id });
+            IEnumerable<UserModel> friends = await Mediator.Send(new GetFriendsQuery() {UserId = id});
             return Ok(friends);
         }
 
@@ -79,6 +79,18 @@ namespace QuickSplit.WebApi.Controllers
         {
             command.CurrentUserId = id;
             await Mediator.Send(command);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpDelete("{id}/friends/{friendId}")]
+        public async Task<IActionResult> DeleteFriend(int id, int friendId)
+        {
+            await Mediator.Send(new DeleteFriendCommand()
+            {
+                CurrentUserId = id,
+                FriendUserId = friendId
+            });
             return Ok();
         }
     }
