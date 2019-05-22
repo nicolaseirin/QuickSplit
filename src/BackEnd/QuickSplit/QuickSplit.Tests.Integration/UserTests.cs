@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -472,6 +473,28 @@ namespace QuickSplit.Tests.Integration
             IEnumerable<UserModel> users = await response.DeserializeCollection<UserModel>();
 
             Assert.True(users.All(user => user.Id == 6 || user.Id == 7));
+        }
+
+        [Fact, Priority(10)]
+        public async void DeleteJohnGhostFriendship()
+        {
+            HttpResponseMessage response = await _client.DeleteAsync($"{UsersUrl}/2/friends/3");
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact, Priority(11)]
+        public async void VerifyJohnGhostFriendshipWasDeleted()
+        {
+            HttpResponseMessage response1 = await _client.GetAsync($"{UsersUrl}/2/friends");
+            HttpResponseMessage response2 = await _client.GetAsync($"{UsersUrl}/3/friends");
+            response1.EnsureSuccessStatusCode();
+            response2.EnsureSuccessStatusCode();
+            IEnumerable<UserModel> johnFriends = await response1.DeserializeCollection<UserModel>();
+            IEnumerable<UserModel> ghostFriends = await response2.DeserializeCollection<UserModel>();
+
+            Assert.DoesNotContain(johnFriends, u => u.Id == 3);
+            Assert.DoesNotContain(ghostFriends, u => u.Id == 2);
         }
 
         [Fact, Priority(100)]

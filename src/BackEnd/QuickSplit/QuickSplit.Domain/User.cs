@@ -76,6 +76,18 @@ namespace QuickSplit.Domain
             Friends.Add(f2);
             user.FriendsOf.Add(f2);
         }
+
+        public void RemoveFriend(User user)
+        {
+            var f1 = new Friendship(this, user);
+            var f2 = new Friendship(user, this);
+
+            FriendsOf.Remove(f1);
+            user.Friends.Remove(f1);
+
+            Friends.Remove(f2);
+            user.FriendsOf.Remove(f2);
+        }
         
         protected bool Equals(User other)
         {
