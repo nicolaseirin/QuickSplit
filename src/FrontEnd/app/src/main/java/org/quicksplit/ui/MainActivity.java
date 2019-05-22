@@ -5,15 +5,13 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.MenuItem;
 
 import org.quicksplit.R;
 
 public class MainActivity extends AppCompatActivity {
-
-    private ActionBar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,13 +19,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //toolbar = getSupportActionBar();
-
         //toolbar.setTitle(R.string.title_purchases);
+
         loadFragment(new PurchasesFragment());
+
+        //setContentView(R.layout.search);
+
+        SearchView search = findViewById(R.id.search_bar);
+        search.setOnQueryTextListener(mOnQueryTextListener);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_botton);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
+
+    private SearchView.OnQueryTextListener mOnQueryTextListener = new SearchView.OnQueryTextListener() {
+
+        @Override
+        public boolean onQueryTextSubmit(String s) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String s) {
+            return false;
+        }
+    };
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
