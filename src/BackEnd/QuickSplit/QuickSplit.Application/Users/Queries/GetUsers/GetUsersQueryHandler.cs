@@ -25,7 +25,7 @@ namespace QuickSplit.Application.Users.Queries.GetUsers
             IQueryable<User> query = context.Users;
 
             if (!string.IsNullOrWhiteSpace(request.SearchNameQuery))
-                query = query.Where(user => (user.Name + user.LastName).Contains(request.SearchNameQuery, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(user => (user.Name + " " + user.LastName).Contains(request.SearchNameQuery, StringComparison.OrdinalIgnoreCase));
 
             
             
