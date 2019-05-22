@@ -4,10 +4,9 @@ using System.Linq;
 using System.Threading;
 using MediatR;
 using QuickSplit.Application.Exceptions;
-using QuickSplit.Application.Users.Commands.AddFriendCommand;
+using QuickSplit.Application.Users.Commands;
 using QuickSplit.Application.Users.Models;
-using QuickSplit.Application.Users.Queries.GetFriends;
-using QuickSplit.Application.Users.Queries.GetUsers;
+using QuickSplit.Application.Users.Queries;
 using QuickSplit.Domain;
 using Xunit;
 

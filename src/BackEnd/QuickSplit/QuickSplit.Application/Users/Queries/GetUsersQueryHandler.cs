@@ -9,20 +9,20 @@ using QuickSplit.Application.Interfaces;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Domain;
 
-namespace QuickSplit.Application.Users.Queries.GetUsers
+namespace QuickSplit.Application.Users.Queries
 {
     public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<UserModel>>
     {
-        private IQuickSplitContext context;
+        private readonly IQuickSplitContext _context;
 
         public GetUsersQueryHandler(IQuickSplitContext context)
         {
-            this.context = context;
+            this._context = context;
         }
 
         public async Task<IEnumerable<UserModel>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
-            IQueryable<User> query = context.Users;
+            IQueryable<User> query = _context.Users;
 
             if (!string.IsNullOrWhiteSpace(request.SearchNameQuery))
                 query = query.Where(user => (user.Name + " " + user.LastName).Contains(request.SearchNameQuery, StringComparison.OrdinalIgnoreCase));
@@ -51,5 +51,13 @@ namespace QuickSplit.Application.Users.Queries.GetUsers
                 Mail = user.Mail
             };
         }
+    }
+    
+    public class GetUsersQuery : IRequest<IEnumerable<UserModel>>
+    {
+        public string SearchNameQuery { get; set; }
+        
+        public int? NotFriendWithQuery { get; set; }
+        
     }
 }

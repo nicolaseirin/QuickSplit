@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Interfaces;
-using QuickSplit.Application.Users.Queries.GetPassword;
 using QuickSplit.Domain;
 
-namespace QuickSplit.Application.Users.Queries.PasswordIsValid
+namespace QuickSplit.Application.Users.Queries
 {
     public class PasswordIsValidQueryHandler : IRequestHandler<PasswordIsValidQuery, bool>
     {
@@ -30,5 +29,12 @@ namespace QuickSplit.Application.Users.Queries.PasswordIsValid
 
             return user != null &&  hashedPassword == user.Password;
         }
+    }
+    
+    public class PasswordIsValidQuery : IRequest<bool>
+    {
+        public string Mail { get; set; }
+        
+        public string Password { get; set; }
     }
 }

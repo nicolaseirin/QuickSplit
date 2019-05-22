@@ -7,7 +7,7 @@ using QuickSplit.Application.Interfaces;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Domain;
 
-namespace QuickSplit.Application.Users.Queries.GetUserById
+namespace QuickSplit.Application.Users.Queries
 {
     public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserModel>
     {
@@ -30,5 +30,10 @@ namespace QuickSplit.Application.Users.Queries.GetUserById
             
             return new UserModel(user);
         }
+    }
+    
+    public class GetUserByIdQuery : IRequest<UserModel>
+    {
+        public int Id { get; set; }
     }
 }

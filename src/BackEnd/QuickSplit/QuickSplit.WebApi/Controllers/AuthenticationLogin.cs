@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using QuickSplit.Application.Users.Queries.GetPassword;
+using QuickSplit.Application.Users.Queries;
 
 namespace QuickSplit.WebApi.Controllers
 {

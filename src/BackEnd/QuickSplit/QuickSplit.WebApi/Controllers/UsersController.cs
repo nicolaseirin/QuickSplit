@@ -3,14 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using QuickSplit.Application.Users.Commands.AddFriendCommand;
-using QuickSplit.Application.Users.Commands.CreateUser;
-using QuickSplit.Application.Users.Commands.DeleteUser;
-using QuickSplit.Application.Users.Commands.UpdateUser;
+using QuickSplit.Application.Users.Commands;
 using QuickSplit.Application.Users.Models;
-using QuickSplit.Application.Users.Queries.GetFriends;
-using QuickSplit.Application.Users.Queries.GetUserById;
-using QuickSplit.Application.Users.Queries.GetUsers;
+using QuickSplit.Application.Users.Queries;
 
 namespace QuickSplit.WebApi.Controllers
 {
