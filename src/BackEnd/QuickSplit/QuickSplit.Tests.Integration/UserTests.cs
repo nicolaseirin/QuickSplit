@@ -189,10 +189,7 @@ namespace QuickSplit.Tests.Integration
 
             Assert.Equal(update.Mail, user.Mail);
         }
-<<<<<<< HEAD
-        
-=======
->>>>>>> feature/AddFriends
+
 
         [Fact, Priority(4)]
         public async void ChangeJohnSnowMailBackToOriginal()

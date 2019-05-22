@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Application.Users.Models;
-using QuickSplit.Application.Users.Queries.GetPassword;
 using QuickSplit.Domain;
 
 namespace QuickSplit.Application.Users.Queries
@@ -35,7 +34,7 @@ namespace QuickSplit.Application.Users.Queries
         }
     }
     
-    public class PasswordIsValidQuery : IRequest<bool>
+    public class PasswordIsValidQuery : IRequest<UserModel>
     {
         public string Mail { get; set; }
         
