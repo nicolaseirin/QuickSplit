@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading;
-using QuickSplit.Application.Users.Commands.UpdateUser;
+using QuickSplit.Application.Users.Commands;
 using QuickSplit.Domain;
 using Xunit;
 
