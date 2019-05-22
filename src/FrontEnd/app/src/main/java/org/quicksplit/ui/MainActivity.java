@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle(R.string.title_purchases);
         loadFragment(new PurchasesFragment());
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_botton);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
