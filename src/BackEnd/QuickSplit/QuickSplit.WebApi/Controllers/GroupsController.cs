@@ -32,5 +32,13 @@ namespace QuickSplit.WebApi.Controllers
 
             return Ok();
         }
+        
+        [HttpPut("{id}")]
+        public async Task<ActionResult<GroupModel>> Put(int id, [FromBody] UpdateGroupCommand command)
+        {
+            command.Id = id;
+            GroupModel updated = await Mediator.Send(command);
+            return Ok(updated);
+        }
     }
 }
