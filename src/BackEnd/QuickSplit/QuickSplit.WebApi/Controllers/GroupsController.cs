@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using QuickSplit.Application.Groups.Models;
 using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using QuickSplit.Application.Groups.Commands.CreateGroup;
+using QuickSplit.Application.Groups.Commands.DeleteGroup;
 
 namespace QuickSplit.WebApi.Controllers
 {
@@ -19,6 +20,17 @@ namespace QuickSplit.WebApi.Controllers
         {
             GroupModel newGroup = await Mediator.Send(command);
             return Ok(newGroup);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await Mediator.Send(new DeleteGroupCommand
+            {
+                Id = id
+            });
+
+            return Ok();
         }
     }
 }
