@@ -20,9 +20,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = getSupportActionBar();
+        //toolbar = getSupportActionBar();
 
-        toolbar.setTitle(R.string.title_purchases);
+        //toolbar.setTitle(R.string.title_purchases);
         loadFragment(new PurchasesFragment());
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_botton);
@@ -37,22 +37,22 @@ public class MainActivity extends AppCompatActivity {
             Fragment fragment;
             switch (item.getItemId()) {
                 case R.id.navigation_purchases:
-                    toolbar.setTitle(R.string.title_purchases);
+                    //toolbar.setTitle(R.string.title_purchases);
                     fragment = new PurchasesFragment();
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_friends:
-                    toolbar.setTitle(R.string.title_friends);
+                    //toolbar.setTitle(R.string.title_friends);
                     fragment = new FriendsFragment();
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_groups:
-                    toolbar.setTitle(R.string.title_groups);
+                    //toolbar.setTitle(R.string.title_groups);
                     //fragment = new CartFragment();
                     //loadFragment(fragment);
                     return true;
                 case R.id.navigation_settings:
-                    toolbar.setTitle(R.string.title_settings);
+                    //toolbar.setTitle(R.string.title_settings);
                     fragment = new SettingsFragment();
                     loadFragment(fragment);
                     return true;

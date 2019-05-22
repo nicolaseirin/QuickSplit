@@ -39,4 +39,7 @@ public interface UserClient {
 
     @DELETE("users/{id}/friends{idFriend}")
     Call<Void> deleteFriend(@Path("id") String id, @Path("idFriend") String idFriend);
+
+    @GET("users/?excludeFriendsOfId={id}&find={like}")
+    Call<List<User>> friendsLookup(@Path("id") String id, @Path("like") String like);
 }
