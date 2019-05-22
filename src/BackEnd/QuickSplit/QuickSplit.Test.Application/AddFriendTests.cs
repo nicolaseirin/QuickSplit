@@ -7,6 +7,7 @@ using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Users.Commands.AddFriendCommand;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Application.Users.Queries.GetFriends;
+using QuickSplit.Application.Users.Queries.GetUsers;
 using QuickSplit.Domain;
 using Xunit;
 
@@ -61,14 +62,14 @@ namespace QuickSplit.Test.Application
             Assert.Empty(friends2);
             Assert.Empty(friends3);
         }
-        
+
         [Fact]
         public async void AddFriendTest()
         {
             var command = new AddFriendCommand()
             {
                 FriendUserId = 1,
-                CurrentUserId = 2 
+                CurrentUserId = 2
             };
             var handler = new AddFriendCommandHandler(Context);
             var getHandler = new GetFriendsQueryHandler(Context);
@@ -90,19 +91,19 @@ namespace QuickSplit.Test.Application
             Assert.Empty(_ghost.Friends);
             Assert.Empty(_ghost.FriendsOf);
         }
-        
+
         [Fact]
         public async void AddMultipleFriendTest()
         {
             var command1 = new AddFriendCommand()
             {
                 FriendUserId = 1,
-                CurrentUserId = 2 
+                CurrentUserId = 2
             };
             var command2 = new AddFriendCommand()
             {
                 FriendUserId = 1,
-                CurrentUserId = 3 
+                CurrentUserId = 3
             };
             var handler = new AddFriendCommandHandler(Context);
             var getHandler = new GetFriendsQueryHandler(Context);
@@ -132,11 +133,12 @@ namespace QuickSplit.Test.Application
             var command = new AddFriendCommand()
             {
                 FriendUserId = 911,
-                CurrentUserId = 912 
+                CurrentUserId = 912
             };
             var handler = new AddFriendCommandHandler(Context);
-            
+
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
+
     }
 }

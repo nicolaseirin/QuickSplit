@@ -20,9 +20,13 @@ namespace QuickSplit.WebApi.Controllers
     {
         [Authorize]
         [HttpGet(Name = "GetUser")]
-        public async Task<ActionResult<IEnumerable<UserModel>>> Get()
+        public async Task<ActionResult<IEnumerable<UserModel>>> Get([FromQuery] string find, [FromQuery] int? excludeFriendsOfId)
         {
-            IEnumerable<UserModel> users = await Mediator.Send(new GetUsersQuery());
+            IEnumerable<UserModel> users = await Mediator.Send(new GetUsersQuery()
+            {
+                SearchNameQuery = find,
+                NotFriendWithQuery = excludeFriendsOfId
+            });
             return Ok(users);
         }
 
@@ -37,7 +41,7 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(user);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand user)
         {

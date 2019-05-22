@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -21,10 +22,23 @@ namespace QuickSplit.Application.Users.Queries.GetUsers
 
         public async Task<IEnumerable<UserModel>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
-            return await context
-                .Users
+            IQueryable<User> query = context.Users;
+
+            if (!string.IsNullOrWhiteSpace(request.SearchNameQuery))
+                query = query.Where(user => (user.Name + user.LastName).Contains(request.SearchNameQuery, StringComparison.OrdinalIgnoreCase));
+
+            
+            
+            if (request.NotFriendWithQuery != null)
+                query = query
+                    .Where(user => user.Id != request.NotFriendWithQuery)
+                    .Where(user => user.FriendsOf.All(friendship => friendship.Friend2Id != request.NotFriendWithQuery));
+
+            
+
+            return await query
                 .Select(user => MapToModel(user))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
         private UserModel MapToModel(User user)
