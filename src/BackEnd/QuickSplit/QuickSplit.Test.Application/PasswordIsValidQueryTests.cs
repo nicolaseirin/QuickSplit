@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading;
 using QuickSplit.Application.Users.Queries;
-using QuickSplit.Application.Users.Queries.GetPassword;
 using QuickSplit.Domain;
 using Xunit;
 

@@ -6,7 +6,6 @@ using System.Net.Http;
 using QuickSplit.Application.Users.Commands;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Application.Users.Queries;
-using QuickSplit.Application.Users.Queries.GetPassword;
 using QuickSplit.Tests.Integration.Internal;
 using QuickSplit.WebApi;
 using Xunit;
