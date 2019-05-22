@@ -62,8 +62,8 @@ namespace QuickSplit.Domain
                 throw new DomainException($"{propertyName} is required");
         }
 
-        public ICollection<Friendship> Friends { get; set; } = new List<Friendship>();
-        public ICollection<Friendship> FriendsOf { get; set; } = new List<Friendship>();
+        public virtual ICollection<Friendship> Friends { get; set; } = new List<Friendship>();
+        public virtual ICollection<Friendship> FriendsOf { get; set; } = new List<Friendship>();
 
         public void AddFriend(User user)
         {
