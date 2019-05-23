@@ -35,7 +35,7 @@ namespace QuickSplit.Application.Groups.Commands.UpdateGroup
             int id = request.Id;
             Group toUpdate = await _context.Groups.FindAsync(id);
             toUpdate.Name = request.Name ?? toUpdate.Name;
-            Domain.Membership[] memberships = await Task.WhenAll(request.Memberships.Select(i => GetMemberships(i, toCreate)));
+            Domain.Membership[] memberships = await Task.WhenAll(request.Memberships.Select(i => GetMemberships(i, toUpdate)));
             toUpdate.Memberships = memberships;
 
             await _context.SaveChangesAsync();
