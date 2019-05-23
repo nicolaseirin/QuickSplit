@@ -498,31 +498,31 @@ namespace QuickSplit.Tests.Integration
             Assert.DoesNotContain(ghostFriends, u => u.Id == 2);
         }
 
-        [Fact, Priority(100)]
-        public async void DeleteJohnSnow()
-        {
-            HttpResponseMessage response = await _client.DeleteAsync(UsersUrl + "/2");
-
-            response.EnsureSuccessStatusCode();
-        }
-
-        [Fact, Priority(100)]
-        public async void DeleteJohnSnowAgain()
-        {
-            HttpResponseMessage response = await _client.DeleteAsync(UsersUrl + "/2");
-
-            response.EnsureSuccessStatusCode();
-        }
-
-        [Fact, Priority(101)]
-        public async void VerifyJohnSnowDoesntExist()
-        {
-            HttpResponseMessage response = await _client.GetAsync(UsersUrl);
-
-            response.EnsureSuccessStatusCode();
-            IEnumerable<UserModel> users = await response.DeserializeCollection<UserModel>();
-
-            Assert.DoesNotContain(users, user => user.Name == _johnSnow.Name && user.LastName == _johnSnow.LastName);
-        }
+//        [Fact, Priority(100)]
+//        public async void DeleteJohnSnow()
+//        {
+//            HttpResponseMessage response = await _client.DeleteAsync(UsersUrl + "/2");
+//
+//            response.EnsureSuccessStatusCode();
+//        }
+//
+//        [Fact, Priority(100)]
+//        public async void DeleteJohnSnowAgain()
+//        {
+//            HttpResponseMessage response = await _client.DeleteAsync(UsersUrl + "/2");
+//
+//            response.EnsureSuccessStatusCode();
+//        }
+//
+//        [Fact, Priority(101)]
+//        public async void VerifyJohnSnowDoesntExist()
+//        {
+//            HttpResponseMessage response = await _client.GetAsync(UsersUrl);
+//
+//            response.EnsureSuccessStatusCode();
+//            IEnumerable<UserModel> users = await response.DeserializeCollection<UserModel>();
+//
+//            Assert.DoesNotContain(users, user => user.Name == _johnSnow.Name && user.LastName == _johnSnow.LastName);
+//        }
     }
 }
