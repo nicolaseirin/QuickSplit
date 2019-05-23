@@ -13,15 +13,13 @@ import org.quicksplit.models.User;
 
 import java.util.List;
 
-public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsViewHolder> {
+public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.FriendsViewHolder> {
 
     private List<User> users;
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onItemClick(int i);
-
-        void onDeleteClick(User user);
+        void onAddClick(User user);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -31,7 +29,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
     @NonNull
     @Override
     public FriendsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_friend, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_add_friend, viewGroup, false);
         FriendsViewHolder friendsViewHolder = new FriendsViewHolder(view, mListener, users);
         return friendsViewHolder;
     }
@@ -48,7 +46,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
         return users.size();
     }
 
-    public FriendsAdapter(List<User> users) {
+    public AddFriendsAdapter(List<User> users) {
         this.users = users;
     }
 
@@ -67,25 +65,13 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
             mTextViewEmail = itemView.findViewById(R.id.txt_email);
             mImageViewDelete = itemView.findViewById(R.id.img_delete);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int i = getAdapterPosition();
-                        if (i != RecyclerView.NO_POSITION) {
-                            listener.onItemClick(i);
-                        }
-                    }
-                }
-            });
-
             mImageViewDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
                         int i = getAdapterPosition();
                         if (i != RecyclerView.NO_POSITION) {
-                            listener.onDeleteClick(users.get(i));
+                            listener.onAddClick(users.get(i));
                         }
                     }
                 }

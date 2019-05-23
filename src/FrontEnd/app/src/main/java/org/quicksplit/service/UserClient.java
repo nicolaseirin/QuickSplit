@@ -13,6 +13,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface UserClient {
 
@@ -34,12 +35,15 @@ public interface UserClient {
     @DELETE("users/{id}")
     Call<Void> deleteUser(@Path("id") String id);
 
-    @POST("users/{id}/friends")
+    @GET("users/{id}/friends")
     Call<List<User>> getFriends(@Path("id") String id);
 
-    @DELETE("users/{id}/friends{idFriend}")
+    @POST("users/{id}/friends/{idFriend}")
+    Call<Void> addFriend(@Path("id") String id, @Path("idFriend") String idFriend);
+
+    @DELETE("users/{id}/friends/{idFriend}")
     Call<Void> deleteFriend(@Path("id") String id, @Path("idFriend") String idFriend);
 
-    @GET("users/?excludeFriendsOfId={id}&find={like}")
-    Call<List<User>> friendsLookup(@Path("id") String id, @Path("like") String like);
+    @GET("users")
+    Call<List<User>> friendsLookup(@Query("excludeFriendsOfId") String id, @Query("find") String like);
 }

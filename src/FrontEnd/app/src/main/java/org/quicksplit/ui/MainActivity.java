@@ -23,12 +23,10 @@ public class MainActivity extends AppCompatActivity {
 
         loadFragment(new PurchasesFragment());
 
-        //setContentView(R.layout.search);
+        //SearchView search = findViewById(R.id.search_bar);
+        //search.setOnQueryTextListener(mOnQueryTextListener);
 
-        SearchView search = findViewById(R.id.search_bar);
-        search.setOnQueryTextListener(mOnQueryTextListener);
-
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_botton);
+        BottomNavigationView navigation = findViewById(R.id.navigation_botton);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context="org.quicksplit.ui.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <!--<android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -27,7 +27,7 @@
             </android.support.v7.widget.SearchView>
         </android.support.v7.widget.Toolbar>
 
-    </android.support.design.widget.AppBarLayout>
+    </android.support.design.widget.AppBarLayout>-->
 
     <FrameLayout
         android:id="@+id/frame_container"
@@ -47,31 +47,5 @@
         app:itemIconTint="@android:color/white"
         app:itemTextColor="@android:color/white"
         app:menu="@menu/navigation" />
-
-
-    <!--<android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_bottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.BottomNavigationView
-                android:id="@+id/navigation_botton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/bgBottomNavigation"
-                android:foreground="?attr/selectableItemBackground"
-                app:itemBackground="@color/bgBottomNavigation"
-                app:itemIconTint="@android:color/white"
-                app:itemTextColor="@android:color/white"
-                app:menu="@menu/navigation" />
-
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>-->
 
 </android.support.design.widget.CoordinatorLayout>
