@@ -30,5 +30,26 @@ namespace QuickSplit.Domain
             if (user == null)
                 throw new DomainException("Invalid friendship");
         }
+
+        protected bool Equals(Friendship other)
+        {
+            return Equals(friend1, other.friend1) && Equals(friend2, other.friend2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (!(obj is Friendship)) return false;
+            return Equals((Friendship) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((friend1 != null ? friend1.GetHashCode() : 0) * 397) ^ (friend2 != null ? friend2.GetHashCode() : 0);
+            }
+        }
     }
 }
