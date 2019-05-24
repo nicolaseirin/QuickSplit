@@ -36,7 +36,6 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(user);
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand user)
         {
@@ -74,11 +73,13 @@ namespace QuickSplit.WebApi.Controllers
         }
 
         [Authorize]
-        [HttpPost("{id}/friends")]
-        public async Task<IActionResult> AddFriend(int id, [FromBody] AddFriendCommand command)
-        {
-            command.CurrentUserId = id;
-            await Mediator.Send(command);
+        [HttpPost("{id}/friends/{friendId}")]
+        public async Task<IActionResult> AddFriend(int id, int friendId)
+        {   
+            await Mediator.Send(new AddFriendCommand(){
+                CurrentUserId = id,
+                FriendUserId = friendId
+            });
             return Ok();
         }
 
