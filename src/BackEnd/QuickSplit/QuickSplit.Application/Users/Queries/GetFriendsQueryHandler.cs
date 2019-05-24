@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Application.Users.Models;
@@ -24,15 +25,14 @@ namespace QuickSplit.Application.Users.Queries
             User user = await _context
                 .Users
                 .FindAsync(request.UserId);
-
-
+            
             if (user == null)
                 throw new InvalidQueryException($"No existe usuario con id {request.UserId}");
 
-            return user
-                .Friends
+            return await _context.Friendships
+                .Where(friendship => friendship.Friend2Id == request.UserId)
                 .Select(friendship => new UserModel(friendship.Friend1))
-                .ToList();
+                .ToListAsync(cancellationToken: cancellationToken);
         }
     }
 
