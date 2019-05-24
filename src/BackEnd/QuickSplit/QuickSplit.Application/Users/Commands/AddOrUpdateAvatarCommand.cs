@@ -23,14 +23,16 @@ namespace QuickSplit.Application.Users.Commands
         public async Task<Unit> Handle(AddOrUpdateAvatarCommand request, CancellationToken cancellationToken)
         {
             User user = await _context.Users.FindAsync(request.UserId) ?? throw new InvalidCommandException("No existe el usuario");
-
-            if (!FormatIsValid(request.ImageFormat))
+            
+            string ext = request.ImageFormat.Split('/').Last();
+            if (!FormatIsValid(ext))
             {
                 throw new InvalidCommandException("Formato de imagen invalido.");
             }
-
-            Directory.CreateDirectory("Avatars");
-            string avatarPath = Path.Combine(Directory.GetCurrentDirectory(), "Avatars", $"{request.UserId}.{request.ImageFormat}");
+            
+            string avatarsDir  = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Avatars");
+            Directory.CreateDirectory(avatarsDir);
+            string avatarPath = avatarsDir + $"/{request.UserId}.{ext}";
             using (var fs = new FileStream(avatarPath, FileMode.OpenOrCreate))
             {
                 await request.ImageStream.CopyToAsync(fs, cancellationToken);
@@ -41,7 +43,8 @@ namespace QuickSplit.Application.Users.Commands
 
         private bool FormatIsValid(string requestImageFormat)
         {
-            return ValidFormats.Any(f => f.Equals(requestImageFormat, StringComparison.OrdinalIgnoreCase));
+            return ValidFormats
+                .Any(f => f.Equals(requestImageFormat, StringComparison.OrdinalIgnoreCase));
         }
     }
 

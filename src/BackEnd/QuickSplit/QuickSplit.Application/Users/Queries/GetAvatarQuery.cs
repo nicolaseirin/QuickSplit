@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -19,14 +20,23 @@ namespace QuickSplit.Application.Users.Queries
 
         public async Task<Stream> Handle(GetAvatarQuery request, CancellationToken cancellationToken)
         {
-            string basePath = Path.Combine(Directory.GetCurrentDirectory(), "Avatars");
+            string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Avatars");
             string imagePath = Directory
                 .GetFiles(basePath)
-                .FirstOrDefault(f => Enumerable.First<string>(f.Split('.')) == request.UserId.ToString());
-            if (imagePath == null)
-                throw new InvalidQueryException("No hay foto");
+                .FirstOrDefault(path => IsFileWithName(request.UserId.ToString(), path))
+                ?? basePath + "/default.png";
 
             return new FileStream(imagePath, FileMode.Open);
+        }
+
+        private static bool IsFileWithName(string fileName, string filePath)
+        {
+            return filePath
+                .Split('/')
+                .Last()
+                .Split('.')
+                .First()
+                .Equals(fileName, StringComparison.OrdinalIgnoreCase);
         }
     }
 
