@@ -118,6 +118,9 @@ namespace QuickSplit.WebApi.Controllers
         [Consumes("image/jpg", "image/jpeg", "image/png", "multipart/form-data")]
         public async Task<IActionResult> AddImage(int id, IFormFile image)
         {
+            if (image == null)
+                return BadRequest("Imagen invalida");
+            
             
             var command = new AddOrUpdateAvatarCommand()
             {

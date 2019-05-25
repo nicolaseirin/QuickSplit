@@ -25,7 +25,7 @@ namespace QuickSplit.Application.Users.Queries
 
         public async Task<UserModel> Handle(PasswordIsValidQuery request, CancellationToken cancellationToken)
         {
-            User user = await _users.FirstOrDefaultAsync(u => string.Equals(u.Mail, request.Mail, StringComparison.OrdinalIgnoreCase));
+            User user = await _users.FirstOrDefaultAsync(u => string.Equals(u.Mail, request.Mail, StringComparison.OrdinalIgnoreCase), cancellationToken: cancellationToken);
             string hashedPassword = _hasher.Hash(request.Password);
 
             if( user != null &&  hashedPassword == user.Password)
