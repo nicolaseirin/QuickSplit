@@ -5,6 +5,7 @@ using QuickSplit.Application.Groups.Commands.CreateGroup;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Users.Commands.CreateUser;
 using QuickSplit.Application.Users.Models;
+using QuickSplit.Domain;
 using Xunit;
 
 namespace QuickSplit.Test.Application
@@ -14,6 +15,15 @@ namespace QuickSplit.Test.Application
         [Fact]
         public async void CreateValidGroupTest()
         {
+            var user = new User()
+            {
+                Name = "Juan",
+                LastName = "Cunha",
+                Id = 1,
+                Mail = "jaun@gmail.com",
+                Password = "123asd"
+            };
+            Context.Users.Add(user);
             var command = new CreateGroupCommand()
             {
                 Name = "La pedrera",
