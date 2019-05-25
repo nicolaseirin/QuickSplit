@@ -1,7 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QuickSplit.Application.Users.Commands;
 using QuickSplit.Application.Users.Models;
@@ -92,6 +98,38 @@ namespace QuickSplit.WebApi.Controllers
                 CurrentUserId = id,
                 FriendUserId = friendId
             });
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("{id}/avatars")]
+        public async Task<ActionResult> GetImage(int id)
+        {
+            var command = new GetAvatarQuery()
+            {
+                UserId = id,
+            };
+            Stream stream = await Mediator.Send(command);
+
+            return Ok(stream);
+        }
+        
+        [Authorize]
+        [HttpPost("{id}/avatars")]
+        [Consumes("image/jpg", "image/jpeg", "image/png", "multipart/form-data")]
+        public async Task<IActionResult> AddImage(int id, IFormFile image)
+        {
+            
+            var command = new AddOrUpdateAvatarCommand()
+            {
+                UserId = id,
+                ImageStream = image.OpenReadStream(),
+                ImageFormat = image.ContentType.Split().Last()
+            };
+            
+            await Mediator.Send(command);
+            
+
             return Ok();
         }
     }
