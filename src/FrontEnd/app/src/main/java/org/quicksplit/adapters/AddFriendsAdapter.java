@@ -37,6 +37,10 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.Fr
     @Override
     public void onBindViewHolder(@NonNull FriendsViewHolder friendsViewHolder, int i) {
         User currentItem = users.get(i);
+
+        //TODO: Get image resource here
+
+
         friendsViewHolder.mTextViewNameLastname.setText(currentItem.getName() + " " + currentItem.getLastName());
         friendsViewHolder.mTextViewEmail.setText(currentItem.getMail());
     }
