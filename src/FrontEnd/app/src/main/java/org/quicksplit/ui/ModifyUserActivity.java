@@ -1,13 +1,12 @@
 package org.quicksplit.ui;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
@@ -19,11 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.auth0.android.jwt.Claim;
-import com.auth0.android.jwt.JWT;
-
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
+import org.quicksplit.TokenManager;
 import org.quicksplit.Utils;
 import org.quicksplit.models.User;
 import org.quicksplit.service.UserClient;
@@ -41,11 +38,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
 
     private static int RESULT_LOAD_IMAGE = 1;
 
-    private String token;
-    private String userId;
     private User user;
-
-    private String filePath;
     private File file;
 
     private TextView mBigNameLastname;
@@ -110,15 +103,12 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void getUserData() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ModifyUserActivity.this);
-        token = preferences.getString("token", null);
+        TokenManager tokenManager = new TokenManager(this);
 
-        JWT parsedJWT = new JWT(token);
-        Claim subscriptionMetaData = parsedJWT.getClaim("Id");
-        userId = subscriptionMetaData.asString();
+        UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
+        Call<User> call = client.getUser(tokenManager.getUserIdFromToken());
 
-        UserClient client = ServiceGenerator.createService(UserClient.class, token);
-        Call<User> call = client.getUser(userId);
+        final ProgressDialog loading = ProgressDialog.show(this, "Recuperando datos", "Espere...", false, false);
 
         call.enqueue(new Callback<User>() {
             @Override
@@ -126,14 +116,17 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                 if (response.isSuccessful()) {
                     user = response.body();
                     loadUserData();
+                    loading.dismiss();
                 } else {
                     Toast.makeText(ModifyUserActivity.this, "Error al solicitar la edición de datos.", Toast.LENGTH_SHORT).show();
+                    loading.dismiss();
                 }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(ModifyUserActivity.this, "Error al solicitar la edición de datos.", Toast.LENGTH_SHORT).show();
+                loading.dismiss();
             }
         });
     }
@@ -149,14 +142,18 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void updateUserData() {
+
+        TokenManager tokenManager = new TokenManager(this);
+
         User newUser = new User();
+
         newUser.setName(mTextName.getText().toString());
         newUser.setLastName(mTextLastName.getText().toString());
         newUser.setMail(mTextEmail.getText().toString());
         newUser.setPassword(mTextPassword.getText().toString());
 
-        UserClient client = ServiceGenerator.createService(UserClient.class, token);
-        Call<User> call = client.editUser(userId, newUser);
+        UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
+        Call<User> call = client.editUser(tokenManager.getUserIdFromToken(), newUser);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -165,8 +162,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                 } else {
                     Toast.makeText(ModifyUserActivity.this, "Error al intentar modificar datos.", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
 
             @Override
@@ -190,10 +185,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onActivityResult(int recuestCode, int resultCode, Intent data) {
         super.onActivityResult(recuestCode, resultCode, data);
-        if (recuestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            //Uri selectedImage = data.getData();
-            //String path = selectedImage.getPath();
 
+        if (recuestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
             String[] filePath = {MediaStore.Images.Media.DATA};
             Cursor c = getContentResolver().query(selectedImage, filePath,
@@ -209,23 +202,16 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
 
     private void uploadToServer(String filePath) {
 
-        this.filePath = filePath;
+        TokenManager tokenManager = new TokenManager(this);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ModifyUserActivity.this);
-        token = preferences.getString("token", null);
-
-        JWT parsedJWT = new JWT(token);
-        Claim subscriptionMetaData = parsedJWT.getClaim("Id");
-        userId = subscriptionMetaData.asString();
-
-        UserClient client = ServiceGenerator.createService(UserClient.class, token);
+        UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
 
         file = new File(filePath);
 
         RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/" + filePath.substring(filePath.lastIndexOf(".") + 1)), file);
         MultipartBody.Part part = MultipartBody.Part.createFormData("image", file.getName(), fileReqBody);
 
-        Call call = client.setUserAvatar(userId, part);
+        Call call = client.setUserAvatar(tokenManager.getUserIdFromToken(), part);
         call.enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {
