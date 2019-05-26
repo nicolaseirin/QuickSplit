@@ -30,8 +30,6 @@ namespace QuickSplit.Application.Users.Queries
             if (!string.IsNullOrWhiteSpace(request.SearchNameQuery))
                 query = query.Where(user => (user.Name + " " + user.LastName).Contains(request.SearchNameQuery, StringComparison.OrdinalIgnoreCase));
 
-            
-            
             if (request.NotFriendWithQuery != null)
                 query = query
                     .Where(user => user.Id != request.NotFriendWithQuery)
