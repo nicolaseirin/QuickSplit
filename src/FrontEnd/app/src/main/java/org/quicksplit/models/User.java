@@ -6,9 +6,9 @@ public class User {
     private String lastName;
     private String mail;
     private String password;
+    private String avatar;
 
     public String getId() {
-
         return id;
     }
 
@@ -40,11 +40,15 @@ public class User {
         this.mail = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

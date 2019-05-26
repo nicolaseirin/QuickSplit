@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.quicksplit.R;
+import org.quicksplit.Utils;
 import org.quicksplit.models.User;
 
 import java.util.List;
@@ -37,6 +38,9 @@ public class DeleteFriendsAdapter extends RecyclerView.Adapter<DeleteFriendsAdap
     @Override
     public void onBindViewHolder(@NonNull FriendsViewHolder friendsViewHolder, int i) {
         User currentItem = users.get(i);
+
+        String avatar = currentItem.getAvatar();
+        friendsViewHolder.mImageView.setImageBitmap(Utils.stringToBitMap(avatar));
         friendsViewHolder.mTextViewNameLastname.setText(currentItem.getName() + " " + currentItem.getLastName());
         friendsViewHolder.mTextViewEmail.setText(currentItem.getMail());
     }
