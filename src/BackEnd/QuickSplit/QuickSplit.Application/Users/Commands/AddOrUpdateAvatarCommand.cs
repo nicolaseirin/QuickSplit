@@ -13,47 +13,30 @@ namespace QuickSplit.Application.Users.Commands
     public class AddOrUpdateAvatarCommandHandler : IRequestHandler<AddOrUpdateAvatarCommand, Unit>
     {
         private readonly IQuickSplitContext _context;
-        private readonly string[] ValidFormats = {"png", "jpeg", "jpg"};
-        
-        public AddOrUpdateAvatarCommandHandler(IQuickSplitContext context)
+        private readonly IAvatarRepository _avatarRepository;
+
+        public AddOrUpdateAvatarCommandHandler(IQuickSplitContext context, IAvatarRepository avatarRepository)
         {
             _context = context;
+            _avatarRepository = avatarRepository;
         }
 
         public async Task<Unit> Handle(AddOrUpdateAvatarCommand request, CancellationToken cancellationToken)
         {
             User user = await _context.Users.FindAsync(request.UserId) ?? throw new InvalidCommandException("No existe el usuario");
-            
-            string ext = request.ImageFormat.Split('/').Last();
-            if (!FormatIsValid(ext))
-            {
-                throw new InvalidCommandException("Formato de imagen invalido.");
-            }
-            
-            string avatarsDir  = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Avatars");
-            Directory.CreateDirectory(avatarsDir);
-            string avatarPath = avatarsDir + $"/{request.UserId}.{ext}";
-            using (var fs = new FileStream(avatarPath, FileMode.OpenOrCreate))
-            {
-                await request.ImageStream.CopyToAsync(fs, cancellationToken);
-            }
-            
-            return Unit.Value;
-        }
 
-        private bool FormatIsValid(string requestImageFormat)
-        {
-            return ValidFormats
-                .Any(f => f.Equals(requestImageFormat, StringComparison.OrdinalIgnoreCase));
+            _avatarRepository.SetAvatarFromStream(request.UserId, request.ImageStream, request.ImageFormat);
+
+            return Unit.Value;
         }
     }
 
     public class AddOrUpdateAvatarCommand : IRequest
     {
         public Stream ImageStream { get; set; }
-        
+
         public string ImageFormat { get; set; }
-        
+
         public int UserId { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -14,10 +15,12 @@ namespace QuickSplit.Application.Users.Queries
     public class GetFriendsQueryHandler : IRequestHandler<GetFriendsQuery, IEnumerable<UserModel>>
     {
         private readonly IQuickSplitContext _context;
+        private readonly IAvatarRepository _avatarRepository;
 
-        public GetFriendsQueryHandler(IQuickSplitContext context)
+        public GetFriendsQueryHandler(IQuickSplitContext context, IAvatarRepository avatarRepository)
         {
             _context = context;
+            _avatarRepository = avatarRepository;
         }
 
         public async Task<IEnumerable<UserModel>> Handle(GetFriendsQuery request, CancellationToken cancellationToken)
@@ -25,13 +28,15 @@ namespace QuickSplit.Application.Users.Queries
             User user = await _context
                 .Users
                 .FindAsync(request.UserId);
-            
+
             if (user == null)
                 throw new InvalidQueryException($"No existe usuario con id {request.UserId}");
 
+            string avatar = await _avatarRepository.GetAvatarBase64(request.UserId);
+
             return await _context.Friendships
                 .Where(friendship => friendship.Friend2Id == request.UserId)
-                .Select(friendship => new UserModel(friendship.Friend1))
+                .Select(friendship => new UserModel(friendship.Friend1, avatar))
                 .ToListAsync(cancellationToken: cancellationToken);
         }
     }

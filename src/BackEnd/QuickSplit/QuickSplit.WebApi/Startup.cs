@@ -38,6 +38,7 @@ namespace QuickSplit.WebApi
             
             services.AddTransient<IQuickSplitContext, QuickSplitContext>();
             services.AddTransient<IPasswordHasher, PasswordHasher.PasswordHasher>();
+            services.AddTransient<IAvatarRepository, AvatarRepository>();
             services.AddDbContext<QuickSplitContext>(GenerateDbOptions);
 
             
