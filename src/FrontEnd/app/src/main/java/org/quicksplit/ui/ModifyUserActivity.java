@@ -52,6 +52,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private String filePath;
     private File file;
 
+    private TextView mBigNameLastname;
+    private TextView mBigEmail;
     private TextInputLayout mLabelErrorName;
     private EditText mTextName;
     private TextInputLayout mLabelErrorLastName;
@@ -70,6 +72,9 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_user);
+
+        mBigNameLastname = findViewById(R.id.txt_bigNameLastname);
+        mBigEmail = findViewById(R.id.txt_bigEmail);
 
         mLabelErrorName = findViewById(R.id.lblError_txtName);
         mTextName = findViewById(R.id.txtName);
@@ -136,6 +141,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void loadUserData() {
+        mBigNameLastname.setText(user.getName() + " " + user.getLastName());
+        mBigEmail.setText(user.getMail());
         mTextName.setText(user.getName());
         mTextLastName.setText(user.getLastName());
         mTextEmail.setText(user.getMail());

@@ -1,6 +1,10 @@
 package org.quicksplit.adapters;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,14 +13,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.quicksplit.R;
+import org.quicksplit.ServiceGenerator;
+import org.quicksplit.TokenManager;
 import org.quicksplit.models.User;
+import org.quicksplit.service.UserClient;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.FriendsViewHolder> {
 
     private List<User> users;
     private OnItemClickListener mListener;
+    private Context context;
+    private TokenManager tokenManager;
 
     public interface OnItemClickListener {
         void onAddClick(User user);
@@ -30,6 +49,8 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.Fr
     @Override
     public FriendsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_add_friend, viewGroup, false);
+        this.context = view.getContext();
+        this.tokenManager = new TokenManager(context);
         FriendsViewHolder friendsViewHolder = new FriendsViewHolder(view, mListener, users);
         return friendsViewHolder;
     }
@@ -37,9 +58,28 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.Fr
     @Override
     public void onBindViewHolder(@NonNull FriendsViewHolder friendsViewHolder, int i) {
         User currentItem = users.get(i);
+        /*String userId = tokenManager.getUserIdFromToken();
 
-        //TODO: Get image resource here
+        Bitmap avatar;
 
+        UserClient client = ServiceGenerator.createService(UserClient.class);
+        Call call = client.getUserAvatar(userId);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                System.out.println("Recibí la imagen");
+
+                Bitmap avatar = BitmapFactory.decodeStream(((ResponseBody)response.body()).byteStream());
+                friendsViewHolder.mImageView.setImageBitmap(avatar);
+
+                //imageView.setImageBitmap(bmp);
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                System.out.println("No recibí la imagen");
+            }
+        });*/
 
         friendsViewHolder.mTextViewNameLastname.setText(currentItem.getName() + " " + currentItem.getLastName());
         friendsViewHolder.mTextViewEmail.setText(currentItem.getMail());
