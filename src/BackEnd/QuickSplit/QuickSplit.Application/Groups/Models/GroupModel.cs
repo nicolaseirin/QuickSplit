@@ -22,7 +22,7 @@ namespace QuickSplit.Application.Groups.Models
         {
             Id = group.Id;
             Name = group.Name;
-            Admin = group.Admin;
+            Admin = group.Admin.Id;
             Memberships = new List<int>();
             SetMemberships(group.Memberships);
         }
@@ -31,7 +31,7 @@ namespace QuickSplit.Application.Groups.Models
         {
             foreach (Domain.Membership m in memberships)
             {
-                Memberships.Add(m.GroupId);
+                Memberships.Add(m.UserId);
             }
         }
     }

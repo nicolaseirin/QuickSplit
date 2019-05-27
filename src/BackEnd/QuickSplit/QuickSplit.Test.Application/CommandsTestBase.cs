@@ -13,6 +13,7 @@ namespace QuickSplit.Test.Application
         protected readonly IPasswordHasher PasswordHasher;
         protected readonly DbSet<Friendship> Friendships;
 
+        protected readonly DbSet<Membership> Memberships;
 
         protected CommandsTestBase()
         {
@@ -20,6 +21,7 @@ namespace QuickSplit.Test.Application
             Users = Context.Users;
             Friendships = Context.Friendships;
             Groups = Context.Groups;
+            Memberships = Context.Memberships;
             PasswordHasher = new PasswordHasher.PasswordHasher();
         }
     }
