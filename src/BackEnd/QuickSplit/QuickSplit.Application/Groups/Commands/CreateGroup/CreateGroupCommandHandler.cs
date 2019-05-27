@@ -51,6 +51,7 @@ namespace QuickSplit.Application.Groups.Commands.CreateGroup
             await _context.SaveChangesAsync();
 
             Domain.Membership[] memberships = await Task.WhenAll(request.Memberships.Select(i => GetMemberships(i, toCreate)));
+            if (memberships.Length == 0) throw new InvalidCommandException($"El grupo debe contener al menos un miembro");
             toCreate.Memberships = memberships;
             await _context.SaveChangesAsync();
 

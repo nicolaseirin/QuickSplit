@@ -10,6 +10,7 @@ namespace QuickSplit.Test.Application
         protected readonly IQuickSplitContext Context;
         protected readonly DbSet<User> Users;
         protected readonly DbSet<Group> Groups;
+        protected readonly DbSet<Membership> Memberships;
         protected IPasswordHasher PasswordHasher;
 
         protected CommandsTestBase()
@@ -17,6 +18,7 @@ namespace QuickSplit.Test.Application
             Context = TestingFactory.CreateInMemoryContext();
             Users = Context.Users;
             Groups = Context.Groups;
+            Memberships = Context.Memberships;
             PasswordHasher = new PasswordHasher.PasswordHasher();
         }
     }
