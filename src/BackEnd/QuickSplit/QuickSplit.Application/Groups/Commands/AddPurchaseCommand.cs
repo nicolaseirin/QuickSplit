@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Exceptions;
+using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Domain;
 
@@ -41,10 +43,11 @@ namespace QuickSplit.Application.Groups.Commands
 
         private async Task<User[]> GetParticipantsIfValid(AddPurchaseCommand request, Group @group)
         {
-            User[] a = await Task.WhenAll(request.Participants.Select(u => _context.Users.FindAsync(u)));
-            if (a.Any(u => u == null)) throw new InvalidCommandException("Participantes invalidos");
+            User[] participants = await Task.WhenAll(request.Participants.Select(u => _context.Users.FindAsync(u)));
+            if (participants.Any(u => u == null)) 
+                throw new InvalidCommandException("Participantes invalidos");
 
-            return a;
+            return participants;
         }
 
         private async Task<User> GetPurchaserIfValid(AddPurchaseCommand request)
