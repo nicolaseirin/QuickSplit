@@ -5,9 +5,23 @@ namespace QuickSplit.Domain
 {
     public class Purchase
     {
+        public Purchase() {}
+        
+        public Purchase(User purchaser, Group @group, uint cost, Currency currency, IEnumerable<User> participants)
+        {
+            Purchaser = purchaser;
+            Group = @group;
+            Cost = cost;
+            Currency = currency;
+            foreach (User participant in participants)
+            {
+                AddParticipant(participant);
+            }
+        }
+
         public int Id { get; set; }
         
-        public User Purchased { get; set; }
+        public User Purchaser { get; set; }
         
         public ICollection<Participant> Participants { get; set; } = new List<Participant>();
         
