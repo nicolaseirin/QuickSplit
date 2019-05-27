@@ -3,7 +3,7 @@ using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Interfaces;
-using QuickSplit.Application.Users.Commands;
+using QuickSplit.Application.Users.Commands.CreateUser;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Domain;
 using QuickSplit.Persistence;
@@ -23,7 +23,7 @@ namespace QuickSplit.Test.Application
                 Password = "Password123",
                 Mail = "jonny@gmail.com"
             };
-            var handler = new CreateUserCommandHandler(Context, PasswordHasher);
+            var handler = new CreateUserCommandHandler(Context);
 
             UserModel user = await handler.Handle(command, CancellationToken.None);
 
@@ -39,7 +39,7 @@ namespace QuickSplit.Test.Application
                 Password = "Password123",
                 Mail = "jonny@gmail.com"
             };
-            var handler = new CreateUserCommandHandler(Context, PasswordHasher);
+            var handler = new CreateUserCommandHandler(Context);
 
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
@@ -53,7 +53,7 @@ namespace QuickSplit.Test.Application
                 Password = "Password123",
                 Mail = "jonny@gmail.com"
             };
-            var handler = new CreateUserCommandHandler(Context, PasswordHasher);
+            var handler = new CreateUserCommandHandler(Context);
 
             UserModel user = await handler.Handle(command, CancellationToken.None);
 
@@ -69,7 +69,7 @@ namespace QuickSplit.Test.Application
                 LastName = "Doe",
                 Mail = "jonny@gmail.com"
             };
-            var handler = new CreateUserCommandHandler(Context, PasswordHasher);
+            var handler = new CreateUserCommandHandler(Context);
 
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
@@ -83,7 +83,7 @@ namespace QuickSplit.Test.Application
                 LastName = "Doe",
                 Password = "123123"
             };
-            var handler = new CreateUserCommandHandler(Context, PasswordHasher);
+            var handler = new CreateUserCommandHandler(Context);
 
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }

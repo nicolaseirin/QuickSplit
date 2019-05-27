@@ -10,6 +10,7 @@
     <string name="modifyUser">Modificar Usuario</string>
     <string name="saveChanges">Guardar Cambios</string>
     <string name="lbl_register">Registrarse</string>
+    <string name="lbl_create">Crear</string>
     <string name="lbl_login">Iniciar Sesión</string>
     <string name="element_text">Element</string>
     <string name="grid_layout_manager">Grid Layout Manager</string>

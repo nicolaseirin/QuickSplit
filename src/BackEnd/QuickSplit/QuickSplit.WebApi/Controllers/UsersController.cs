@@ -42,7 +42,7 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(user);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand user)
         {

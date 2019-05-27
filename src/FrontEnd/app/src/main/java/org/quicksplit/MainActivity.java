@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
+<<<<<<< HEAD
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment;
@@ -67,5 +68,13 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.frame_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+=======
+    @Override
+    public void onClick(View v) {
+        //Intent modifyUser = new Intent(this, ModifyUserActivity.class);
+        //startActivity(modifyUser);
+        Intent createGroup = new Intent(this, CreateGroupActivity.class);
+        startActivity(createGroup);
+>>>>>>> feature/CreacionDeGrupo
     }
 }
