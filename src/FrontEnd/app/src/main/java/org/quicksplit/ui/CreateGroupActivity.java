@@ -32,6 +32,8 @@ public class CreateGroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
 
+        mRecyclerViewFriends = findViewById(R.id.friendsReciclerView);
+
         getFriends();
     }
 

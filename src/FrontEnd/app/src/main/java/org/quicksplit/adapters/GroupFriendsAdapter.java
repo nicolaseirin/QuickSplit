@@ -59,7 +59,6 @@ public class GroupFriendsAdapter extends RecyclerView.Adapter<GroupFriendsAdapte
         public ImageView mImageView;
         public TextView mTextViewNameLastname;
         public TextView mTextViewEmail;
-        public ImageView mImageViewDelete;
 
         public FriendsViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<User> users) {
             super(itemView);
@@ -67,7 +66,7 @@ public class GroupFriendsAdapter extends RecyclerView.Adapter<GroupFriendsAdapte
             mImageView = itemView.findViewById(R.id.imageView);
             mTextViewNameLastname = itemView.findViewById(R.id.txt_nameLastname);
             mTextViewEmail = itemView.findViewById(R.id.txt_email);
-            mImageViewDelete = itemView.findViewById(R.id.img_delete);
+            /*mImageViewDelete = itemView.findViewById(R.id.img_delete);
 
             mImageViewDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -79,7 +78,7 @@ public class GroupFriendsAdapter extends RecyclerView.Adapter<GroupFriendsAdapte
                         }
                     }
                 }
-            });
+            });*/
         }
     }
 }
