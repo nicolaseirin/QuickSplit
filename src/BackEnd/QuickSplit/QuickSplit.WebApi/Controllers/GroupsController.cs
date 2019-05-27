@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using QuickSplit.Application.Groups.Models;
-using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using QuickSplit.Application.Groups.Commands.CreateGroup;
 using QuickSplit.Application.Groups.Commands;
 using QuickSplit.Application.Groups.Commands.UpdateGroup;
+using QuickSplit.Application.Groups.Commands.DeleteGroup;
+using System.Collections.Generic;
+using QuickSplit.Application.Groups;
 
 namespace QuickSplit.WebApi.Controllers
 {
@@ -15,7 +14,6 @@ namespace QuickSplit.WebApi.Controllers
     [ApiController]
     public class GroupsController: BaseController
     {
-        //POST
         [HttpPost]
         public async Task<ActionResult<GroupModel>> CreateGroup([FromBody] CreateGroupCommand command)
         {
@@ -23,12 +21,11 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(newGroup);
         }
 
-        //PUT
-        [HttpPut]
+        [HttpPut("{leave}")]
         public async Task<ActionResult<GroupModel>> LeaveGroup([FromBody] LeaveGroupCommand command)
         {
-            GroupModel newGroup = await Mediator.Send(command);
-            return Ok(newGroup);
+            await Mediator.Send(command);
+            return Ok();
         }
 
 
@@ -49,6 +46,24 @@ namespace QuickSplit.WebApi.Controllers
             command.Id = id;
             GroupModel updated = await Mediator.Send(command);
             return Ok(updated);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<ICollection<GroupModel>>> GetAll()
+        {
+            var groups = await Mediator.Send(new GetGroupsQuery());
+            return Ok(groups);
+        }
+
+        //[Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GroupModel>> Get(int id)
+        {
+            GroupModel group = await Mediator.Send(new GetGroupByIdQuery()
+            {
+                Id = id
+            });
+            return Ok(group);
         }
     }
 }
