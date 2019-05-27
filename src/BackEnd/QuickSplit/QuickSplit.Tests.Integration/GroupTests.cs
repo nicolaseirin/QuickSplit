@@ -2,10 +2,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using QuickSplit.Application.Groups.Commands.CreateGroup;
+using QuickSplit.Application.Groups.Commands;
 using QuickSplit.Application.Groups.Models;
-using QuickSplit.Application.Users.Commands.CreateUser;
-using QuickSplit.Application.Users.Queries.GetPassword;
+using QuickSplit.Application.Users.Commands;
+using QuickSplit.Application.Users.Queries;
 using QuickSplit.Tests.Integration.Internal;
 using Xunit;
 using Xunit.Priority;
@@ -70,7 +70,7 @@ namespace QuickSplit.Tests.Integration
                 Password = "123"
             };
         }
-        
+
         [Fact, Priority(1)]
         public async void AddUsers()
         {
@@ -83,7 +83,7 @@ namespace QuickSplit.Tests.Integration
             t2.Result.EnsureSuccessStatusCode();
             t3.Result.EnsureSuccessStatusCode();
         }
-        
+
         [Fact, Priority(2)]
         public async void CreateGroupWithAllUsers()
         {
@@ -94,7 +94,7 @@ namespace QuickSplit.Tests.Integration
                 Memberships = {2, 3}
             };
 
-            HttpResponseMessage response = await  _client.PostObjectAsync(GroupUrl, group);
+            HttpResponseMessage response = await _client.PostObjectAsync(GroupUrl, group);
 
             response.EnsureSuccessStatusCode();
             GroupModel responseGroup = await response.DeserializeObject<GroupModel>();
@@ -102,7 +102,7 @@ namespace QuickSplit.Tests.Integration
             Assert.Equal(group.Admin, responseGroup.Admin);
             Assert.True(group.Memberships.SequenceEqual(responseGroup.Memberships));
         }
-        
+
         [Fact, Priority(2)]
         public async void CreateEmptyGroup()
         {
@@ -112,7 +112,7 @@ namespace QuickSplit.Tests.Integration
                 Admin = 1
             };
 
-            HttpResponseMessage response = await  _client.PostObjectAsync(GroupUrl, group);
+            HttpResponseMessage response = await _client.PostObjectAsync(GroupUrl, group);
 
             response.EnsureSuccessStatusCode();
             GroupModel responseGroup = await response.DeserializeObject<GroupModel>();
@@ -120,7 +120,7 @@ namespace QuickSplit.Tests.Integration
             Assert.Equal(group.Admin, responseGroup.Admin);
             Assert.False(group.Memberships.Any());
         }
-        
+
         [Fact, Priority(2)]
         public async void CreateGroupWithNonExistantAdmin()
         {
@@ -130,11 +130,11 @@ namespace QuickSplit.Tests.Integration
                 Admin = 911
             };
 
-            HttpResponseMessage response = await  _client.PostObjectAsync(GroupUrl, group);
-            
+            HttpResponseMessage response = await _client.PostObjectAsync(GroupUrl, group);
+
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
-        
+
         [Fact, Priority(2)]
         public async void CreateGroupWithNonExistantMember()
         {
@@ -145,10 +145,33 @@ namespace QuickSplit.Tests.Integration
                 Memberships = {2, 3, 911}
             };
 
-            HttpResponseMessage response = await  _client.PostObjectAsync(GroupUrl, group);
-            
+            HttpResponseMessage response = await _client.PostObjectAsync(GroupUrl, group);
+
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
-        
+
+
+        [Fact, Priority(3)]
+        public async void AddPurchase()
+        {
+            var command = new AddPurchaseCommand()
+            {
+                Group = 1,
+                Currency = "Usd",
+                Participants = new[] {1, 2},
+                Purchaser = 1,
+                Cost = 15
+            };
+
+            HttpResponseMessage response = await _client.PostObjectAsync($"{GroupUrl}/1/purchases", command);
+            response.EnsureSuccessStatusCode();
+            PurchaseModel purchase = await response.DeserializeObject<PurchaseModel>();
+            
+            Assert.Equal(command.Currency, purchase.Currency);
+            Assert.Equal(command.Group, purchase.Group);
+            Assert.Equal(command.Participants.ToList(), purchase.Participants);
+            Assert.Equal(command.Cost, purchase.Cost);
+            Assert.Equal(command.Purchaser, purchase.Purchaser);
+        }
     }
 }

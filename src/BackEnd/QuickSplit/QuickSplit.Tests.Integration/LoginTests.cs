@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using QuickSplit.Application.Users.Commands.CreateUser;
+using QuickSplit.Application.Users.Commands;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Tests.Integration.Internal;
 using Xunit;
@@ -47,7 +47,7 @@ namespace QuickSplit.Tests.Integration
 
             HttpResponseMessage response = await _client.PostObjectAsync(UsersUrl, user);
 
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         }
     }
 }

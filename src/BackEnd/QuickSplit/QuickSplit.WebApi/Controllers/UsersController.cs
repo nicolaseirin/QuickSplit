@@ -1,14 +1,17 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QuickSplit.Application.Users.Commands.CreateUser;
-using QuickSplit.Application.Users.Commands.UpdateUser;
+using QuickSplit.Application.Users.Commands;
 using QuickSplit.Application.Users.Models;
-using QuickSplit.Application.Users.Queries.GetUserById;
-using QuickSplit.Application.Users.Queries.GetUsers;
+using QuickSplit.Application.Users.Queries;
 
 namespace QuickSplit.WebApi.Controllers
 {
@@ -16,12 +19,15 @@ namespace QuickSplit.WebApi.Controllers
     [ApiController]
     public class UsersController : BaseController
     {
-    
         [Authorize]
         [HttpGet(Name = "GetUser")]
-        public async Task<ActionResult<IEnumerable<UserModel>>> Get()
+        public async Task<ActionResult<IEnumerable<UserModel>>> Get([FromQuery] string find, [FromQuery] int? excludeFriendsOfId)
         {
-            IEnumerable<UserModel> users = await Mediator.Send(new GetUsersQuery());
+            IEnumerable<UserModel> users = await Mediator.Send(new GetUsersQuery()
+            {
+                SearchNameQuery = find,
+                NotFriendWithQuery = excludeFriendsOfId
+            });
             return Ok(users);
         }
 
@@ -29,7 +35,7 @@ namespace QuickSplit.WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserModel>> Get(int id)
         {
-            UserModel user = await Mediator.Send(new GetUserByIdQuery()
+            UserModel user = await Mediator.Send(new GetUserByIdQuery
             {
                 Id = id
             });
@@ -40,7 +46,7 @@ namespace QuickSplit.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand user)
         {
-            UserModel created =  await Mediator.Send(user);
+            UserModel created = await Mediator.Send(user);
             return CreatedAtRoute("GetUser", created);
         }
 
@@ -55,8 +61,78 @@ namespace QuickSplit.WebApi.Controllers
 
         [Authorize]
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            await Mediator.Send(new DeleteUserCommand
+            {
+                Id = id
+            });
+
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("{id}/friends")]
+        public async Task<IActionResult> GetFriends(int id)
+        {
+            IEnumerable<UserModel> friends = await Mediator.Send(new GetFriendsQuery() {UserId = id});
+            return Ok(friends);
+        }
+
+        [Authorize]
+        [HttpPost("{id}/friends")]
+        public async Task<IActionResult> AddFriend(int id, [FromBody] AddFriendCommand command)
+        {
+            command.CurrentUserId = id;
+            await Mediator.Send(command);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpDelete("{id}/friends/{friendId}")]
+        public async Task<IActionResult> DeleteFriend(int id, int friendId)
+        {
+            await Mediator.Send(new DeleteFriendCommand()
+            {
+                CurrentUserId = id,
+                FriendUserId = friendId
+            });
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("{id}/avatars")]
+        public async Task<ActionResult> GetImage(int id)
+        {
+            var command = new GetAvatarQuery()
+            {
+                UserId = id,
+            };
+            Stream stream = await Mediator.Send(command);
+
+            return Ok(stream);
+        }
+        
+        [Authorize]
+        [HttpPost("{id}/avatars")]
+        [Consumes("image/jpg", "image/jpeg", "image/png", "multipart/form-data")]
+        public async Task<IActionResult> AddImage(int id, IFormFile image)
+        {
+            if (image == null)
+                return BadRequest("Imagen invalida");
+            
+            
+            var command = new AddOrUpdateAvatarCommand()
+            {
+                UserId = id,
+                ImageStream = image.OpenReadStream(),
+                ImageFormat = image.ContentType.Split().Last()
+            };
+            
+            await Mediator.Send(command);
+            
+
+            return Ok();
         }
     }
 }

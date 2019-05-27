@@ -4,6 +4,8 @@ import org.quicksplit.model.Login;
 import org.quicksplit.model.Token;
 import org.quicksplit.model.User;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -25,4 +27,7 @@ public interface UserClient {
 
     @POST("authentications")
     Call<Token> login(@Body Login login);
+
+    @GET("users")
+    Call<List<User>> getUsers();
 }

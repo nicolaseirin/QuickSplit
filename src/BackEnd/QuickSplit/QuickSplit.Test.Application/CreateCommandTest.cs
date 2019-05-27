@@ -3,7 +3,7 @@ using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Interfaces;
-using QuickSplit.Application.Users.Commands.CreateUser;
+using QuickSplit.Application.Users.Commands;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Domain;
 using QuickSplit.Persistence;

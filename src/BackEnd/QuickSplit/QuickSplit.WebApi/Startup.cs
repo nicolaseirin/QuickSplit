@@ -38,6 +38,7 @@ namespace QuickSplit.WebApi
             
             services.AddTransient<IQuickSplitContext, QuickSplitContext>();
             services.AddTransient<IPasswordHasher, PasswordHasher.PasswordHasher>();
+            services.AddTransient<IAvatarRepository, AvatarRepository>();
             services.AddDbContext<QuickSplitContext>(GenerateDbOptions);
 
             
@@ -76,6 +77,7 @@ namespace QuickSplit.WebApi
 
         private void GenerateDbOptions(IServiceProvider serviceProvider, DbContextOptionsBuilder options)
         {
+            options.UseLazyLoadingProxies();
             options.UseSqlServer(Configuration.GetConnectionString("QuickSplitDb"));
         }
 

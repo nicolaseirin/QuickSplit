@@ -8,6 +8,7 @@ namespace QuickSplit.Application.Interfaces
     public interface IQuickSplitContext : IDisposable
     {
         DbSet<User> Users { get; }
+        DbSet<Friendship> Friendships { get; }
         DbSet<Group> Groups { get; }
         DbSet<Domain.Membership> Memberships { get; }
 

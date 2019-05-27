@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using QuickSplit.Application.Groups.Commands.CreateGroup;
+using QuickSplit.Application.Groups.Commands;
 using QuickSplit.Application.Groups.Models;
-using QuickSplit.Application.Users.Commands.CreateUser;
 using QuickSplit.Application.Users.Models;
 using Xunit;
 
