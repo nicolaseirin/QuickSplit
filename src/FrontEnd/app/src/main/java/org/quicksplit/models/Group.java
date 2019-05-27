@@ -2,7 +2,7 @@ package org.quicksplit.models;
 
 import java.util.List;
 
-public class GroupModelIn {
+public class Group {
 
     private String name;
     private String admin;

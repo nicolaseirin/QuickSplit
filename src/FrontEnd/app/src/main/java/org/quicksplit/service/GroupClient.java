@@ -1,6 +1,6 @@
 package org.quicksplit.service;
 
-import org.quicksplit.models.GroupModelIn;
+import org.quicksplit.models.Group;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -12,13 +12,13 @@ import retrofit2.http.Path;
 public interface GroupClient {
 
     @POST("groups")
-    Call<GroupModelIn> createGroup(@Body GroupModelIn groupIn);
+    Call<Group> createGroup(@Body Group groupIn);
 
     @DELETE("groups/{id}")
     Call<Void> deleteGroup(@Path("id") String id);
 
     @PUT("groups/{id}")
-    Call<GroupModelIn> modifyGroup(@Path("id") String id);
+    Call<Group> modifyGroup(@Path("id") String id);
 
 }
 
