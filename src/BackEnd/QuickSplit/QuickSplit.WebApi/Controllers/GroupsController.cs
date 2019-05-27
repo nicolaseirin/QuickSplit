@@ -30,5 +30,24 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(newGroup);
         }
 
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await Mediator.Send(new DeleteGroupCommand
+            {
+                Id = id
+            });
+
+            return Ok();
+        }
+        
+        [HttpPut("{id}")]
+        public async Task<ActionResult<GroupModel>> Put(int id, [FromBody] UpdateGroupCommand command)
+        {
+            command.Id = id;
+            GroupModel updated = await Mediator.Send(command);
+            return Ok(updated);
+        }
     }
 }
