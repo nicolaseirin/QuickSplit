@@ -32,12 +32,19 @@ namespace QuickSplit.Application.Users.Queries
             if (user == null)
                 throw new InvalidQueryException($"No existe usuario con id {request.UserId}");
 
-            string avatar = await _avatarRepository.GetAvatarBase64(request.UserId);
-
-            return await _context.Friendships
+            List<User> friends =  await _context.Friendships
                 .Where(friendship => friendship.Friend2Id == request.UserId)
-                .Select(friendship => new UserModel(friendship.Friend1, avatar))
+                .Select(friendship => friendship.Friend1)
                 .ToListAsync(cancellationToken: cancellationToken);
+
+            return await Task.WhenAll(friends.Select(MapToModel));
+        }
+        
+        private async Task<UserModel> MapToModel(User user)
+        {
+            string avatar = await _avatarRepository.GetAvatarBase64(user.Id);
+
+            return new UserModel(user, avatar);
         }
     }
 

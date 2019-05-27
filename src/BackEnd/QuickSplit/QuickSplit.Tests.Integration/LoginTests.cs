@@ -47,7 +47,7 @@ namespace QuickSplit.Tests.Integration
 
             HttpResponseMessage response = await _client.PostObjectAsync(UsersUrl, user);
 
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         }
     }
 }
