@@ -49,11 +49,6 @@ namespace QuickSplit.Tests.Integration.Internal
                     // Resets Database
                     db.Database.EnsureDeleted();
                     db.Database.EnsureCreated();
-                    //db.Database.ExecuteSqlCommand(WipeDbScript);
-//                    foreach (string table in _tables)
-//                    {
-//                        db.Database.ExecuteSqlCommand(@"TRUNCATE TABLE dbo." + table);
-//                    }
                     db.Database.ExecuteSqlCommand(@"INSERT INTO dbo.Users (Name, LastName, Mail, Password) VALUES ('admin', 'admin', 'admin@gmail.com','DVOZUIQnznlVbNpxkYAgwejRW1M=')");
                 }
             });

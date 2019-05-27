@@ -7,28 +7,6 @@
     android:layout_height="match_parent"
     tools:context="org.quicksplit.ui.MainActivity">
 
-    <!--<android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_top"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.v7.widget.SearchView
-                android:id="@+id/search_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                app:iconifiedByDefault="false"
-                app:queryHint="@string/search_hint">
-
-            </android.support.v7.widget.SearchView>
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>-->
-
     <FrameLayout
         android:id="@+id/frame_container"
         android:layout_width="match_parent"

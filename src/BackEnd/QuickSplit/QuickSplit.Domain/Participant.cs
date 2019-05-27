@@ -3,10 +3,10 @@ namespace QuickSplit.Domain
     public class Participant
     {
         public int UserId { get; set; }
-        public User User { get; set; }
+        public virtual User User { get; set; }
         
         public int GroupId { get; set; }
-        public Group Group { get; set; }
+        public virtual Group Group { get; set; }
 
         protected bool Equals(Participant other)
         {

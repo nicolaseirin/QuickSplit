@@ -92,14 +92,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
-        mButtonUploadAvatar = findViewById(R.id.btn_uploadAvatar);
-        mButtonUploadAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGallery();
-            }
-        });
-
         mLayoutChangeAvatar = findViewById(R.id.layout_changeAvatar);
         mLayoutChangeAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
