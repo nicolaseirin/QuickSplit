@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +58,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private ImageView mImageAvatar;
     private Button mButtonSave;
     private Button mButtonUploadAvatar;
+    private LinearLayout mLayoutChangeAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,14 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
 
         mButtonUploadAvatar = findViewById(R.id.btn_uploadAvatar);
         mButtonUploadAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGallery();
+            }
+        });
+
+        mLayoutChangeAvatar = findViewById(R.id.layout_changeAvatar);
+        mLayoutChangeAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openGallery();
