@@ -1,6 +1,6 @@
 package org.quicksplit.service;
 
-import org.quicksplit.model.GroupModelIn;
+import org.quicksplit.models.GroupModelIn;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

@@ -1,6 +1,7 @@
 package org.quicksplit.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -34,18 +35,8 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
     private OnFragmentInteractionListener mListener;
 
     public GroupFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GroupFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static GroupFragment newInstance(String param1, String param2) {
         GroupFragment fragment = new GroupFragment();
         Bundle args = new Bundle();
@@ -69,6 +60,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group, container, false);
         mButtonCreateGroup = view.findViewById(R.id.btn_createGroup);
+        mButtonCreateGroup.setOnClickListener(this);
 
         return view;
     }
@@ -92,7 +84,8 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        //TODO: IMPLEMENT INTENT TO REGISTER GROUP
+        Intent createGroup = new Intent(getActivity(), CreateGroupActivity.class);
+        startActivity(createGroup);
     }
 
     public interface OnFragmentInteractionListener {

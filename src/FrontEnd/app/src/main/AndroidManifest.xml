@@ -14,6 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.CreateGroupActivity"></activity>
         <activity android:name=".ui.LoginActivity" />
         <activity android:name=".ui.ModifyUserActivity" />
         <activity android:name=".ui.RegisterActivity" />
@@ -24,6 +25,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -31,6 +33,7 @@
         <activity android:name=".ui.MainEmptyActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
