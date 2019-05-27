@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_groups:
                     //toolbar.setTitle(R.string.title_groups);
-                    //fragment = new CartFragment();
-                    //loadFragment(fragment);
+                    fragment = new GroupFragment();
+                    loadFragment(fragment);
                     return true;
                 case R.id.navigation_settings:
                     //toolbar.setTitle(R.string.title_settings);

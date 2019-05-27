@@ -13,7 +13,6 @@ namespace QuickSplit.WebApi.Controllers
     [ApiController]
     public class GroupController: BaseController
     {
-        //POST
         [HttpPost]
         public async Task<ActionResult<GroupModel>> CreateGroup(int id, [FromBody] CreateGroupCommand command)
         {
