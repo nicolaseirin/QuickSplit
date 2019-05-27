@@ -7,6 +7,7 @@ using QuickSplit.Application.Groups.Models;
 using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using QuickSplit.Application.Groups.Commands.CreateGroup;
 using QuickSplit.Application.Groups.Commands;
+using QuickSplit.Application.Groups.Commands.UpdateGroup;
 
 namespace QuickSplit.WebApi.Controllers
 {
