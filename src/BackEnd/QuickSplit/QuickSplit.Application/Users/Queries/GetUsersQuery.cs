@@ -53,6 +53,6 @@ namespace QuickSplit.Application.Users.Queries
         public string SearchNameQuery { get; set; }
         
         public int? NotFriendWithQuery { get; set; }
-        
+
     }
 }

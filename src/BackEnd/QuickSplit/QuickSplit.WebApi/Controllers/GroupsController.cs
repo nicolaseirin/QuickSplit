@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using QuickSplit.Application.Groups;
 using QuickSplit.Application.Groups.Commands;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Groups.Queries;
+using QuickSplit.Application.Users.Models;
 
 namespace QuickSplit.WebApi.Controllers
 {
@@ -80,6 +82,17 @@ namespace QuickSplit.WebApi.Controllers
             });
 
             return Ok(result);
+        }
+
+        [HttpGet("{id}/users")]
+        public async Task<ActionResult<IEnumerable<UserModel>>> GetParticipants(int id)
+        {
+            IEnumerable<UserModel> participants = await Mediator.Send(new GetMembersQuery()
+            {
+                GroupId = id
+            });
+
+            return Ok(participants);
         }
     }
 }
