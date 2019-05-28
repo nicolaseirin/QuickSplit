@@ -16,11 +16,19 @@ public class Group {
         return admin;
     }
 
+    public List<String> getMembers() {
+        return members;
+    }
+
     public void setAdmin(String admin) {
         this.admin = admin;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setMembers(List<String> members) {
+        this.members = members;
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 
 public class GroupFriendsAdapter extends RecyclerView.Adapter<GroupFriendsAdapter.FriendsViewHolder> {
 
-    private List<User> users;
+    private List<User> friends;
     private OnItemCheakedListener mListener;
 
     public interface OnItemCheakedListener {
@@ -34,13 +34,13 @@ public class GroupFriendsAdapter extends RecyclerView.Adapter<GroupFriendsAdapte
     @Override
     public FriendsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_group_friends, viewGroup, false);
-        FriendsViewHolder friendsViewHolder = new FriendsViewHolder(view, mListener, users);
+        FriendsViewHolder friendsViewHolder = new FriendsViewHolder(view, mListener, friends);
         return friendsViewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull FriendsViewHolder friendsViewHolder, int i) {
-        User currentItem = users.get(i);
+        User currentItem = friends.get(i);
 
         String avatar = currentItem.getAvatar();
         friendsViewHolder.mImageView.setImageBitmap(Utils.stringToBitMap(avatar));
@@ -50,11 +50,11 @@ public class GroupFriendsAdapter extends RecyclerView.Adapter<GroupFriendsAdapte
 
     @Override
     public int getItemCount() {
-        return users.size();
+        return friends.size();
     }
 
     public GroupFriendsAdapter(List<User> users) {
-        this.users = users;
+        this.friends = users;
     }
 
     public static class FriendsViewHolder extends RecyclerView.ViewHolder {

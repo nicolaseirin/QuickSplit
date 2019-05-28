@@ -5,12 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.GroupFriendsAdapter;
+import org.quicksplit.models.Group;
 import org.quicksplit.models.User;
 import org.quicksplit.service.UserClient;
 
@@ -23,6 +25,8 @@ import retrofit2.Response;
 public class CreateGroupActivity extends AppCompatActivity {
 
     private List<User> friends;
+    private List<String> friendsSelected;
+    private EditText mEditTextGroupName;
     private RecyclerView mRecyclerViewFriends;
     private GroupFriendsAdapter mRecycleViewGroupFriendsAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
@@ -32,6 +36,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
 
+        mEditTextGroupName = findViewById(R.id.txt_GroupName);
         mRecyclerViewFriends = findViewById(R.id.friendsReciclerView);
 
         getFriends();
@@ -76,16 +81,26 @@ public class CreateGroupActivity extends AppCompatActivity {
         mRecycleViewGroupFriendsAdapter.setOnItemClickListener(new GroupFriendsAdapter.OnItemCheakedListener() {
             @Override
             public void onCheck(User user) {
-                System.out.println("Checaste el usuario " + user.getName());
+                friendsSelected.add(user.getId());
             }
 
             @Override
             public void onUncheck(User user) {
-                System.out.println("Dechecaste el usuario " + user.getName());
+                friendsSelected.remove(user.getId());
             }
         });
     }
 
+    private void createGroup() {
+        TokenManager tokenManager = new TokenManager(this);
 
+        Group group = new Group();
+
+        group.setAdmin(tokenManager.getUserIdFromToken());
+        group.setName(mEditTextGroupName.getText().toString());
+        group.setMembers(friendsSelected);
+
+        //TODO: LLAMAR AL BACK Y MANDAR EL GRUPO
+    }
 }
 
