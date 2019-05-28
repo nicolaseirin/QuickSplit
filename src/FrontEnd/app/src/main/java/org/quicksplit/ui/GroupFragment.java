@@ -62,6 +62,8 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         mButtonCreateGroup = view.findViewById(R.id.btn_createGroup);
         mButtonCreateGroup.setOnClickListener(this);
 
+        //TODO: INTIALIZE THE GROUPS LIST
+
         return view;
     }
 

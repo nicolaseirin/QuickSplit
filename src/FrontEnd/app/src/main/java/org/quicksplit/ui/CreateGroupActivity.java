@@ -1,6 +1,7 @@
 package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.quicksplit.R;
@@ -31,6 +33,8 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     private List<User> friends;
     private List<String> friendsSelected;
     private Button mButtonCreateGroup;
+    private TextView mLabelErrorFriendsSelected;
+    private TextInputLayout mLabelErrorGroupName;
     private EditText mEditTextGroupName;
     private RecyclerView mRecyclerViewFriends;
     private GroupFriendsAdapter mRecycleViewGroupFriendsAdapter;
@@ -43,7 +47,11 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
 
         friendsSelected = new ArrayList<String>();
 
+        mLabelErrorFriendsSelected = findViewById(R.id.lbl_errorMessage);
+
+        mLabelErrorGroupName = findViewById(R.id.lblError_txtGroupName);
         mEditTextGroupName = findViewById(R.id.txt_GroupName);
+
         mRecyclerViewFriends = findViewById(R.id.friendsReciclerView);
 
         mButtonCreateGroup = findViewById(R.id.btn_createGroup);
@@ -102,6 +110,11 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void createGroup() {
+        showErrors();
+
+        if (!validFileds())
+            return;
+
         TokenManager tokenManager = new TokenManager(this);
 
         Group group = new Group();
@@ -133,6 +146,28 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
                 Toast.makeText(CreateGroupActivity.this, "Error en la comunicación al crear grupo.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void showErrors() {
+        if (mEditTextGroupName.getText().toString().trim().equals("")) {
+            mLabelErrorGroupName.setVisibility(View.VISIBLE);
+            mLabelErrorGroupName.setError("El grupo debe tener un nombre no vacío.");
+        } else {
+            mLabelErrorGroupName.setVisibility(View.GONE);
+            mLabelErrorGroupName.setError("");
+        }
+
+        if (friendsSelected.isEmpty()) {
+            mLabelErrorFriendsSelected.setVisibility(View.VISIBLE);
+            mLabelErrorFriendsSelected.setText("Debe seleccionar por lo menos un amigo para crear un grupo.");
+        } else {
+            mLabelErrorFriendsSelected.setVisibility(View.GONE);
+            mLabelErrorFriendsSelected.setText("");
+        }
+    }
+
+    private boolean validFileds() {
+        return !friendsSelected.isEmpty() && !mEditTextGroupName.getText().toString().trim().equals("");
     }
 
     @Override

@@ -31,21 +31,36 @@
         android:paddingRight="16dp"
         android:paddingBottom="16dp">
 
-        <EditText
-            android:id="@+id/txt_GroupName"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/lblError_txtGroupName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="20dp"
-            android:hint="@string/title_groupName" />
+            app:errorEnabled="true">
+
+            <EditText
+                android:id="@+id/txt_GroupName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="20dp"
+                android:hint="@string/title_groupName" />
+
+
+        </android.support.design.widget.TextInputLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/friendsReciclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white"
-            android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
+            android:scrollbars="vertical" />
 
+        <TextView
+            android:id="@+id/lbl_errorMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btn_createGroup"
