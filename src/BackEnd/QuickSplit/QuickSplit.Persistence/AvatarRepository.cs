@@ -71,12 +71,12 @@ namespace QuickSplit.Persistence
             }
 
             Directory.CreateDirectory(AvatarsDir);
-            DeleteOldImage(userId);
+            DeleteImage(userId);
             string avatarPath = AvatarsDir + $"/{userId}.{ext}";
             return avatarPath;
         }
 
-        private void DeleteOldImage(int userId)
+        public void DeleteImage(int userId)
         {
             foreach (string file in Directory.GetFiles(AvatarsDir).Where(f => FileIsUserAvatar(userId, f)))
             {

@@ -12,5 +12,7 @@ namespace QuickSplit.Application.Interfaces
         void SetAvatarFromStream(int userId, Stream avatar, string avatarExt);
         
         void SetAvatarFromBase64(int userId, string avatar, string avatarExt);
+
+        void DeleteImage(int userId);
     }
 }
