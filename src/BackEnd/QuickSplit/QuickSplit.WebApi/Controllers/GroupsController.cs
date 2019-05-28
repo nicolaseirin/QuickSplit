@@ -19,14 +19,6 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(newGroup);
         }
 
-
-        [HttpPost("{id}/purchases")]
-        public async Task<ActionResult<PurchaseModel>> AddPurchase([FromBody] AddPurchaseCommand command)
-        {
-            PurchaseModel purchase = await Mediator.Send(command);
-            return Ok(purchase);
-        }
-
         [HttpPut("{leave}")]
         public async Task<ActionResult<GroupModel>> LeaveGroup([FromBody] LeaveGroupCommand command)
         {
@@ -70,6 +62,24 @@ namespace QuickSplit.WebApi.Controllers
                 Id = id
             });
             return Ok(group);
+        }
+
+        [HttpPost("{id}/purchases")]
+        public async Task<ActionResult<PurchaseModel>> AddPurchase([FromBody] AddPurchaseCommand command)
+        {
+            PurchaseModel purchase = await Mediator.Send(command);
+            return Ok(purchase);
+        }
+
+        [HttpGet("{id}/purchases")]
+        public async Task<ActionResult<IEnumerable<PurchaseModel>>> GetPurchases(int id)
+        {
+            IEnumerable<PurchaseModel> result = await Mediator.Send(new GetPurchasesByGroupQuery()
+            {
+                GroupId = id
+            });
+
+            return Ok(result);
         }
     }
 }

@@ -205,5 +205,20 @@ namespace QuickSplit.Tests.Integration
             Assert.True(group.Memberships.All(m => m == 2 || m == 3));
             Assert.True(group.Purchases.Any());
         }
+        
+        [Fact, Priority(5)]
+        public async void GetGroupPurchase()
+        {
+            var query = new GetGroupsQuery();
+
+            HttpResponseMessage response = await _client.GetAsync(GroupUrl + "/1/purchases");
+            response.EnsureSuccessStatusCode();
+            PurchaseModel purchase = (await response.DeserializeCollection<PurchaseModel>()).Single();
+            
+            Assert.Equal(1, purchase.Id);
+            Assert.True(purchase.Participants.All(p => p == 2 || p == 1));
+            Assert.Equal(1, purchase.Purchaser);
+            Assert.Equal(15U, purchase.Cost);
+        }
     }
 }
