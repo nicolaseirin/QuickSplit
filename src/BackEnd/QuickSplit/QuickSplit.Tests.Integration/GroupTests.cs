@@ -1,9 +1,13 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Internal;
+using QuickSplit.Application.Groups;
 using QuickSplit.Application.Groups.Commands;
 using QuickSplit.Application.Groups.Models;
+using QuickSplit.Application.Groups.Queries;
 using QuickSplit.Application.Users.Commands;
 using QuickSplit.Application.Users.Queries;
 using QuickSplit.Tests.Integration.Internal;
@@ -104,24 +108,6 @@ namespace QuickSplit.Tests.Integration
         }
 
         [Fact, Priority(2)]
-        public async void CreateEmptyGroup()
-        {
-            var group = new CreateGroupCommand()
-            {
-                Name = "Red Wedding",
-                Admin = 1
-            };
-
-            HttpResponseMessage response = await _client.PostObjectAsync(GroupUrl, group);
-
-            response.EnsureSuccessStatusCode();
-            GroupModel responseGroup = await response.DeserializeObject<GroupModel>();
-            Assert.Equal(group.Name, responseGroup.Name);
-            Assert.Equal(group.Admin, responseGroup.Admin);
-            Assert.False(group.Memberships.Any());
-        }
-
-        [Fact, Priority(2)]
         public async void CreateGroupWithNonExistantAdmin()
         {
             var group = new CreateGroupCommand()
@@ -147,11 +133,27 @@ namespace QuickSplit.Tests.Integration
 
             HttpResponseMessage response = await _client.PostObjectAsync(GroupUrl, group);
 
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-
         [Fact, Priority(3)]
+        public async void GetGroups()
+        {
+            var query = new GetGroupsQuery();
+
+            HttpResponseMessage response = await _client.GetAsync(GroupUrl);
+            response.EnsureSuccessStatusCode();
+            IEnumerable<GroupModel> groups = await response.DeserializeCollection<GroupModel>();
+
+            Assert.Single(groups);
+            GroupModel group = groups.Single();
+            Assert.Equal(1, group.Id);
+            Assert.Equal(1, group.Admin);
+            Assert.Equal("Red Wedding", group.Name);
+            Assert.True(group.Memberships.All(m => m == 2 || m == 3));
+        }
+        
+        [Fact, Priority(4)]
         public async void AddPurchase()
         {
             var command = new AddPurchaseCommand()
@@ -172,6 +174,36 @@ namespace QuickSplit.Tests.Integration
             Assert.Equal(command.Participants.ToList(), purchase.Participants);
             Assert.Equal(command.Cost, purchase.Cost);
             Assert.Equal(command.Purchaser, purchase.Purchaser);
+        }
+        
+        [Fact, Priority(5)]
+        public async void GetGroupWithPurchase()
+        {
+            var query = new GetGroupsQuery();
+
+            HttpResponseMessage response = await _client.GetAsync(GroupUrl + "/1");
+            response.EnsureSuccessStatusCode();
+            GroupModel group = await response.DeserializeObject<GroupModel>();
+            
+            Assert.True(group.Purchases.Count(p => p == 1) == 1);
+        }
+        
+        [Fact, Priority(5)]
+        public async void GetGroupsAgain()
+        {
+            var query = new GetGroupsQuery();
+
+            HttpResponseMessage response = await _client.GetAsync(GroupUrl);
+            response.EnsureSuccessStatusCode();
+            IEnumerable<GroupModel> groups = await response.DeserializeCollection<GroupModel>();
+
+            Assert.Single(groups);
+            GroupModel group = groups.Single();
+            Assert.Equal(1, group.Id);
+            Assert.Equal(1, group.Admin);
+            Assert.Equal("Red Wedding", group.Name);
+            Assert.True(group.Memberships.All(m => m == 2 || m == 3));
+            Assert.True(group.Purchases.Any());
         }
     }
 }

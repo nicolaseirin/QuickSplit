@@ -19,6 +19,8 @@ namespace QuickSplit.Persistence
         public DbSet<Friendship> Friendships { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Membership> Memberships { get; set; }
+        
+        public DbSet<Purchase> Purchases { get; set; }
 
         public void SaveChanges()
         {
@@ -44,6 +46,14 @@ namespace QuickSplit.Persistence
             modelBuilder.Entity<Group>()
                 .Property(group => @group.Id)
                 .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Group>()
+                .HasMany(g => g.Purchases)
+                .WithOne(purchase => purchase.Group);
+
+            modelBuilder.Entity<Group>()
+                .HasMany(p => p.Memberships)
+                .WithOne(membership => membership.Group);
 
             modelBuilder.Entity<Membership>()
                 .HasKey(membership => new {membership.UserId, membership.GroupId});
@@ -85,6 +95,10 @@ namespace QuickSplit.Persistence
                 .HasMany(user => user.FriendsOf)
                 .WithOne(friendship => friendship.Friend1);
                 //.OnDelete(DeleteBehavior.ClientSetNull);
+                builder
+                    .HasMany<Participant>()
+                    .WithOne(participant => participant.User);
+
         }
     }
 }

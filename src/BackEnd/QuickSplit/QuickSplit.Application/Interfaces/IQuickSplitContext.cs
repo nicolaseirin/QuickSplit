@@ -12,6 +12,8 @@ namespace QuickSplit.Application.Interfaces
         DbSet<Group> Groups { get; }
         DbSet<Domain.Membership> Memberships { get; }
 
+        DbSet<Purchase> Purchases { get; set; }
+        
         void SaveChanges();
         Task SaveChangesAsync();
     }

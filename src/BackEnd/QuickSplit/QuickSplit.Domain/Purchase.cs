@@ -21,15 +21,15 @@ namespace QuickSplit.Domain
 
         public int Id { get; set; }
         
-        public User Purchaser { get; set; }
+        public virtual User Purchaser { get; set; }
         
-        public ICollection<Participant> Participants { get; set; } = new List<Participant>();
+        public virtual ICollection<Participant> Participants { get; set; } = new List<Participant>();
         
-        public Group Group { get; set; }
+        public virtual Group Group { get; set; }
         
         public uint Cost { get; set; }
         
-        public Currency Currency { get; set; }
+        public virtual Currency Currency { get; set; }
 
         public void AddParticipant(User user)
         {

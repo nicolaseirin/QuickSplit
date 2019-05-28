@@ -40,6 +40,8 @@ namespace QuickSplit.Application.Groups.Commands
         private async Task<GroupModel> TryToHandle(CreateGroupCommand request)
         {
             User admin = await _context.Users.FindAsync(request.Admin) ?? throw new InvalidCommandException($"El usuario administrador con id {request.Admin} no existe");
+
+            await ValidateMembersExists(request);
             
             var toCreate = new Group()
             {
@@ -54,6 +56,13 @@ namespace QuickSplit.Application.Groups.Commands
             await _context.SaveChangesAsync();
 
             return new GroupModel(toCreate);
+        }
+
+        private async Task ValidateMembersExists(CreateGroupCommand request)
+        {
+           User[] members = await Task.WhenAll(request.Memberships.Select(m => _context.Users.FindAsync(m)));
+           if (members.Any(a => a == null))
+               throw new InvalidQueryException("No existe uno de los miembros");
         }
 
         private async Task<Domain.Membership> GetMemberships(int userId, Group group)
