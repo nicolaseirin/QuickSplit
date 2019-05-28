@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections;
+
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -12,7 +11,7 @@ using QuickSplit.Application.Interfaces;
 using QuickSplit.Application.Membership.Queries.GetMemberships;
 using QuickSplit.Domain;
 
-namespace QuickSplit.Application.Groups.Commands.CreateGroup
+namespace QuickSplit.Application.Groups.Commands
 {
     public class CreateGroupCommandHandler : IRequestHandler<CreateGroupCommand, GroupModel>
     {
@@ -41,6 +40,8 @@ namespace QuickSplit.Application.Groups.Commands.CreateGroup
         private async Task<GroupModel> TryToHandle(CreateGroupCommand request)
         {
             User admin = await _context.Users.FindAsync(request.Admin) ?? throw new InvalidCommandException($"El usuario administrador con id {request.Admin} no existe");
+
+            await ValidateMembersExists(request);
             
             var toCreate = new Group()
             {
@@ -51,11 +52,17 @@ namespace QuickSplit.Application.Groups.Commands.CreateGroup
             await _context.SaveChangesAsync();
 
             Domain.Membership[] memberships = await Task.WhenAll(request.Memberships.Select(i => GetMemberships(i, toCreate)));
-            if (memberships.Length == 0) throw new InvalidCommandException($"El grupo debe contener al menos un miembro");
             toCreate.Memberships = memberships;
             await _context.SaveChangesAsync();
 
             return new GroupModel(toCreate);
+        }
+
+        private async Task ValidateMembersExists(CreateGroupCommand request)
+        {
+           User[] members = await Task.WhenAll(request.Memberships.Select(m => _context.Users.FindAsync(m)));
+           if (members.Any(a => a == null))
+               throw new InvalidQueryException("No existe uno de los miembros");
         }
 
         private async Task<Domain.Membership> GetMemberships(int userId, Group group)
@@ -78,6 +85,6 @@ namespace QuickSplit.Application.Groups.Commands.CreateGroup
 
         public int Admin { get; set; }
 
-        public ICollection<int> Memberships {get; set;}
+        public ICollection<int> Memberships {get; set;} = new List<int>();
     }
 }

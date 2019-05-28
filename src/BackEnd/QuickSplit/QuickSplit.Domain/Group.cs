@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace QuickSplit.Domain
@@ -8,7 +9,7 @@ namespace QuickSplit.Domain
     {
         private string name;
 
-        public ICollection<Membership> Memberships { get; set; }
+        public virtual ICollection<Membership> Memberships { get; set; }
         public int Id { get; set; }
 
         public string Name
@@ -21,9 +22,9 @@ namespace QuickSplit.Domain
             }
         }
 
-        public User Admin { get; set; }
+        public virtual User Admin { get; set; }
 
-        public ICollection<Purchase> Purchases { get; set; }
+        public virtual ICollection<Purchase> Purchases { get; set; }
         
         public Group()
         {
@@ -38,6 +39,11 @@ namespace QuickSplit.Domain
                 throw new DomainException($"{propertyName} is required");
         }
 
+        public bool UserIsPartOfGroup(User user)
+        {
+            return Memberships.Any(membership => membership.UserId == user.Id);
+        }
+        
         protected bool Equals(Group other)
         {
             return Id == other.Id;

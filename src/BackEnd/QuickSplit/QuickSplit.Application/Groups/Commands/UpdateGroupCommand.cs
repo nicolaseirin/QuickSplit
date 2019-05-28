@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -7,7 +8,7 @@ using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Domain;
 
-namespace QuickSplit.Application.Groups.Commands.UpdateGroup
+namespace QuickSplit.Application.Groups.Commands
 {
     public class UpdateGroupCommandHandler : IRequestHandler<UpdateGroupCommand, GroupModel>
     {
@@ -45,7 +46,8 @@ namespace QuickSplit.Application.Groups.Commands.UpdateGroup
 
         private async Task<Domain.Membership> GetMemberships(int userId, Group group)
         {
-            User user = await _context.Users.FindAsync(userId) ?? throw new InvalidCommandException($"Miembro del grupo con id {userId} no existe"); ;
+            User user = await _context.Users.FindAsync(userId) ?? throw new InvalidCommandException($"Miembro del grupo con id {userId} no existe");
+            ;
 
             return new Domain.Membership()
             {
@@ -55,5 +57,14 @@ namespace QuickSplit.Application.Groups.Commands.UpdateGroup
                 GroupId = group.Id
             };
         }
+    }
+
+    public class UpdateGroupCommand : IRequest<GroupModel>
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public ICollection<int> Memberships { get; set; }
     }
 }

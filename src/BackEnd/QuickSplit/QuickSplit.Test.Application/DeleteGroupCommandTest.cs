@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using QuickSplit.Application.Groups.Commands.DeleteGroup;
-using QuickSplit.Application.Users.Commands.DeleteUser;
+using QuickSplit.Application.Groups.Commands;
 using QuickSplit.Domain;
 using Xunit;
 

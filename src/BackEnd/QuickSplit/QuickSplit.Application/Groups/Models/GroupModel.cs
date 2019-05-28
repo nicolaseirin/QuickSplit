@@ -1,5 +1,7 @@
-﻿using QuickSplit.Domain;
+﻿using System.Collections;
+using QuickSplit.Domain;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace QuickSplit.Application.Groups.Models
 {
@@ -12,6 +14,8 @@ namespace QuickSplit.Application.Groups.Models
         public int Admin { get; set; }
 
         public ICollection<int> Memberships { get; set; }
+        
+        public IEnumerable<int> Purchases { get; set; } 
 
         public GroupModel()
         {
@@ -25,6 +29,7 @@ namespace QuickSplit.Application.Groups.Models
             Admin = group.Admin.Id;
             Memberships = new List<int>();
             SetMemberships(group.Memberships);
+            Purchases = group.Purchases.Select(purchase => purchase.Id);
         }
 
         private void SetMemberships(ICollection<Domain.Membership> memberships)

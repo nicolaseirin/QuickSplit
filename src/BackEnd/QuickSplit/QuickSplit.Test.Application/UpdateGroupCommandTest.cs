@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using QuickSplit.Domain;
 using Xunit;
 using System.Text;
-using QuickSplit.Application.Groups.Commands.UpdateGroup;
+using QuickSplit.Application.Groups.Commands;
 
 namespace QuickSplit.Test.Application
 {
