@@ -18,7 +18,12 @@ namespace QuickSplit.Application.Groups.Models
             Participants = purchase.Participants.Select(participant => participant.UserId).ToList();
             Purchaser = purchase.Purchaser.Id;
         }
-        
+
+        public PurchaseModel(Purchase purchase, string image) : this(purchase)
+        {
+            Image = image;
+        }
+
         public int Id { get; set; }
         
         public int Purchaser { get; set; }
@@ -30,5 +35,7 @@ namespace QuickSplit.Application.Groups.Models
         public uint Cost { get; set; }
 
         public string Currency { get; set; }
+        
+        public string Image { get; set; }
     }
 }

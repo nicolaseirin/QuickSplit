@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Groups.Commands;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Domain;
+using QuickSplit.Persistence;
 using Xunit;
 
 namespace QuickSplit.Test.Application
@@ -70,7 +71,7 @@ namespace QuickSplit.Test.Application
                 Purchaser = 1,
                 Cost = 15
             };
-            var handler = new AddPurchaseCommandHandler(Context);
+            var handler = new AddPurchaseCommandHandler(Context, new ImageRepository());
 
             PurchaseModel result = await handler.Handle(command, CancellationToken.None);
             Group @group = await Groups.FindAsync(1);
@@ -101,7 +102,7 @@ namespace QuickSplit.Test.Application
                 Purchaser = 1,
                 Cost = 15
             };
-            var handler = new AddPurchaseCommandHandler(Context);
+            var handler = new AddPurchaseCommandHandler(Context, new ImageRepository());
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
         
@@ -116,7 +117,7 @@ namespace QuickSplit.Test.Application
                 Purchaser = 911,
                 Cost = 15
             };
-            var handler = new AddPurchaseCommandHandler(Context);
+            var handler = new AddPurchaseCommandHandler(Context, new ImageRepository());
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
         
@@ -131,7 +132,7 @@ namespace QuickSplit.Test.Application
                 Purchaser = 1,
                 Cost = 15
             };
-            var handler = new AddPurchaseCommandHandler(Context);
+            var handler = new AddPurchaseCommandHandler(Context, new ImageRepository());
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
         
@@ -146,7 +147,7 @@ namespace QuickSplit.Test.Application
                 Purchaser = 1,
                 Cost = 15
             };
-            var handler = new AddPurchaseCommandHandler(Context);
+            var handler = new AddPurchaseCommandHandler(Context, new ImageRepository());
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
     }

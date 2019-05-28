@@ -15,10 +15,13 @@ namespace QuickSplit.Application.Groups.Commands
     public class AddPurchaseCommandHandler : IRequestHandler<AddPurchaseCommand, PurchaseModel>
     {
         private readonly IQuickSplitContext _context;
+        private readonly IImageRepository _imageRepository;
 
-        public AddPurchaseCommandHandler(IQuickSplitContext context)
+        public AddPurchaseCommandHandler(IQuickSplitContext context, IImageRepository imageRepository)
         {
             _context = context;
+            _imageRepository = imageRepository;
+            _imageRepository.FolderName = "Purchases";
         }
 
         public async Task<PurchaseModel> Handle(AddPurchaseCommand request, CancellationToken cancellationToken)
@@ -32,6 +35,9 @@ namespace QuickSplit.Application.Groups.Commands
             group.Purchases.Add(purchase);
             await _context.SaveChangesAsync();
 
+            if (!string.IsNullOrWhiteSpace(request.Image) && !string.IsNullOrWhiteSpace(request.ImageExt)) 
+                _imageRepository.AddImageFromBase64(purchase.Id, request.Image, request.ImageExt);
+            
             return new PurchaseModel(purchase);
         }
 
@@ -74,5 +80,9 @@ namespace QuickSplit.Application.Groups.Commands
         public uint Cost { get; set; }
 
         public string Currency { get; set; }
+        
+        public string Image { get; set; }
+        
+        public string ImageExt { get; set; }
     }
 }
