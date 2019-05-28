@@ -13,12 +13,12 @@ namespace QuickSplit.Application.Users.Queries
     public class GetAvatarQueryHandler : IRequestHandler<GetAvatarQuery, Stream>
     {
         private readonly IQuickSplitContext _context;
-        private readonly IAvatarRepository _avatarRepository;
+        private readonly IImageRepository _imageRepository;
 
-        public GetAvatarQueryHandler(IQuickSplitContext context, IAvatarRepository avatarRepository)
+        public GetAvatarQueryHandler(IQuickSplitContext context, IImageRepository imageRepository)
         {
             _context = context;
-            _avatarRepository = avatarRepository;
+            _imageRepository = imageRepository;
         }
 
         public async Task<Stream> Handle(GetAvatarQuery request, CancellationToken cancellationToken)
@@ -26,7 +26,7 @@ namespace QuickSplit.Application.Users.Queries
             if (await _context.Users.FindAsync(request.UserId) == null)
                 throw new InvalidQueryException("No existe el usuario");
 
-            return _avatarRepository.GetAvatarStream(request.UserId);
+            return _imageRepository.GetImageStream(request.UserId);
         }
     }
 

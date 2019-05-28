@@ -24,7 +24,7 @@ namespace QuickSplit.Test.Application
             {
                 Id = 2
             };
-            var handler = new DeleteUserCommandHandler(Context, new AvatarRepository());
+            var handler = new DeleteUserCommandHandler(Context, new ImageRepository());
             
             Assert.Single(Users);
         }
@@ -43,7 +43,7 @@ namespace QuickSplit.Test.Application
             {
                 Id = 1
             };
-            var handler = new DeleteUserCommandHandler(Context, new AvatarRepository());
+            var handler = new DeleteUserCommandHandler(Context, new ImageRepository());
 
             await handler.Handle(command, CancellationToken.None);
 

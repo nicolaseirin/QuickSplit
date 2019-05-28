@@ -52,7 +52,7 @@ namespace QuickSplit.Test.Application
         [Fact]
         public async void CheckNoFriendshipsTest()
         {
-            var handler = new GetFriendsQueryHandler(Context, new AvatarRepository());
+            var handler = new GetFriendsQueryHandler(Context, new ImageRepository());
 
             IEnumerable<UserModel> friends1 = await handler.Handle(new GetFriendsQuery() {UserId = 1}, CancellationToken.None);
             IEnumerable<UserModel> friends2 = await handler.Handle(new GetFriendsQuery() {UserId = 2}, CancellationToken.None);
@@ -72,7 +72,7 @@ namespace QuickSplit.Test.Application
                 CurrentUserId = 2
             };
             var handler = new AddFriendCommandHandler(Context);
-            var getHandler = new GetFriendsQueryHandler(Context, new AvatarRepository());
+            var getHandler = new GetFriendsQueryHandler(Context, new ImageRepository());
 
             await handler.Handle(command, CancellationToken.None);
             IEnumerable<UserModel> friends1 = await getHandler.Handle(new GetFriendsQuery() {UserId = 1}, CancellationToken.None);
@@ -106,7 +106,7 @@ namespace QuickSplit.Test.Application
                 CurrentUserId = 3
             };
             var handler = new AddFriendCommandHandler(Context);
-            var getHandler = new GetFriendsQueryHandler(Context, new AvatarRepository());
+            var getHandler = new GetFriendsQueryHandler(Context, new ImageRepository());
 
             await handler.Handle(command1, CancellationToken.None);
             await handler.Handle(command2, CancellationToken.None);

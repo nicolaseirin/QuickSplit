@@ -11,12 +11,12 @@ namespace QuickSplit.Application.Users.Commands
     public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
     {
         private readonly IQuickSplitContext _context;
-        private readonly IAvatarRepository _avatarRepository;
+        private readonly IImageRepository _imageRepository;
 
-        public DeleteUserCommandHandler(IQuickSplitContext context, IAvatarRepository avatarRepository)
+        public DeleteUserCommandHandler(IQuickSplitContext context, IImageRepository imageRepository)
         {
             _context = context;
-            _avatarRepository = avatarRepository;
+            _imageRepository = imageRepository;
         }
 
         public async Task<Unit> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
@@ -28,7 +28,7 @@ namespace QuickSplit.Application.Users.Commands
             
             _context.Friendships.RemoveRange(friendshipsToDelete);
             _context.Users.Remove(toDelete);
-            _avatarRepository.DeleteImage(request.Id);
+            _imageRepository.DeleteImage(request.Id);
             await _context.SaveChangesAsync();
 
             return Unit.Value;
