@@ -57,7 +57,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private TextView mLabelErrorMessage;
     private ImageView mImageAvatar;
     private Button mButtonSave;
-    private Button mButtonUploadAvatar;
     private LinearLayout mLayoutChangeAvatar;
 
     @Override

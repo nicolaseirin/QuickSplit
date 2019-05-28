@@ -6,7 +6,7 @@ public class Group {
 
     private String name;
     private String admin;
-    private List<String> members;
+    private List<String> memberships;
 
     public String getName() {
         return name;
@@ -16,8 +16,8 @@ public class Group {
         return admin;
     }
 
-    public List<String> getMembers() {
-        return members;
+    public List<String> getMemberships() {
+        return memberships;
     }
 
     public void setAdmin(String admin) {
@@ -28,7 +28,7 @@ public class Group {
         this.name = name;
     }
 
-    public void setMembers(List<String> members) {
-        this.members = members;
+    public void setMemberships(List<String> memberships) {
+        this.memberships = memberships;
     }
 }

@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -14,18 +16,21 @@ import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.GroupFriendsAdapter;
 import org.quicksplit.models.Group;
 import org.quicksplit.models.User;
+import org.quicksplit.service.GroupClient;
 import org.quicksplit.service.UserClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CreateGroupActivity extends AppCompatActivity {
+public class CreateGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private List<User> friends;
     private List<String> friendsSelected;
+    private Button mButtonCreateGroup;
     private EditText mEditTextGroupName;
     private RecyclerView mRecyclerViewFriends;
     private GroupFriendsAdapter mRecycleViewGroupFriendsAdapter;
@@ -36,8 +41,13 @@ public class CreateGroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
 
+        friendsSelected = new ArrayList<String>();
+
         mEditTextGroupName = findViewById(R.id.txt_GroupName);
         mRecyclerViewFriends = findViewById(R.id.friendsReciclerView);
+
+        mButtonCreateGroup = findViewById(R.id.btn_createGroup);
+        mButtonCreateGroup.setOnClickListener(this);
 
         getFriends();
     }
@@ -98,9 +108,36 @@ public class CreateGroupActivity extends AppCompatActivity {
 
         group.setAdmin(tokenManager.getUserIdFromToken());
         group.setName(mEditTextGroupName.getText().toString());
-        group.setMembers(friendsSelected);
+        group.setMemberships(friendsSelected);
 
-        //TODO: LLAMAR AL BACK Y MANDAR EL GRUPO
+        GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
+        Call<Group> call = client.createGroup(group);
+
+        final ProgressDialog loading = ProgressDialog.show(CreateGroupActivity.this, "Fetching Data", "Please wait...", false, false);
+
+        call.enqueue(new Callback<Group>() {
+
+            @Override
+            public void onResponse(Call<Group> call, Response<Group> response) {
+                if (response.isSuccessful()) {
+                    loading.dismiss();
+                } else {
+                    loading.dismiss();
+                    Toast.makeText(CreateGroupActivity.this, "Error al crear grupo.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Group> call, Throwable t) {
+                loading.dismiss();
+                Toast.makeText(CreateGroupActivity.this, "Error en la comunicación al crear grupo.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onClick(View v) {
+        createGroup();
     }
 }
 
