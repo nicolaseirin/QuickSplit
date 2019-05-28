@@ -12,7 +12,6 @@ namespace QuickSplit.Test.Application
         protected readonly DbSet<Group> Groups;
         protected readonly IPasswordHasher PasswordHasher;
         protected readonly DbSet<Friendship> Friendships;
-
         protected readonly DbSet<Membership> Memberships;
 
         protected CommandsTestBase()

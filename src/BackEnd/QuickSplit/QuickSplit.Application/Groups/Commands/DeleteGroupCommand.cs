@@ -1,14 +1,11 @@
-﻿using System.Data;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
 using MediatR;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Domain;
-using System.Collections.Generic;
 
-namespace QuickSplit.Application.Groups.Commands.DeleteGroup
+namespace QuickSplit.Application.Groups.Commands
 {
     public class DeleteGroupCommandHandler: IRequestHandler<DeleteGroupCommand>
     {
@@ -42,5 +39,10 @@ namespace QuickSplit.Application.Groups.Commands.DeleteGroup
                _context.SaveChanges();
             }
         }
+    }
+    
+    public class DeleteGroupCommand: IRequest
+    {
+        public int Id { get; set; }
     }
 }

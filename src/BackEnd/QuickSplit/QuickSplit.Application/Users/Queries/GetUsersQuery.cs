@@ -15,12 +15,12 @@ namespace QuickSplit.Application.Users.Queries
     public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<UserModel>>
     {
         private readonly IQuickSplitContext _context;
-        private readonly IAvatarRepository _avatarRepository;
+        private readonly IImageRepository _imageRepository;
 
-        public GetUsersQueryHandler(IQuickSplitContext context, IAvatarRepository avatarRepository)
+        public GetUsersQueryHandler(IQuickSplitContext context, IImageRepository imageRepository)
         {
             this._context = context;
-            _avatarRepository = avatarRepository;
+            _imageRepository = imageRepository;
         }
 
         public async Task<IEnumerable<UserModel>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
@@ -42,7 +42,7 @@ namespace QuickSplit.Application.Users.Queries
 
         private async Task<UserModel> MapToModel(User user)
         {
-            string avatar = await _avatarRepository.GetAvatarBase64(user.Id);
+            string avatar = await _imageRepository.GetImageBase64(user.Id);
 
             return new UserModel(user, avatar);
         }

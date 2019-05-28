@@ -1,11 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace QuickSplit.Tests.Integration
+namespace QuickSplit.Tests.Integration.Internal
 {
     public static class HttpResponseExtensionMethods
     {

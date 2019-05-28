@@ -21,6 +21,7 @@ namespace QuickSplit.Tests.Integration.Internal
                 // Create a new service provider.
                 ServiceProvider serviceProvider = new ServiceCollection()
                     .AddEntityFrameworkSqlServer()
+                    .AddEntityFrameworkProxies()
                     .AddTransient<IQuickSplitContext, QuickSplitContext>()
                     .AddMediatR(typeof(IQuickSplitContext).Assembly)
                     .BuildServiceProvider();
@@ -29,6 +30,7 @@ namespace QuickSplit.Tests.Integration.Internal
                 // database for testing.
                 services.AddDbContext<QuickSplitContext>(options =>
                 {
+                    options.UseLazyLoadingProxies();
                     options.UseSqlServer("Server=localhost;Database=QuickSplitDbTesting;Trusted_Connection=False;User ID=QuickSplit;Password=QuickSplit123;");
                     //options.UseSqlServer("Server=DESKTOP-DN1E4B9\\SQLSERVER_R14;Database=QuickSplitDbTest;Trusted_Connection=True;");
                     options.UseInternalServiceProvider(serviceProvider);

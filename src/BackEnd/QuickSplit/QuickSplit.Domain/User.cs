@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -105,6 +106,11 @@ namespace QuickSplit.Domain
         public override int GetHashCode()
         {
             return Id;
+        }
+
+        public override string ToString()
+        {
+            return $"{Name} {LastName}";
         }
     }
 }

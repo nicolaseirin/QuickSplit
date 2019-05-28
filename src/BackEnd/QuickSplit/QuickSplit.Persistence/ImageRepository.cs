@@ -10,25 +10,27 @@ using QuickSplit.Application.Users;
 
 namespace QuickSplit.Persistence
 {
-    public class AvatarRepository : IAvatarRepository
+    public class ImageRepository : IImageRepository
     {
         private readonly string[] ValidFormats = {"png", "jpeg", "jpg"};
-        private readonly string AvatarsDir  = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Avatars");
-        
-        public Stream GetAvatarStream(int userId)
+        private string ImageDir => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FolderName);
+
+        public string FolderName { get; set; } = "Avatars";
+
+        public Stream GetImageStream(int id)
         {
-            string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Avatars");
+            string basePath = ImageDir;
             string imagePath = Directory
                                    .GetFiles(basePath)
-                                   .FirstOrDefault(path => FileIsUserAvatar(userId, path))
+                                   .FirstOrDefault(path => FileIsUserAvatar(id, path))
                                ?? basePath + "/default.png";
 
             return new FileStream(imagePath, FileMode.Open);
         }
 
-        public async Task<string> GetAvatarBase64(int userId)
+        public async Task<string> GetImageBase64(int id)
         {
-            using (Stream stream = GetAvatarStream(userId))
+            using (Stream stream = GetImageStream(id))
             {
                 var buffer = new byte[1024 * 1024];
                 await stream.ReadAsync(buffer);
@@ -43,42 +45,42 @@ namespace QuickSplit.Persistence
                 .Any(f => f.Equals(requestImageFormat, StringComparison.OrdinalIgnoreCase));
         }
 
-        public async void SetAvatarFromStream(int userId, Stream avatar, string avatarExt)
+        public async void AddImageFromStream(int id, Stream image, string imageExt)
         {
-            string avatarPath = GetAvatarPath(userId, avatarExt);
+            string avatarPath = GetImagePath(id, imageExt);
             using (var fs = new FileStream(avatarPath, FileMode.OpenOrCreate))
             {
-                await avatar.CopyToAsync(fs);
+                await image.CopyToAsync(fs);
             }
         }
 
-        public async void SetAvatarFromBase64(int userId, string avatar, string avatarExt)
+        public async void AddImageFromBase64(int id, string image, string imageExt)
         {
-            string avatarPath = GetAvatarPath(userId, avatarExt);
+            string avatarPath = GetImagePath(id, imageExt);
             using (var fs = new FileStream(avatarPath, FileMode.OpenOrCreate))
             {
-                byte[] bytes = Convert.FromBase64String(avatar);
+                byte[] bytes = Convert.FromBase64String(image);
                 await fs.ReadAsync(bytes);
             }
         }
         
-        private string GetAvatarPath(int userId, string avatarExt)
+        private string GetImagePath(int id, string imageExt)
         {
-            string ext = avatarExt.Split('/').Last();
+            string ext = imageExt.Split('/').Last();
             if (!FormatIsValid(ext))
             {
                 throw new InvalidCommandException("Formato de imagen invalido.");
             }
 
-            Directory.CreateDirectory(AvatarsDir);
-            DeleteOldImage(userId);
-            string avatarPath = AvatarsDir + $"/{userId}.{ext}";
+            Directory.CreateDirectory(ImageDir);
+            DeleteImage(id);
+            string avatarPath = ImageDir + $"/{id}.{ext}";
             return avatarPath;
         }
 
-        private void DeleteOldImage(int userId)
+        public void DeleteImage(int image)
         {
-            foreach (string file in Directory.GetFiles(AvatarsDir).Where(f => FileIsUserAvatar(userId, f)))
+            foreach (string file in Directory.GetFiles(ImageDir).Where(f => FileIsUserAvatar(image, f)))
             {
                 File.Delete(file);
             }

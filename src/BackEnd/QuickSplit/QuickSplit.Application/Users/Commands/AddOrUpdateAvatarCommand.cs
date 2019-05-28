@@ -13,19 +13,19 @@ namespace QuickSplit.Application.Users.Commands
     public class AddOrUpdateAvatarCommandHandler : IRequestHandler<AddOrUpdateAvatarCommand, Unit>
     {
         private readonly IQuickSplitContext _context;
-        private readonly IAvatarRepository _avatarRepository;
+        private readonly IImageRepository _imageRepository;
 
-        public AddOrUpdateAvatarCommandHandler(IQuickSplitContext context, IAvatarRepository avatarRepository)
+        public AddOrUpdateAvatarCommandHandler(IQuickSplitContext context, IImageRepository imageRepository)
         {
             _context = context;
-            _avatarRepository = avatarRepository;
+            _imageRepository = imageRepository;
         }
 
         public async Task<Unit> Handle(AddOrUpdateAvatarCommand request, CancellationToken cancellationToken)
         {
             User user = await _context.Users.FindAsync(request.UserId) ?? throw new InvalidCommandException("No existe el usuario");
 
-            _avatarRepository.SetAvatarFromStream(request.UserId, request.ImageStream, request.ImageFormat);
+            _imageRepository.AddImageFromStream(request.UserId, request.ImageStream, request.ImageFormat);
 
             return Unit.Value;
         }

@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using QuickSplit.Application.Users.Commands;
 using QuickSplit.Domain;
+using QuickSplit.Persistence;
 using Xunit;
 
 namespace QuickSplit.Test.Application
@@ -23,7 +24,7 @@ namespace QuickSplit.Test.Application
             {
                 Id = 2
             };
-            var handler = new DeleteUserCommandHandler(Context);
+            var handler = new DeleteUserCommandHandler(Context, new ImageRepository());
             
             Assert.Single(Users);
         }
@@ -42,7 +43,7 @@ namespace QuickSplit.Test.Application
             {
                 Id = 1
             };
-            var handler = new DeleteUserCommandHandler(Context);
+            var handler = new DeleteUserCommandHandler(Context, new ImageRepository());
 
             await handler.Handle(command, CancellationToken.None);
 

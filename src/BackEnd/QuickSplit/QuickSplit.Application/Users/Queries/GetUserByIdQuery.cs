@@ -12,14 +12,14 @@ namespace QuickSplit.Application.Users.Queries
     public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserModel>
     {
         private readonly IQuickSplitContext _context;
-        private readonly IAvatarRepository _avatarRepository;
+        private readonly IImageRepository _imageRepository;
         private readonly DbSet<User> _users;
         
 
-        public GetUserByIdQueryHandler(IQuickSplitContext context, IAvatarRepository avatarRepository)
+        public GetUserByIdQueryHandler(IQuickSplitContext context, IImageRepository imageRepository)
         {
             _context = context;
-            _avatarRepository = avatarRepository;
+            _imageRepository = imageRepository;
             _users = context.Users;
         }
 
@@ -30,7 +30,7 @@ namespace QuickSplit.Application.Users.Queries
             if(user == null)
                 throw new InvalidQueryException($"No existe usuario con id {request.Id}.");
 
-            string avatar = await _avatarRepository.GetAvatarBase64(request.Id);
+            string avatar = await _imageRepository.GetImageBase64(request.Id);
             
             return new UserModel(user, avatar);
         }

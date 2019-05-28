@@ -5,9 +5,23 @@ namespace QuickSplit.Domain
 {
     public class Purchase
     {
-        public int Id { get; set; }
+        public Purchase() {}
         
-        public virtual User Purchased { get; set; }
+        public Purchase(User purchaser, Group @group, uint cost, Currency currency, IEnumerable<User> participants)
+        {
+            Purchaser = purchaser;
+            Group = @group;
+            Cost = cost;
+            Currency = currency;
+            foreach (User participant in participants)
+            {
+                AddParticipant(participant);
+            }
+        }
+
+        public int Id { get; set; }
+
+        public virtual User Purchaser { get; set; }
         
         public virtual ICollection<Participant> Participants { get; set; } = new List<Participant>();
         
@@ -15,7 +29,7 @@ namespace QuickSplit.Domain
         
         public uint Cost { get; set; }
         
-        public Currency Currency { get; set; }
+        public virtual Currency Currency { get; set; }
 
         public void AddParticipant(User user)
         {
@@ -23,8 +37,8 @@ namespace QuickSplit.Domain
             {
                 User = user,
                 UserId = user.Id,
-                Group = Group,
-                GroupId = Group.Id
+                Purchase = this,
+                PurchaseId = Id
             };
             
             Participants.Add(participant);
@@ -36,8 +50,8 @@ namespace QuickSplit.Domain
             {
                 User = user,
                 UserId = user.Id,
-                Group = Group,
-                GroupId = Group.Id
+                Purchase = this,
+                PurchaseId = Id
             };
             
             Participants.Remove(participant);
