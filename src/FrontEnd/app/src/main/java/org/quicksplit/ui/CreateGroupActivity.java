@@ -73,7 +73,19 @@ public class CreateGroupActivity extends AppCompatActivity {
         mRecycleViewGroupFriendsAdapter = new GroupFriendsAdapter(friends);
         mRecyclerViewFriends.setLayoutManager(mRecyclerViewManager);
         mRecyclerViewFriends.setAdapter(mRecycleViewGroupFriendsAdapter);
+        mRecycleViewGroupFriendsAdapter.setOnItemClickListener(new GroupFriendsAdapter.OnItemCheakedListener() {
+            @Override
+            public void onCheck(User user) {
+                System.out.println("Checaste el usuario " + user.getName());
+            }
+
+            @Override
+            public void onUncheck(User user) {
+                System.out.println("Dechecaste el usuario " + user.getName());
+            }
+        });
     }
+
 
 }
 

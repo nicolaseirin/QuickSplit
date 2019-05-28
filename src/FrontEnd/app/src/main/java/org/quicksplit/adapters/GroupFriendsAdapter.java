@@ -18,13 +18,15 @@ import java.util.List;
 public class GroupFriendsAdapter extends RecyclerView.Adapter<GroupFriendsAdapter.FriendsViewHolder> {
 
     private List<User> users;
-    private OnItemClickListener mListener;
+    private OnItemCheakedListener mListener;
 
-    public interface OnItemClickListener {
-        void onAddClick(User user);
+    public interface OnItemCheakedListener {
+        void onCheck(User user);
+
+        void onUncheck(User user);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    public void setOnItemClickListener(OnItemCheakedListener listener) {
         this.mListener = listener;
     }
 
@@ -62,28 +64,28 @@ public class GroupFriendsAdapter extends RecyclerView.Adapter<GroupFriendsAdapte
         public TextView mTextViewEmail;
         public CheckBox mCheckboxFriend;
 
-        public FriendsViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<User> users) {
+        public FriendsViewHolder(@NonNull View itemView, final OnItemCheakedListener listener, final List<User> users) {
             super(itemView);
 
             mImageView = itemView.findViewById(R.id.imageView);
             mTextViewNameLastname = itemView.findViewById(R.id.txt_nameLastname);
             mTextViewEmail = itemView.findViewById(R.id.txt_email);
-            mCheckboxFriend =  itemView.findViewById(R.id.cbox_addToGroup);
+            mCheckboxFriend = itemView.findViewById(R.id.cbox_addToGroup);
 
-            //TODO: VER COMO SACAR DE LA RECYCLER VIEW LOS QUE ESTÁN SELECCIONADOS
-
-            /*
             mCheckboxFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
                         int i = getAdapterPosition();
                         if (i != RecyclerView.NO_POSITION) {
-                            listener.onAddClick(users.get(i));
+                            if (mCheckboxFriend.isChecked())
+                                listener.onCheck(users.get(i));
+                            else
+                                listener.onUncheck(users.get(i));
                         }
                     }
                 }
-            });*/
+            });
         }
     }
 }
