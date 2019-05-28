@@ -37,8 +37,8 @@ namespace QuickSplit.Domain
             {
                 User = user,
                 UserId = user.Id,
-                Group = Group,
-                GroupId = Group.Id
+                Purchase = this,
+                PurchaseId = Id
             };
             
             Participants.Add(participant);
@@ -50,8 +50,8 @@ namespace QuickSplit.Domain
             {
                 User = user,
                 UserId = user.Id,
-                Group = Group,
-                GroupId = Group.Id
+                Purchase = this,
+                PurchaseId = Id
             };
             
             Participants.Remove(participant);

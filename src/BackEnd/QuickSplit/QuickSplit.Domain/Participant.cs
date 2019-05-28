@@ -5,12 +5,12 @@ namespace QuickSplit.Domain
         public int UserId { get; set; }
         public virtual User User { get; set; }
         
-        public int GroupId { get; set; }
-        public virtual Group Group { get; set; }
+        public int PurchaseId { get; set; }
+        public virtual Purchase Purchase { get; set; }
 
         protected bool Equals(Participant other)
         {
-            return UserId == other.UserId && GroupId == other.GroupId;
+            return UserId == other.UserId && PurchaseId == other.PurchaseId;
         }
 
         public override bool Equals(object obj)
@@ -25,7 +25,7 @@ namespace QuickSplit.Domain
         {
             unchecked
             {
-                return (UserId * 397) ^ GroupId;
+                return (UserId * 397) ^ PurchaseId;
             }
         }
     }

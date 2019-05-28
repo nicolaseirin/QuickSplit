@@ -20,6 +20,7 @@ namespace QuickSplit.Persistence
         public DbSet<Group> Groups { get; set; }
         public DbSet<Membership> Memberships { get; set; }
         
+        public DbSet<Participant> Participants { get; set; }
         public DbSet<Purchase> Purchases { get; set; }
 
         public void SaveChanges()
@@ -59,7 +60,7 @@ namespace QuickSplit.Persistence
                 .HasKey(membership => new {membership.UserId, membership.GroupId});
 
             modelBuilder.Entity<Participant>()
-                .HasKey(participant => new {participant.UserId, participant.GroupId});
+                .HasKey(participant => new {participant.UserId, participant.PurchaseId});
 
         }
 
