@@ -18,6 +18,10 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
     private List<Group> groups;
     private OnItemClickListener mListener;
 
+    public GroupAdapter(List<Group> groups) {
+        this.groups = groups;
+    }
+
     public interface OnItemClickListener {
         void onDeleteClick(Group group);
     }

@@ -1,16 +1,31 @@
 package org.quicksplit.ui;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.quicksplit.R;
+import org.quicksplit.ServiceGenerator;
+import org.quicksplit.TokenManager;
+import org.quicksplit.adapters.GroupAdapter;
+import org.quicksplit.models.Group;
+import org.quicksplit.service.GroupClient;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +36,12 @@ import org.quicksplit.R;
  * create an instance of this fragment.
  */
 public class GroupFragment extends Fragment implements View.OnClickListener {
+
+    private List<Group> groups;
+    private RecyclerView mRecyclerViewGroups;
+    private GroupAdapter mRecyclerViewGroupsAdapter;
+    private RecyclerView.LayoutManager mRecyclerViewManager;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -59,12 +80,50 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group, container, false);
+        mRecyclerViewGroups = view.findViewById(R.id.friendsReciclerView);
+
         mButtonCreateGroup = view.findViewById(R.id.btn_createGroup);
         mButtonCreateGroup.setOnClickListener(this);
 
-        //TODO: INTIALIZE THE GROUPS LIST
+        getGroups();
 
         return view;
+    }
+
+    private void getGroups() {
+        TokenManager tokenManager = new TokenManager(getContext());
+        GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
+        Call<List<Group>> call = client.getAllGroups();
+
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+
+        call.enqueue(new Callback<List<Group>>() {
+            @Override
+            public void onResponse(Call<List<Group>> call, Response<List<Group>> response) {
+                if (response.isSuccessful()) {
+                    groups = response.body();
+                    buildRecyclerViewGroups();
+                    loading.dismiss();
+                } else {
+                    loading.dismiss();
+                    Toast.makeText(getActivity(), "Error al obtener grupos.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Group>> call, Throwable t) {
+                loading.dismiss();
+                Toast.makeText(getActivity(), "Error en la comunicación al obtener grupos.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void buildRecyclerViewGroups() {
+        mRecyclerViewGroups.setHasFixedSize(true);
+        mRecyclerViewManager = new LinearLayoutManager(getContext());
+        mRecyclerViewGroupsAdapter = new GroupAdapter(groups);
+        mRecyclerViewGroups.setLayoutManager(mRecyclerViewManager);
+        mRecyclerViewGroups.setAdapter(mRecyclerViewGroupsAdapter);
     }
 
     public void onButtonPressed(Uri uri) {
