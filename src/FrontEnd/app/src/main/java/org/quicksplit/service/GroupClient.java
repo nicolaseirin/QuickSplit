@@ -1,6 +1,7 @@
 package org.quicksplit.service;
 
 import org.quicksplit.models.Group;
+import org.quicksplit.models.User;
 
 import java.util.List;
 
@@ -20,9 +21,11 @@ public interface GroupClient {
     @GET("groups/{id}")
     Call<List<Group>> getGroup(@Path("id") String id);
 
+    @GET("groups/{id}/users")
+    Call<List<User>> getGroupMembers(@Path("id") String id);
+
     @POST("groups")
     Call<Group> createGroup(@Body Group groupIn);
-
 
     @PUT("groups/{id}")
     Call<Group> modifyGroup(@Path("id") String id);
