@@ -5,6 +5,7 @@ using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Groups.Commands;
 using QuickSplit.Application.Groups.Models;
+using QuickSplit.Application.Purchases.Commands;
 using QuickSplit.Domain;
 using QuickSplit.Persistence;
 using Xunit;
@@ -63,7 +64,7 @@ namespace QuickSplit.Test.Application
         [Fact]
         public async void AddPurchaseTest()
         {
-            var command = new AddPurchaseCommand()
+            var command = new CreatePurchaseCommand()
             {
                 Group = 1,
                 Currency = "Usd",
@@ -71,7 +72,7 @@ namespace QuickSplit.Test.Application
                 Purchaser = 1,
                 Cost = 15
             };
-            var handler = new AddPurchaseCommandHandler(Context, new ImageRepository());
+            var handler = new CreateAddPurchaseCommandHandler(Context, new ImageRepository());
 
             PurchaseModel result = await handler.Handle(command, CancellationToken.None);
             Group @group = await Groups.FindAsync(1);
@@ -94,7 +95,7 @@ namespace QuickSplit.Test.Application
         [Fact]
         public async void AddPurchaseWithNonExistantGroupTest()
         {
-            var command = new AddPurchaseCommand()
+            var command = new CreatePurchaseCommand()
             {
                 Group = 911,
                 Currency = "Usd",
@@ -102,14 +103,14 @@ namespace QuickSplit.Test.Application
                 Purchaser = 1,
                 Cost = 15
             };
-            var handler = new AddPurchaseCommandHandler(Context, new ImageRepository());
+            var handler = new CreateAddPurchaseCommandHandler(Context, new ImageRepository());
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
         
         [Fact]
         public async void AddPurchaseWithNonExistantPurchaserTest()
         {
-            var command = new AddPurchaseCommand()
+            var command = new CreatePurchaseCommand()
             {
                 Group = 1,
                 Currency = "Usd",
@@ -117,14 +118,14 @@ namespace QuickSplit.Test.Application
                 Purchaser = 911,
                 Cost = 15
             };
-            var handler = new AddPurchaseCommandHandler(Context, new ImageRepository());
+            var handler = new CreateAddPurchaseCommandHandler(Context, new ImageRepository());
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
         
         [Fact]
         public async void AddPurchaseWithNonExistantParticipantTest()
         {
-            var command = new AddPurchaseCommand()
+            var command = new CreatePurchaseCommand()
             {
                 Group = 1,
                 Currency = "Usd",
@@ -132,14 +133,14 @@ namespace QuickSplit.Test.Application
                 Purchaser = 1,
                 Cost = 15
             };
-            var handler = new AddPurchaseCommandHandler(Context, new ImageRepository());
+            var handler = new CreateAddPurchaseCommandHandler(Context, new ImageRepository());
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
         
         [Fact]
         public async void AddPurchaseWithNonExistentCurrencyTest()
         {
-            var command = new AddPurchaseCommand()
+            var command = new CreatePurchaseCommand()
             {
                 Group = 1,
                 Currency = "Peso venezolano",
@@ -147,7 +148,7 @@ namespace QuickSplit.Test.Application
                 Purchaser = 1,
                 Cost = 15
             };
-            var handler = new AddPurchaseCommandHandler(Context, new ImageRepository());
+            var handler = new CreateAddPurchaseCommandHandler(Context, new ImageRepository());
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
     }

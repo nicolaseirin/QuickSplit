@@ -6,6 +6,7 @@ using QuickSplit.Application.Groups;
 using QuickSplit.Application.Groups.Commands;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Groups.Queries;
+using QuickSplit.Application.Purchases.Commands;
 using QuickSplit.Application.Users.Models;
 
 namespace QuickSplit.WebApi.Controllers
@@ -67,7 +68,7 @@ namespace QuickSplit.WebApi.Controllers
         }
 
         [HttpPost("{id}/purchases")]
-        public async Task<ActionResult<PurchaseModel>> AddPurchase([FromBody] AddPurchaseCommand command)
+        public async Task<ActionResult<PurchaseModel>> AddPurchase([FromBody] CreatePurchaseCommand command)
         {
             PurchaseModel purchase = await Mediator.Send(command);
             return Ok(purchase);

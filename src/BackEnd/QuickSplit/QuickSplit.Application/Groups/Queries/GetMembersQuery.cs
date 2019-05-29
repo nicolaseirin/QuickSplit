@@ -24,7 +24,14 @@ namespace QuickSplit.Application.Groups.Queries
 
         public async Task<IEnumerable<UserModel>> Handle(GetMembersQuery request, CancellationToken cancellationToken)
         {
-            Group group = await _context.Groups.FindAsync(request.GroupId) ?? throw new InvalidQueryException("No existe grupo");
+            Group group = await _context
+                              .Groups
+                              .Include(group1 => group1.Memberships)
+                              .ThenInclude(membership => membership.User)
+                              .Include(group1 => group1.Memberships)
+                              .ThenInclude(membership => membership.Group)
+                              .FirstOrDefaultAsync(group1 => group1.Id == request.GroupId, cancellationToken: cancellationToken) 
+                          ?? throw new InvalidQueryException("No existe grupo");
             
             List<User> users = group
                 .Memberships
@@ -32,7 +39,7 @@ namespace QuickSplit.Application.Groups.Queries
                 .ToList();
             users.Add(group.Admin);
 
-            return await Task.WhenAll(users.Select(MapToModel));
+            return await Task.WhenAll(users.Where(user => user != null).Select(MapToModel));
         }
         
         private async Task<UserModel> MapToModel(User user)

@@ -29,6 +29,11 @@ namespace QuickSplit.Application.Users.Queries
                 .Participants
                 .Where(participant => participant.UserId == user.Id)
                 .Include(participant => participant.Purchase)
+                .ThenInclude(purchase => purchase.Purchaser)
+                .Include(participant => participant.Purchase)
+                .ThenInclude(purchase => purchase.Group)
+                .Include(participant => participant.Purchase)
+                .ThenInclude(purchase => purchase.Participants)
                 .ToListAsync(cancellationToken: cancellationToken);
             
             return participants
