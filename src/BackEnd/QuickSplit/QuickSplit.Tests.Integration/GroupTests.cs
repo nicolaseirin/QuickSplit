@@ -9,6 +9,7 @@ using QuickSplit.Application.Groups.Commands;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Groups.Queries;
 using QuickSplit.Application.Users.Commands;
+using QuickSplit.Application.Users.Models;
 using QuickSplit.Application.Users.Queries;
 using QuickSplit.Tests.Integration.Internal;
 using Xunit;
@@ -151,6 +152,16 @@ namespace QuickSplit.Tests.Integration
             Assert.Equal(1, group.Admin);
             Assert.Equal("Red Wedding", group.Name);
             Assert.True(group.Memberships.All(m => m == 2 || m == 3));
+        }
+
+        [Fact, Priority(3)]
+        public async void GetMembers()
+        {
+            HttpResponseMessage response = await _client.GetAsync(GroupUrl + "/1/users");
+            response.EnsureSuccessStatusCode();
+            IEnumerable<UserModel> members = await response.DeserializeCollection<UserModel>();
+
+            Assert.True(members.All(user => user.Id == 1 || user.Id == 2 || user.Id == 3 ));
         }
         
         [Fact, Priority(4)]
