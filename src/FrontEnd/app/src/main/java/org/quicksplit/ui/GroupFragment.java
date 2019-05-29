@@ -122,7 +122,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
     private void buildRecyclerViewGroups() {
         mRecyclerViewGroups.setHasFixedSize(true);
         mRecyclerViewManager = new LinearLayoutManager(getContext());
-        mRecyclerViewGroupsAdapter = new GroupAdapter(groups);
+        mRecyclerViewGroupsAdapter = new GroupAdapter(groups, getContext());
         mRecyclerViewGroups.setLayoutManager(mRecyclerViewManager);
         mRecyclerViewGroups.setAdapter(mRecyclerViewGroupsAdapter);
 

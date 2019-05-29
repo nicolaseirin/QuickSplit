@@ -33,7 +33,17 @@
             android:text="Member 1, Member 2..."
             android:textSize="15sp" />
 
+        <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="50dp"
+            android:id="@+id/rview_avatars"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+        </android.support.v7.widget.RecyclerView>
+
         <LinearLayout
+            android:id="@+id/llay_btns"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -59,7 +69,6 @@
                 android:src="@drawable/ic_delete_red" />
 
         </LinearLayout>
-
 
     </RelativeLayout>
 
