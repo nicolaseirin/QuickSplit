@@ -30,8 +30,36 @@
             android:layout_below="@+id/txt_groupName"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/imageView"
-            android:text="Mmember 1, Member 2..."
+            android:text="Member 1, Member 2..."
             android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img_modify"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/ic_edit_green" />
+
+            <ImageView
+                android:id="@+id/img_delete"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/ic_delete_red" />
+
+        </LinearLayout>
+
 
     </RelativeLayout>
 

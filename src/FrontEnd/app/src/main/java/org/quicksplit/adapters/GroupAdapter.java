@@ -19,7 +19,9 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onAddClick(Group user);
+        void onModifyClick(Group group);
+
+        void onDeleteClick(Group group);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -51,14 +53,39 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
     public static class GroupViewHolder extends RecyclerView.ViewHolder {
 
+        public ImageView mImageEdit;
+        public ImageView mImageDelete;
         public ImageView mImageViewGroup;
         public TextView mTextViewGroupName;
         public TextView mTextViewMembers;
 
-        public GroupViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<Group> users) {
+        public GroupViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<Group> groups) {
             super(itemView);
             mTextViewGroupName = itemView.findViewById(R.id.txt_groupName);
-
+            mImageEdit = itemView.findViewById(R.id.img_modify);
+            mImageEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        int i = getAdapterPosition();
+                        if (i != RecyclerView.NO_POSITION) {
+                            listener.onModifyClick(groups.get(i));
+                        }
+                    }
+                }
+            });
+            mImageDelete = itemView.findViewById(R.id.img_delete);
+            mImageDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        int i = getAdapterPosition();
+                        if (i != RecyclerView.NO_POSITION) {
+                            listener.onDeleteClick(groups.get(i));
+                        }
+                    }
+                }
+            });
         }
     }
 }

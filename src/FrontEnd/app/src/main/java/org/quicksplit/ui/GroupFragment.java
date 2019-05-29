@@ -19,6 +19,7 @@ import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.GroupAdapter;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 
 import java.util.List;
@@ -124,6 +125,43 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         mRecyclerViewGroupsAdapter = new GroupAdapter(groups);
         mRecyclerViewGroups.setLayoutManager(mRecyclerViewManager);
         mRecyclerViewGroups.setAdapter(mRecyclerViewGroupsAdapter);
+
+        mRecyclerViewGroupsAdapter.setOnItemClickListener(new GroupAdapter.OnItemClickListener() {
+            @Override
+            public void onModifyClick(Group group) {
+                //TODO: ABRIR ACTIVTY PARA MODIFICAR EL GRUPO, DESPUÉS ENVIAR EN LA ACTIVIDAD
+                //CON LOS DATOS MODIFICADOS PERO EL MISMO ID
+            }
+
+            @Override
+            public void onDeleteClick(Group group) {
+                TokenManager tokenManager = new TokenManager(getContext());
+
+                GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
+
+                final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+
+                Call<Void> call = client.deleteGroup(group.getId());
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            loading.dismiss();
+                        } else {
+                            loading.dismiss();
+                            Toast.makeText(getActivity(), "Error al borrar usuario", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        loading.dismiss();
+                        Toast.makeText(getActivity(), "Error al borrar usuario", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
     }
 
     public void onButtonPressed(Uri uri) {
