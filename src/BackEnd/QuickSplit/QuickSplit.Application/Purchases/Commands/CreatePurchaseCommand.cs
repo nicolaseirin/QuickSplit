@@ -4,13 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Domain;
 
-namespace QuickSplit.Application.Groups.Commands
+namespace QuickSplit.Application.Purchases.Commands
 {
     public class AddPurchaseCommandHandler : IRequestHandler<AddPurchaseCommand, PurchaseModel>
     {
