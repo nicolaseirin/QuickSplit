@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    app:cardCornerRadius="4dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="4dp">
-
-        <ImageView
-            android:id="@+id/img_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/txt_groupName"
@@ -29,17 +27,12 @@
             android:id="@+id/txt_members"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_nameLastname"
+            android:layout_below="@+id/txt_groupName"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/imageView"
             android:text="Mmember 1, Member 2..."
             android:textSize="15sp" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/imageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:padding="2dp" />
-
     </RelativeLayout>
+
 </android.support.v7.widget.CardView>

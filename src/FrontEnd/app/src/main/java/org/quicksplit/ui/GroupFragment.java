@@ -80,7 +80,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group, container, false);
-        mRecyclerViewGroups = view.findViewById(R.id.friendsReciclerView);
+        mRecyclerViewGroups = view.findViewById(R.id.groupsRecyclerView);
 
         mButtonCreateGroup = view.findViewById(R.id.btn_createGroup);
         mButtonCreateGroup.setOnClickListener(this);

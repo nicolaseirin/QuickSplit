@@ -18,46 +18,47 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
     private List<Group> groups;
     private OnItemClickListener mListener;
 
-    public GroupAdapter(List<Group> groups) {
-        this.groups = groups;
+    public interface OnItemClickListener {
+        void onAddClick(Group user);
     }
 
-    public interface OnItemClickListener {
-        void onDeleteClick(Group group);
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.mListener = listener;
     }
 
     @NonNull
     @Override
     public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_group, viewGroup, false);
-        GroupViewHolder groupViewHolder = new GroupViewHolder(view, mListener, groups);
-        return groupViewHolder;
+        GroupViewHolder friendsViewHolder = new GroupViewHolder(view, mListener, groups);
+        return friendsViewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder groupViewHolder, int i) {
         Group currentItem = groups.get(i);
-
         groupViewHolder.mTextViewGroupName.setText(currentItem.getName());
-        //TODO: PASAR LOS ID DE LOS MIEMBROS A LOS MIEMBROS REALES
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return groups.size();
+    }
+
+    public GroupAdapter(List<Group> groups) {
+        this.groups = groups;
     }
 
     public static class GroupViewHolder extends RecyclerView.ViewHolder {
+
         public ImageView mImageViewGroup;
         public TextView mTextViewGroupName;
         public TextView mTextViewMembers;
 
-        public GroupViewHolder(@NonNull View itemView, final GroupAdapter.OnItemClickListener listener, final List<Group> groups) {
+        public GroupViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<Group> users) {
             super(itemView);
-
-            mImageViewGroup = itemView.findViewById(R.id.img_group);
             mTextViewGroupName = itemView.findViewById(R.id.txt_groupName);
-            mTextViewMembers = itemView.findViewById(R.id.txt_members);
+
         }
     }
 }
