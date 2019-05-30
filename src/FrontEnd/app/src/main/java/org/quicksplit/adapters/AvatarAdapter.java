@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.quicksplit.R;
 import org.quicksplit.Utils;
@@ -37,6 +38,8 @@ public class AvatarAdapter extends RecyclerView.Adapter<AvatarAdapter.AvatarView
     public void onBindViewHolder(@NonNull AvatarViewHolder groupViewHolder, int i) {
         final User currentItem = users.get(i);
         groupViewHolder.mImageAvatar.setImageBitmap(Utils.stringToBitMap(currentItem.getAvatar()));
+        groupViewHolder.mTextViewNameLastName.setText(currentItem.getName() + " " + currentItem.getLastName());
+        groupViewHolder.mTextViewEmail.setText(currentItem.getMail());
     }
 
     @Override
@@ -51,10 +54,14 @@ public class AvatarAdapter extends RecyclerView.Adapter<AvatarAdapter.AvatarView
     public static class AvatarViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView mImageAvatar;
+        public TextView mTextViewNameLastName;
+        public TextView mTextViewEmail;
 
         public AvatarViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<User> users) {
             super(itemView);
             mImageAvatar = itemView.findViewById(R.id.imageView);
+            mTextViewNameLastName = itemView.findViewById(R.id.txt_nameLastname);
+            mTextViewEmail = itemView.findViewById(R.id.txt_email);
         }
     }
 }

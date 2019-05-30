@@ -17,6 +17,7 @@ import org.quicksplit.models.Group;
 import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,8 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
         void onModifyClick(Group group);
 
         void onDeleteClick(Group group);
+
+        void onLeaveClick(Group group);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -68,12 +71,14 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                     groupViewHolder.mRecyclerView.setHasFixedSize(true);
                     groupViewHolder.mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                     groupViewHolder.mRecyclerView.setAdapter(avatarAdapter);
+                }else{
+                    System.out.println("Error: " + response.errorBody());
                 }
             }
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-
+                System.out.println("Error: " + t.getMessage());
             }
         });
 
@@ -93,6 +98,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
         public RecyclerView mRecyclerView;
         public ImageView mImageEdit;
+        public ImageView mImageLeave;
         public ImageView mImageDelete;
         public TextView mTextViewGroupName;
 
@@ -113,6 +119,19 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                     }
                 }
             });
+            mImageLeave = itemView.findViewById(R.id.img_exit);
+            mImageLeave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        int i = getAdapterPosition();
+                        if (i != RecyclerView.NO_POSITION) {
+                            listener.onLeaveClick(groups.get(i));
+                        }
+                    }
+                }
+            });
+
             mImageDelete = itemView.findViewById(R.id.img_delete);
             mImageDelete.setOnClickListener(new View.OnClickListener() {
                 @Override

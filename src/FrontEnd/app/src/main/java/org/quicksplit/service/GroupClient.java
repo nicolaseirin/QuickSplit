@@ -1,6 +1,7 @@
 package org.quicksplit.service;
 
 import org.quicksplit.models.Group;
+import org.quicksplit.models.LeaveGroup;
 import org.quicksplit.models.User;
 
 import java.util.List;
@@ -29,6 +30,9 @@ public interface GroupClient {
 
     @PUT("groups/{id}")
     Call<Group> modifyGroup(@Path("id") String id);
+
+    @PUT("groups/leave")
+    Call<Void> leaveGroup(@Body LeaveGroup leaveGroup);
 
     @DELETE("groups/{id}")
     Call<Void> deleteGroup(@Path("id") String id);

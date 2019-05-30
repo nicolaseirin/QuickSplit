@@ -30,14 +30,14 @@
             android:layout_below="@+id/txt_groupName"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/imageView"
-            android:text="Member 1, Member 2..."
+            android:text="Miembros:"
             android:textSize="15sp" />
 
         <android.support.v7.widget.RecyclerView
-            android:layout_marginTop="50dp"
             android:id="@+id/rview_avatars"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
             android:orientation="horizontal">
 
         </android.support.v7.widget.RecyclerView>
@@ -58,6 +58,15 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="12dp"
                 android:src="@drawable/ic_edit_green" />
+
+            <ImageView
+                android:id="@+id/img_exit"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/ic_exit_to_app_green" />
 
             <ImageView
                 android:id="@+id/img_delete"

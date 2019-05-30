@@ -19,6 +19,7 @@ import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.GroupAdapter;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.LeaveGroup;
 import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 
@@ -134,6 +135,39 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
+            public void onLeaveClick(Group group) {
+                TokenManager tokenManager = new TokenManager(getContext());
+
+                GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
+
+                final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+
+                LeaveGroup leaveGroup = new LeaveGroup();
+                leaveGroup.setUserId(Integer.parseInt(tokenManager.getUserIdFromToken()));
+                leaveGroup.setGroupId(Integer.parseInt(group.getId()));
+
+                Call<Void> call = client.leaveGroup(leaveGroup);
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            getGroups();
+                            loading.dismiss();
+                        } else {
+                            loading.dismiss();
+                            System.out.println("Error: " + response.errorBody());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        loading.dismiss();
+                        System.out.println("Error: " + t.getMessage());
+                    }
+                });
+            }
+
+            @Override
             public void onDeleteClick(Group group) {
                 TokenManager tokenManager = new TokenManager(getContext());
 
@@ -149,7 +183,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
                             loading.dismiss();
                         } else {
                             loading.dismiss();
-                            Toast.makeText(getActivity(), "Error al borrar usuario", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Error al borrar grupo.", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -157,9 +191,11 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
                         loading.dismiss();
-                        Toast.makeText(getActivity(), "Error al borrar usuario", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Error en la comunicación al borrar grupo.", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+
             }
         });
     }
