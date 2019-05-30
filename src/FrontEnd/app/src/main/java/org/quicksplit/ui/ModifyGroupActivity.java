@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +14,7 @@ import android.widget.Toast;
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
+import org.quicksplit.adapters.DeleteFriendsAdapter;
 import org.quicksplit.adapters.GroupFriendsAdapter;
 import org.quicksplit.models.Group;
 import org.quicksplit.models.User;
@@ -31,13 +31,21 @@ import retrofit2.Response;
 public class ModifyGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private List<User> members;
+    private List<User> friends;
     private List<String> friendsSelected;
-    private Button mButtonCreateGroup;
+
+    private Button mButtonModifyGroup;
+    private EditText mEditTextGroupName;
+
     private TextView mLabelErrorFriendsSelected;
     private TextInputLayout mLabelErrorGroupName;
-    private EditText mEditTextGroupName;
+
+    private RecyclerView mRecyclerViewMembers;
+    private DeleteFriendsAdapter mRecycleViewDeleteFriendsAdapter;
+
     private RecyclerView mRecyclerViewFriends;
     private GroupFriendsAdapter mRecycleViewGroupFriendsAdapter;
+
     private RecyclerView.LayoutManager mRecyclerViewManager;
 
     @Override
@@ -47,15 +55,12 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
 
         friendsSelected = new ArrayList<String>();
 
-        //mLabelErrorFriendsSelected = findViewById(R.id.lbl_errorMessage);
-
-        //mLabelErrorGroupName = findViewById(R.id.lblError_txtGroupName);
         mEditTextGroupName = findViewById(R.id.txt_groupName);
+        mRecyclerViewMembers = findViewById(R.id.membersReciclerView);
+        mRecyclerViewFriends = findViewById(R.id.friendsReciclerView);
 
-        //mRecyclerViewFriends = findViewById(R.id.friendsReciclerView);
-
-        mButtonCreateGroup = findViewById(R.id.btn_editGroup);
-        mButtonCreateGroup.setOnClickListener(this);
+        mButtonModifyGroup = findViewById(R.id.btn_editGroup);
+        mButtonModifyGroup.setOnClickListener(this);
 
         loadGroupData();
     }
@@ -76,6 +81,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             public void onResponse(Call<Group> call, Response<Group> response) {
                 if (response.isSuccessful()) {
                     loadFields(response.body());
+                    //TODO: BUILD ADD GROUP MEMBERS RECYCLER VIEW
                 } else {
 
                 }
@@ -108,6 +114,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
                     members = response.body();
+                    //TODO: BUILD DELETE FRIENDS RECYCLER VIEW
                     loading.dismiss();
                 } else {
                     loading.dismiss();
@@ -123,34 +130,34 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         });
     }
 
-   private void getFriends() {
-       TokenManager tokenManager = new TokenManager(this);
+    private void getFriends() {
+        TokenManager tokenManager = new TokenManager(this);
 
-       UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
-       Call<List<User>> call = client.getFriends(tokenManager.getUserIdFromToken());
+        UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
+        Call<List<User>> call = client.getFriends(tokenManager.getUserIdFromToken());
 
-       final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
 
-       call.enqueue(new Callback<List<User>>() {
+        call.enqueue(new Callback<List<User>>() {
 
-           @Override
-           public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-               if (response.isSuccessful()) {
-                   members = response.body();
-                   loading.dismiss();
-               } else {
-                   loading.dismiss();
-                   Toast.makeText(ModifyGroupActivity.this, "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
-               }
-           }
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (response.isSuccessful()) {
+                    members = response.body();
+                    loading.dismiss();
+                } else {
+                    loading.dismiss();
+                    Toast.makeText(ModifyGroupActivity.this, "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-           @Override
-           public void onFailure(Call<List<User>> call, Throwable t) {
-               loading.dismiss();
-               Toast.makeText(ModifyGroupActivity.this, "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
-           }
-       });
-   }
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                loading.dismiss();
+                Toast.makeText(ModifyGroupActivity.this, "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     public void onClick(View v) {
