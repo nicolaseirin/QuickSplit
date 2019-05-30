@@ -20,7 +20,7 @@ public interface GroupClient {
     Call<List<Group>> getAllGroups();
 
     @GET("groups/{id}")
-    Call<List<Group>> getGroup(@Path("id") String id);
+    Call<Group> getGroup(@Path("id") String id);
 
     @GET("groups/{id}/users")
     Call<List<User>> getGroupMembers(@Path("id") String id);

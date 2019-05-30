@@ -53,8 +53,8 @@ public class GroupFriendsAdapter extends RecyclerView.Adapter<GroupFriendsAdapte
         return friends.size();
     }
 
-    public GroupFriendsAdapter(List<User> users) {
-        this.friends = users;
+    public GroupFriendsAdapter(List<User> friends) {
+        this.friends = friends;
     }
 
     public static class FriendsViewHolder extends RecyclerView.ViewHolder {

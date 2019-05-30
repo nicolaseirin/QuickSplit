@@ -130,8 +130,9 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         mRecyclerViewGroupsAdapter.setOnItemClickListener(new GroupAdapter.OnItemClickListener() {
             @Override
             public void onModifyClick(Group group) {
-                //TODO: ABRIR ACTIVTY PARA MODIFICAR EL GRUPO, DESPUÉS ENVIAR EN LA ACTIVIDAD
-                //CON LOS DATOS MODIFICADOS PERO EL MISMO ID
+                Intent intent = new Intent(getContext(), ModifyGroupActivity.class);
+                intent.putExtra("EXTRA_GROUP_ID", group.getId());
+                startActivity(intent);
             }
 
             @Override
