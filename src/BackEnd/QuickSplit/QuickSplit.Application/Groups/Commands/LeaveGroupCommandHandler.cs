@@ -36,8 +36,8 @@ namespace QuickSplit.Application.Groups.Commands
         {
             
             User user = await _context.Users.FindAsync(request.UserId) ?? throw new InvalidCommandException($"El usuario con id {request.UserId} no existe");
-            Group group = await _context.Groups.FindAsync(request.GroupId) ?? throw new InvalidCommandException($"El grupo con id {request.GroupId} no existe");
-            Domain.Membership membership =  await _context.Memberships.FirstOrDefaultAsync(m=> m.Group == group && m.User == user) ;
+            Group group = await _context.Groups.FindAsync(request.GroupId) ;
+            Domain.Membership membership =  await _context.Memberships.FindAsync(group.Id, user.Id) ;
            
             group.Memberships.Remove(membership);
             _context.Memberships.Remove(membership);         
