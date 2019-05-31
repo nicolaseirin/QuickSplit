@@ -22,7 +22,7 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(newGroup);
         }
 
-        [HttpPut("{leave}")]
+        [HttpPut("leave")]
         public async Task<ActionResult<GroupModel>> LeaveGroup([FromBody] LeaveGroupCommand command)
         {
             await Mediator.Send(command);
