@@ -30,7 +30,7 @@ namespace QuickSplit.Tests.Integration.Internal
                 // database for testing.
                 services.AddDbContext<QuickSplitContext>(options =>
                 {
-                    options.UseLazyLoadingProxies();
+                    //options.UseLazyLoadingProxies()
                     options.UseSqlServer("Server=localhost;Database=QuickSplitDbTesting;Trusted_Connection=False;User ID=QuickSplit;Password=QuickSplit123;");
                     //options.UseSqlServer("Server=DESKTOP-DN1E4B9\\SQLSERVER_R14;Database=QuickSplitDbTest;Trusted_Connection=True;");
                     options.UseInternalServiceProvider(serviceProvider);

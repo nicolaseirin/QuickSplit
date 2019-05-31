@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -8,6 +9,8 @@ using QuickSplit.Application.Groups;
 using QuickSplit.Application.Groups.Commands;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Groups.Queries;
+using QuickSplit.Application.Purchases.Commands;
+using QuickSplit.Application.Purchases.Queries;
 using QuickSplit.Application.Users.Commands;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Application.Users.Queries;
@@ -22,8 +25,9 @@ namespace QuickSplit.Tests.Integration
     {
         private const string UsersUrl = "/api/users";
         private const string GroupUrl = "/api/groups";
-        private readonly HttpClient _client;
+        private const string PurchasesUrl = "/api/purchases";
 
+        private readonly HttpClient _client;
         private CreateUserCommand _johnSnow;
         private CreateUserCommand _robbStark;
         private CreateUserCommand _tywinLannister;
@@ -161,13 +165,13 @@ namespace QuickSplit.Tests.Integration
             response.EnsureSuccessStatusCode();
             IEnumerable<UserModel> members = await response.DeserializeCollection<UserModel>();
 
-            Assert.True(members.All(user => user.Id == 1 || user.Id == 2 || user.Id == 3 ));
+            Assert.True(members.All(user => user.Id == 1 || user.Id == 2 || user.Id == 3));
         }
-        
+
         [Fact, Priority(4)]
         public async void AddPurchase()
         {
-            var command = new AddPurchaseCommand()
+            var command = new CreatePurchaseCommand()
             {
                 Group = 1,
                 Currency = "Usd",
@@ -179,14 +183,14 @@ namespace QuickSplit.Tests.Integration
             HttpResponseMessage response = await _client.PostObjectAsync($"{GroupUrl}/1/purchases", command);
             response.EnsureSuccessStatusCode();
             PurchaseModel purchase = await response.DeserializeObject<PurchaseModel>();
-            
+
             Assert.Equal(command.Currency, purchase.Currency);
             Assert.Equal(command.Group, purchase.Group);
             Assert.Equal(command.Participants.ToList(), purchase.Participants);
             Assert.Equal(command.Cost, purchase.Cost);
             Assert.Equal(command.Purchaser, purchase.Purchaser);
         }
-        
+
         [Fact, Priority(5)]
         public async void GetGroupWithPurchase()
         {
@@ -195,10 +199,10 @@ namespace QuickSplit.Tests.Integration
             HttpResponseMessage response = await _client.GetAsync(GroupUrl + "/1");
             response.EnsureSuccessStatusCode();
             GroupModel group = await response.DeserializeObject<GroupModel>();
-            
+
             Assert.True(group.Purchases.Count(p => p == 1) == 1);
         }
-        
+
         [Fact, Priority(5)]
         public async void GetGroupsAgain()
         {
@@ -216,22 +220,21 @@ namespace QuickSplit.Tests.Integration
             Assert.True(group.Memberships.All(m => m == 2 || m == 3));
             Assert.True(group.Purchases.Any());
         }
-        
+
         [Fact, Priority(5)]
         public async void GetGroupPurchase()
         {
-            var query = new GetGroupsQuery();
-
             HttpResponseMessage response = await _client.GetAsync(GroupUrl + "/1/purchases");
             response.EnsureSuccessStatusCode();
-            PurchaseModel purchase = (await response.DeserializeCollection<PurchaseModel>()).Single();
-            
+            var pa = await response.DeserializeCollection<PurchaseModel>();
+            PurchaseModel purchase = pa.SingleOrDefault();
+
             Assert.Equal(1, purchase.Id);
             Assert.True(purchase.Participants.All(p => p == 2 || p == 1));
             Assert.Equal(1, purchase.Purchaser);
             Assert.Equal(15U, purchase.Cost);
         }
-        
+
         [Fact, Priority(5)]
         public async void GetUserPurchase()
         {
@@ -239,12 +242,87 @@ namespace QuickSplit.Tests.Integration
 
             HttpResponseMessage response = await _client.GetAsync(UsersUrl + "/1/purchases");
             response.EnsureSuccessStatusCode();
-            PurchaseModel purchase = (await response.DeserializeCollection<PurchaseModel>()).Single();
-            
+            PurchaseModel purchase = (await response.DeserializeCollection<PurchaseModel>()).SingleOrDefault();
+
             Assert.Equal(1, purchase.Id);
             Assert.True(purchase.Participants.All(p => p == 2 || p == 1));
             Assert.Equal(1, purchase.Purchaser);
             Assert.Equal(15U, purchase.Cost);
+        }
+
+        [Fact, Priority(6)]
+        public async void CreatePurchase()
+        {
+            var command = new CreatePurchaseCommand()
+            {
+                Cost = 100,
+                Currency = "Ars",
+                Group = 1,
+                Participants = new[] {1},
+                Purchaser = 2
+            };
+
+            HttpResponseMessage response = await _client.PostObjectAsync(PurchasesUrl, command);
+            response.EnsureSuccessStatusCode();
+            PurchaseModel purchase = await response.DeserializeObject<PurchaseModel>();
+
+            Assert.Equal(2, purchase.Id);
+            Assert.Equal(2, purchase.Purchaser);
+            Assert.Equal(1, purchase.Group);
+        }
+
+        [Fact, Priority(7)]
+        public async void GetPurchases()
+        {
+            HttpResponseMessage response = await _client.GetAsync(PurchasesUrl);
+            response.EnsureSuccessStatusCode();
+            IEnumerable<PurchaseModel> purchases = await response.DeserializeCollection<PurchaseModel>();
+
+            Assert.Equal(2, purchases.Count());
+            Assert.True(purchases.All(purchase => purchase.Id == 1 || purchase.Id == 2));
+        }
+
+        [Fact, Priority(7)]
+        public async void GetPurchaseById()
+        {
+            HttpResponseMessage response = await _client.GetAsync(PurchasesUrl + "/1");
+            response.EnsureSuccessStatusCode();
+
+            PurchaseModel purchase = await response.DeserializeObject<PurchaseModel>();
+
+            Assert.Equal(1, purchase.Id);
+        }
+
+        [Fact, Priority(8)]
+        public async void ModifyPurchase()
+        {
+            var command = new ModifyPurchaseCommand()
+            {
+                Cost = 100,
+                Currency = "Ars",
+                Participants = new[] {1},
+            };
+
+            HttpResponseMessage response = await _client.PutObjectAsync(PurchasesUrl + "/1", command);
+            response.EnsureSuccessStatusCode();
+            PurchaseModel purchase = await response.DeserializeObject<PurchaseModel>();
+
+            Assert.Equal(1, purchase.Id);
+            Assert.Equal(100U, purchase.Cost);
+            Assert.Equal("Ars", purchase.Currency);
+        }
+
+        [Fact, Priority(9)]
+        public async void CheckThatPurchaseWasModified()
+        {
+            HttpResponseMessage response = await _client.GetAsync(PurchasesUrl + "/1");
+            response.EnsureSuccessStatusCode();
+            PurchaseModel purchase = await response.DeserializeObject<PurchaseModel>();
+
+            Assert.Equal(1, purchase.Id);
+            Assert.Equal(100U, purchase.Cost);
+            Assert.Equal("Ars", purchase.Currency);
+            Assert.Single(purchase.Participants);
         }
     }
 }

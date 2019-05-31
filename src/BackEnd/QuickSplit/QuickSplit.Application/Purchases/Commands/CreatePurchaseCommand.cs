@@ -4,31 +4,30 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Domain;
 
-namespace QuickSplit.Application.Groups.Commands
+namespace QuickSplit.Application.Purchases.Commands
 {
-    public class AddPurchaseCommandHandler : IRequestHandler<AddPurchaseCommand, PurchaseModel>
+    public class CreateAddPurchaseCommandHandler : IRequestHandler<CreatePurchaseCommand, PurchaseModel>
     {
         private readonly IQuickSplitContext _context;
         private readonly IImageRepository _imageRepository;
 
-        public AddPurchaseCommandHandler(IQuickSplitContext context, IImageRepository imageRepository)
+        public CreateAddPurchaseCommandHandler(IQuickSplitContext context, IImageRepository imageRepository)
         {
             _context = context;
             _imageRepository = imageRepository;
             _imageRepository.FolderName = "Purchases";
         }
 
-        public async Task<PurchaseModel> Handle(AddPurchaseCommand request, CancellationToken cancellationToken)
+        public async Task<PurchaseModel> Handle(CreatePurchaseCommand request, CancellationToken cancellationToken)
         {
             Group group = await GetGroupIfValid(request);
             User purchaser = await GetPurchaserIfValid(request);
-            IEnumerable<User> participants = await GetParticipantsIfValid(request, group);
+            IEnumerable<User> participants = await GetParticipantsIfValid(request.Participants, group);
             Currency currency = GetCurrencyIfValid(request);
 
             var purchase = new Purchase(purchaser, group, request.Cost, currency, participants);
@@ -41,7 +40,7 @@ namespace QuickSplit.Application.Groups.Commands
             return new PurchaseModel(purchase);
         }
 
-        private static Currency GetCurrencyIfValid(AddPurchaseCommand request)
+        private static Currency GetCurrencyIfValid(CreatePurchaseCommand request)
         {
             bool currencyIsValid = Enum.TryParse(request.Currency, out Currency currency);
             if (!currencyIsValid)
@@ -49,27 +48,27 @@ namespace QuickSplit.Application.Groups.Commands
             return currency;
         }
 
-        private async Task<User[]> GetParticipantsIfValid(AddPurchaseCommand request, Group @group)
+        private async Task<User[]> GetParticipantsIfValid(IEnumerable<int> requestParticipants, Group @group)
         {
-            User[] participants = await Task.WhenAll(request.Participants.Select(u => _context.Users.FindAsync(u)));
+            User[] participants = await Task.WhenAll(requestParticipants.Select(u => _context.Users.FindAsync(u)));
             if (participants.Any(u => u == null)) 
                 throw new InvalidCommandException("Participantes invalidos");
 
             return participants;
         }
 
-        private async Task<User> GetPurchaserIfValid(AddPurchaseCommand request)
+        private async Task<User> GetPurchaserIfValid(CreatePurchaseCommand request)
         {
             return await _context.Users.FindAsync(request.Purchaser) ?? throw new InvalidCommandException("El comprador no existe");
         }
 
-        private async Task<Group> GetGroupIfValid(AddPurchaseCommand request)
+        private async Task<Group> GetGroupIfValid(CreatePurchaseCommand request)
         {
             return await _context.Groups.FindAsync(request.Group) ?? throw new InvalidCommandException("Grupo no existe");
         }
     }
 
-    public class AddPurchaseCommand : IRequest<PurchaseModel>
+    public class CreatePurchaseCommand : IRequest<PurchaseModel>
     {
         public int Purchaser { get; set; }
 

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Interfaces;
@@ -19,11 +20,20 @@ namespace QuickSplit.Application.Groups.Queries
         {
             _context = context;
             _imageRepository = imageRepository;
+            _imageRepository.FolderName = "Purchases";
         }
 
         public async Task<IEnumerable<PurchaseModel>> Handle(GetPurchasesByGroupQuery request, CancellationToken cancellationToken)
         {
-            Group group = await _context.Groups.FindAsync(request.GroupId) ?? throw new InvalidQueryException($"No existe el grupo");
+            Group group = await _context
+                              .Groups
+                              .Include(group1 => group1.Purchases)
+                              .ThenInclude(purchase => purchase.Group)
+                              .ThenInclude(group1 => group1.Purchases)
+                              .ThenInclude(purchase => purchase.Participants)
+                              .ThenInclude(participant => participant.Purchase.Purchaser)
+                              .FirstOrDefaultAsync(group1 => group1.Id == request.GroupId, cancellationToken: cancellationToken)
+                          ?? throw new InvalidQueryException($"No existe el grupo");
 
             return await Task.WhenAll(group.Purchases.Select(MapPurchase));
         }

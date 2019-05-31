@@ -97,7 +97,6 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
     private void loadFields(Group group) {
         mEditTextGroupName.setText(group.getName());
         getGroupMembers();
-        getFriends();
     }
 
     private void getGroupMembers() {
@@ -114,6 +113,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
                     members = response.body();
+                    getFriends();
                     buildRecyclerViewDeleteFriendsAdapter();
                     loading.dismiss();
                 } else {
