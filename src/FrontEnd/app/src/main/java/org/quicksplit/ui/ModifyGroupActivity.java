@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -14,8 +15,8 @@ import android.widget.Toast;
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
+import org.quicksplit.adapters.AddFriendsAdapter;
 import org.quicksplit.adapters.DeleteFriendsAdapter;
-import org.quicksplit.adapters.GroupFriendsAdapter;
 import org.quicksplit.models.Group;
 import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
@@ -44,7 +45,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
     private DeleteFriendsAdapter mRecycleViewDeleteFriendsAdapter;
 
     private RecyclerView mRecyclerViewFriends;
-    private GroupFriendsAdapter mRecycleViewGroupFriendsAdapter;
+    private AddFriendsAdapter mRecycleViewGroupFriendsAdapter;
 
     private RecyclerView.LayoutManager mRecyclerViewManager;
 
@@ -81,7 +82,6 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             public void onResponse(Call<Group> call, Response<Group> response) {
                 if (response.isSuccessful()) {
                     loadFields(response.body());
-                    //TODO: BUILD ADD GROUP MEMBERS RECYCLER VIEW
                 } else {
 
                 }
@@ -114,7 +114,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
                     members = response.body();
-                    //TODO: BUILD DELETE FRIENDS RECYCLER VIEW
+                    buildRecyclerViewDeleteFriendsAdapter();
                     loading.dismiss();
                 } else {
                     loading.dismiss();
@@ -130,6 +130,25 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         });
     }
 
+
+    private void buildRecyclerViewAddFriendsAdapter() {
+        friends.removeAll(members);
+
+        mRecyclerViewFriends.setHasFixedSize(true);
+        mRecyclerViewManager = new LinearLayoutManager(this);
+        mRecycleViewGroupFriendsAdapter = new AddFriendsAdapter(friends);
+        mRecyclerViewFriends.setLayoutManager(mRecyclerViewManager);
+        mRecyclerViewFriends.setAdapter(mRecycleViewGroupFriendsAdapter);
+    }
+
+    private void buildRecyclerViewDeleteFriendsAdapter() {
+        mRecyclerViewMembers.setHasFixedSize(true);
+        mRecyclerViewManager = new LinearLayoutManager(this);
+        mRecycleViewDeleteFriendsAdapter = new DeleteFriendsAdapter(members);
+        mRecyclerViewMembers.setLayoutManager(mRecyclerViewManager);
+        mRecyclerViewMembers.setAdapter(mRecycleViewDeleteFriendsAdapter);
+    }
+
     private void getFriends() {
         TokenManager tokenManager = new TokenManager(this);
 
@@ -143,11 +162,12 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
-                    members = response.body();
+                    friends = response.body();
+                    buildRecyclerViewAddFriendsAdapter();
                     loading.dismiss();
                 } else {
                     loading.dismiss();
-                    Toast.makeText(ModifyGroupActivity.this, "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ModifyGroupActivity.this, "Error al obtener amigos", Toast.LENGTH_SHORT).show();
                 }
             }
 
