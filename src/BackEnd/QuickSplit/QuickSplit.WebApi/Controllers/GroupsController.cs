@@ -49,11 +49,16 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(updated);
         }
 
-        [HttpGet]
-        public async Task<ActionResult<ICollection<GroupModel>>> GetAll()
+        [HttpGet("{id}/memberships")]
+        public async Task<ActionResult<ICollection<GroupModel>>> GetAll(int id)
         {
-            var groups = await Mediator.Send(new GetGroupsQuery());
+            IEnumerable<GroupModel> groups = await Mediator.Send(new GetGroupsQuery()
+            {
+                Id = id
+            });
+
             return Ok(groups);
+
         }
 
         //[Authorize]
