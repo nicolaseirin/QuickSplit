@@ -1,4 +1,6 @@
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -12,6 +14,7 @@ namespace QuickSplit.Persistence
 {
     public class ImageRepository : IImageRepository
     {
+        private const int ImageQualityRatio = 15;
         private readonly string[] ValidFormats = {"png", "jpeg", "jpg"};
         private string ImageDir => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FolderName);
 
@@ -23,7 +26,7 @@ namespace QuickSplit.Persistence
             string imagePath = Directory
                                    .GetFiles(basePath)
                                    .FirstOrDefault(path => FileIsUserAvatar(id, path))
-                               ?? basePath + "/default.png";
+                               ?? basePath + "/default.jpg";
 
             return new FileStream(imagePath, FileMode.Open);
         }
@@ -36,7 +39,6 @@ namespace QuickSplit.Persistence
                 await stream.ReadAsync(buffer);
                 return Convert.ToBase64String(buffer);
             }
-            
         }
 
         private bool FormatIsValid(string requestImageFormat)
@@ -45,25 +47,21 @@ namespace QuickSplit.Persistence
                 .Any(f => f.Equals(requestImageFormat, StringComparison.OrdinalIgnoreCase));
         }
 
-        public async void AddImageFromStream(int id, Stream image, string imageExt)
+        public void AddImageFromStream(int id, Stream image, string imageExt)
         {
             string avatarPath = GetImagePath(id, imageExt);
-            using (var fs = new FileStream(avatarPath, FileMode.OpenOrCreate))
+            SaveJpeg(avatarPath, Image.FromStream(image), ImageQualityRatio);
+        }
+
+        public void AddImageFromBase64(int id, string image, string imageExt)
+        {
+            string avatarPath = GetImagePath(id, imageExt);
+            using (var fs = new MemoryStream(Convert.FromBase64String(image)))
             {
-                await image.CopyToAsync(fs);
+                SaveJpeg(avatarPath, Image.FromStream(fs), ImageQualityRatio);
             }
         }
 
-        public async void AddImageFromBase64(int id, string image, string imageExt)
-        {
-            string avatarPath = GetImagePath(id, imageExt);
-            using (var fs = new FileStream(avatarPath, FileMode.OpenOrCreate))
-            {
-                byte[] bytes = Convert.FromBase64String(image);
-                await fs.ReadAsync(bytes);
-            }
-        }
-        
         private string GetImagePath(int id, string imageExt)
         {
             string ext = imageExt.Split('/').Last();
@@ -94,6 +92,32 @@ namespace QuickSplit.Persistence
                 .Split('.')
                 .First()
                 .Equals(userId.ToString(), StringComparison.OrdinalIgnoreCase);
+        }
+        
+        private static void SaveJpeg(string path, Image img, int quality)
+        {
+            if (quality < 0 || quality > 100)
+                throw new ArgumentOutOfRangeException("quality must be between 0 and 100.");
+
+
+            // Encoder parameter for image quality 
+            var qualityParam = new EncoderParameter(Encoder.Quality, quality);
+            // Jpeg image codec 
+            ImageCodecInfo jpegCodec = GetEncoderInfo("image/jpeg");
+
+            var encoderParams = new EncoderParameters(1);
+            encoderParams.Param[0] = qualityParam;
+
+            img.Save(path, jpegCodec, encoderParams);
+        }
+        
+        private static ImageCodecInfo GetEncoderInfo(string mimeType)
+        {
+            // Get image codecs for all image formats 
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
+
+            // Find the correct image codec 
+            return codecs.FirstOrDefault(t => t.MimeType == mimeType);
         }
     }
 }
