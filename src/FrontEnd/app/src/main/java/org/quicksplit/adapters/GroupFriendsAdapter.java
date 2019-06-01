@@ -17,16 +17,18 @@ import java.util.List;
 
 public class GroupFriendsAdapter extends RecyclerView.Adapter<GroupFriendsAdapter.FriendsViewHolder> {
 
-    private List<User> friends;
-    private OnItemCheakedListener mListener;
 
-    public interface OnItemCheakedListener {
+    private boolean checkAllItems = false;
+    private List<User> friends;
+    private OnItemCheckedListener mListener;
+
+    public interface OnItemCheckedListener {
         void onCheck(User user);
 
         void onUncheck(User user);
     }
 
-    public void setOnItemClickListener(OnItemCheakedListener listener) {
+    public void setOnItemClickListener(OnItemCheckedListener listener) {
         this.mListener = listener;
     }
 
@@ -46,6 +48,7 @@ public class GroupFriendsAdapter extends RecyclerView.Adapter<GroupFriendsAdapte
         friendsViewHolder.mImageView.setImageBitmap(Utils.stringToBitMap(avatar));
         friendsViewHolder.mTextViewNameLastname.setText(currentItem.getName() + " " + currentItem.getLastName());
         friendsViewHolder.mTextViewEmail.setText(currentItem.getMail());
+        friendsViewHolder.mCheckboxFriend.setChecked(checkAllItems);
     }
 
     @Override
@@ -64,7 +67,7 @@ public class GroupFriendsAdapter extends RecyclerView.Adapter<GroupFriendsAdapte
         public TextView mTextViewEmail;
         public CheckBox mCheckboxFriend;
 
-        public FriendsViewHolder(@NonNull View itemView, final OnItemCheakedListener listener, final List<User> users) {
+        public FriendsViewHolder(@NonNull View itemView, final OnItemCheckedListener listener, final List<User> users) {
             super(itemView);
 
             mImageView = itemView.findViewById(R.id.imageView);
@@ -87,5 +90,9 @@ public class GroupFriendsAdapter extends RecyclerView.Adapter<GroupFriendsAdapte
                 }
             });
         }
+    }
+
+    public void setCheckAllItems(boolean state) {
+        checkAllItems = state;
     }
 }

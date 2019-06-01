@@ -96,7 +96,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         mRecycleViewGroupFriendsAdapter = new GroupFriendsAdapter(friends);
         mRecyclerViewFriends.setLayoutManager(mRecyclerViewManager);
         mRecyclerViewFriends.setAdapter(mRecycleViewGroupFriendsAdapter);
-        mRecycleViewGroupFriendsAdapter.setOnItemClickListener(new GroupFriendsAdapter.OnItemCheakedListener() {
+        mRecycleViewGroupFriendsAdapter.setOnItemClickListener(new GroupFriendsAdapter.OnItemCheckedListener() {
             @Override
             public void onCheck(User user) {
                 friendsSelected.add(user.getId());

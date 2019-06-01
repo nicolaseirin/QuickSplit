@@ -36,6 +36,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
     private List<String> currency;
 
     private List<User> members;
+    private List<User> participants;
 
     private TextInputLayout mTextInputLayotSpnGroupName;
     private Spinner mSpinnerGroups;
@@ -120,6 +121,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
                     members = response.body();
+                    participants = members;
                     buildRecyclerViewCreateGroupFriendsAdapter();
                     loading.dismiss();
                 } else {
@@ -142,15 +144,16 @@ public class CreatePurchaseActivity extends AppCompatActivity {
         mRecycleViewGroupFriendsAdapter = new GroupFriendsAdapter(members);
         mRecyclerViewGroupMembers.setLayoutManager(mRecyclerViewManager);
         mRecyclerViewGroupMembers.setAdapter(mRecycleViewGroupFriendsAdapter);
-        mRecycleViewGroupFriendsAdapter.setOnItemClickListener(new GroupFriendsAdapter.OnItemCheakedListener() {
+        mRecycleViewGroupFriendsAdapter.setCheckAllItems(true);
+        mRecycleViewGroupFriendsAdapter.setOnItemClickListener(new GroupFriendsAdapter.OnItemCheckedListener() {
             @Override
             public void onCheck(User user) {
-
+                participants.add(user);
             }
 
             @Override
             public void onUncheck(User user) {
-
+                participants.remove(user);
             }
         });
     }
