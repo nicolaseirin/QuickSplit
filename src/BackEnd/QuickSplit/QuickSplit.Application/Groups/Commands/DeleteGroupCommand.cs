@@ -31,7 +31,6 @@ namespace QuickSplit.Application.Groups.Commands
 
         private async void DeleteMemberships(Group toDelete)
         {
-            var groupId = toDelete.Id;
             var memberships = toDelete.Memberships;
             foreach (var mem in memberships)
             {
