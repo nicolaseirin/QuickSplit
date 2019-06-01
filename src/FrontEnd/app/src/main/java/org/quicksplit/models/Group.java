@@ -40,4 +40,9 @@ public class Group {
     public void setMemberships(List<String> memberships) {
         this.memberships = memberships;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

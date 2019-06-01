@@ -51,4 +51,9 @@ public class User {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+
+    @Override
+    public String toString() {
+        return name + " " + lastName;
+    }
 }
