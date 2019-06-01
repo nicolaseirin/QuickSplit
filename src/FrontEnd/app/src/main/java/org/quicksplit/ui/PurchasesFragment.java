@@ -1,16 +1,16 @@
 package org.quicksplit.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.quicksplit.R;
-import org.quicksplit.adapters.GroupAdapter;
 
 
 /**
@@ -22,6 +22,8 @@ import org.quicksplit.adapters.GroupAdapter;
  * create an instance of this fragment.
  */
 public class PurchasesFragment extends Fragment {
+
+    private FloatingActionButton mButtonAddPurchase;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -68,6 +70,14 @@ public class PurchasesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_purchases, container, false);
+        mButtonAddPurchase = view.findViewById(R.id.btn_createPurchase);
+        mButtonAddPurchase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newPurchaseActivity = new Intent(getContext(), CreatePurchaseActivity.class);
+                startActivity(newPurchaseActivity);
+            }
+        });
         return view;
     }
 
