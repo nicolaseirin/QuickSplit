@@ -17,8 +17,8 @@ import retrofit2.http.Path;
 
 public interface GroupClient {
 
-    @GET("groups")
-    Call<List<Group>> getAllGroups();
+    @GET("groups/{id}/memberships")
+    Call<List<Group>> getUserGroups(@Path("id") String id);
 
     @GET("groups/{id}")
     Call<Group> getGroup(@Path("id") String id);

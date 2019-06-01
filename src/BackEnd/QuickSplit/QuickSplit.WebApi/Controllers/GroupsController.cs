@@ -17,14 +17,6 @@ namespace QuickSplit.WebApi.Controllers
     public class GroupsController : BaseController
     {
         [Authorize]
-        [HttpGet]
-        public async Task<ActionResult<ICollection<GroupModel>>> GetAll()
-        {
-            var groups = await Mediator.Send(new GetGroupsQuery());
-            return Ok(groups);
-        }
-
-        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<GroupModel>> Get(int id)
         {
