@@ -36,8 +36,8 @@ namespace QuickSplit.Application.Groups.Commands
             foreach (var mem in memberships)
             {
                _context.Memberships.Remove(mem);
-               _context.SaveChanges();
             }
+            _context.SaveChanges();
         }
     }
     
