@@ -22,6 +22,7 @@ import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 import org.quicksplit.service.UserClient;
 
+import java.nio.file.attribute.GroupPrincipal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,6 +140,16 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         mRecycleViewGroupFriendsAdapter = new AddFriendsAdapter(friends);
         mRecyclerViewFriends.setLayoutManager(mRecyclerViewManager);
         mRecyclerViewFriends.setAdapter(mRecycleViewGroupFriendsAdapter);
+        mRecycleViewGroupFriendsAdapter.setOnItemClickListener(new AddFriendsAdapter.OnItemClickListener() {
+            @Override
+            public void onAddClick(User user) {
+                members.add(user);
+                friends.remove(user);
+
+                buildRecyclerViewAddFriendsAdapter();
+                buildRecyclerViewDeleteFriendsAdapter();
+            }
+        });
     }
 
     private void buildRecyclerViewDeleteFriendsAdapter() {
@@ -147,6 +158,16 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         mRecycleViewDeleteFriendsAdapter = new DeleteFriendsAdapter(members);
         mRecyclerViewMembers.setLayoutManager(mRecyclerViewManager);
         mRecyclerViewMembers.setAdapter(mRecycleViewDeleteFriendsAdapter);
+        mRecycleViewDeleteFriendsAdapter.setOnItemClickListener(new DeleteFriendsAdapter.OnItemClickListener() {
+            @Override
+            public void onDeleteClick(User user) {
+                members.remove(user);
+                friends.add(user);
+
+                buildRecyclerViewDeleteFriendsAdapter();
+                buildRecyclerViewAddFriendsAdapter();
+            }
+        });
     }
 
     private void getFriends() {
@@ -181,6 +202,39 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
+        updateGroup();
+    }
 
+    private void updateGroup() {
+        String groupId = getIntent().getStringExtra("EXTRA_GROUP_ID");
+        TokenManager tokenManager = new TokenManager(this);
+
+        Group group = new Group();
+
+        group.setId(groupId);
+        group.setName(mEditTextGroupName.getText().toString());
+        group.setAdmin(tokenManager.getUserIdFromToken());
+
+        List<String> memberships = new ArrayList<String>();
+        for (int i = 0; i < members.size(); i++) memberships.add(members.get(i).getId());
+        group.setMemberships(memberships);
+
+        GroupClient groupClient = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
+        Call<Group> call = groupClient.modifyGroup(groupId);
+        call.enqueue(new Callback<Group>() {
+            @Override
+            public void onResponse(Call<Group> call, Response<Group> response) {
+                if (response.isSuccessful()) {
+
+                } else {
+                    Toast.makeText(ModifyGroupActivity.this, "Error al modificar grupo.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Group> call, Throwable t) {
+                Toast.makeText(ModifyGroupActivity.this, "Error en la comunicación al modificar grupo.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
