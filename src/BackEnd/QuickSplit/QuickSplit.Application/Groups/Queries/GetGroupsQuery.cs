@@ -22,16 +22,16 @@ namespace QuickSplit.Application.Groups.Queries
 
         public async Task<IEnumerable<GroupModel>> Handle(GetGroupsQuery request, CancellationToken cancellationToken)
         {
-            Domain.Membership membership = await _context
+            IEnumerable<Domain.Membership> memberships = await _context
                               .Memberships
                               .Include(mem => mem.Group)
                               .ThenInclude(group => group.Purchases)
                               .ThenInclude(mem => mem.Group)
-                              .ThenInclude(admin => admin.Admin)                              
-                              .FirstOrDefaultAsync(mem => mem.UserId == request.Id, cancellationToken: cancellationToken)
-                              ?? throw new InvalidQueryException($"El usuario con id {request.Id} no pertenece a ningun grupo");
-
-            return await Task.WhenAll(MapToModel(membership.Group));
+                              .ThenInclude(admin => admin.Admin)
+                              .Where(mem => mem.UserId == request.Id)
+                              .ToListAsync();
+                            
+            return await Task.WhenAll(memberships.Select(m => MapToModel(m.Group)));
         }
 
         private async Task<GroupModel> MapToModel(Group group)
