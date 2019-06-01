@@ -72,6 +72,18 @@ namespace QuickSplit.WebApi.Controllers
             return Ok();
         }
 
+
+        [HttpGet("{id}/memberships")]
+        public async Task<ActionResult<ICollection<GroupModel>>> GetAll(int id)
+        {
+            IEnumerable<GroupModel> groups = await Mediator.Send(new GetGroupsQuery()
+            {
+                Id = id
+            });
+
+            return Ok(groups);
+        }
+
         [Authorize]
         [HttpGet("{id}/users")]
         public async Task<ActionResult<IEnumerable<UserModel>>> GetParticipants(int id)

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Domain;
@@ -21,16 +22,19 @@ namespace QuickSplit.Application.Groups.Queries
 
         public async Task<IEnumerable<GroupModel>> Handle(GetGroupsQuery request, CancellationToken cancellationToken)
         {
-            return await _context
-                .Groups
-                .Include("Admin")
-                .Include("Memberships")
-                .Include("Purchases")
-                .Select(group => MapToModel(group))
-                .ToListAsync(cancellationToken: cancellationToken);
+            Domain.Membership membership = await _context
+                              .Memberships
+                              .Include(mem => mem.Group)
+                              .ThenInclude(group => group.Purchases)
+                              .ThenInclude(mem => mem.Group)
+                              .ThenInclude(admin => admin.Admin)                              
+                              .FirstOrDefaultAsync(mem => mem.UserId == request.Id, cancellationToken: cancellationToken)
+                              ?? throw new InvalidQueryException($"El usuario con id {request.Id} no pertenece a ningun grupo");
+
+            return await Task.WhenAll(MapToModel(membership.Group));
         }
 
-        private GroupModel MapToModel(Group group)
+        private async Task<GroupModel> MapToModel(Group group)
         {
             var groupModel = new GroupModel
             {
@@ -50,5 +54,6 @@ namespace QuickSplit.Application.Groups.Queries
     
     public class GetGroupsQuery: IRequest<IEnumerable<GroupModel>>
     {
+        public int Id { get; set; }
     }
 }

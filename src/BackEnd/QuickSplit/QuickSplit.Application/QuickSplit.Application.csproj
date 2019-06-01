@@ -27,6 +27,11 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
+  <ItemGroup>
+    <None Update="Purchases\default.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\QuickSplit.Domain\QuickSplit.Domain.csproj" />
