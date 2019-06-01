@@ -100,7 +100,7 @@ namespace QuickSplit.Tests.Integration
             {
                 Name = "Red Wedding",
                 Admin = 1,
-                Memberships = {2, 3}
+                Memberships = {2, 3, 1}
             };
 
             HttpResponseMessage response = await _client.PostObjectAsync(GroupUrl, group);
@@ -155,7 +155,7 @@ namespace QuickSplit.Tests.Integration
             Assert.Equal(1, group.Id);
             Assert.Equal(1, group.Admin);
             Assert.Equal("Red Wedding", group.Name);
-            Assert.True(group.Memberships.All(m => m == 2 || m == 3));
+            Assert.True(group.Memberships.All(m => m == 2 || m == 3 || m == 1));
         }
 
         [Fact, Priority(3)]
@@ -217,7 +217,7 @@ namespace QuickSplit.Tests.Integration
             Assert.Equal(1, group.Id);
             Assert.Equal(1, group.Admin);
             Assert.Equal("Red Wedding", group.Name);
-            Assert.True(group.Memberships.All(m => m == 2 || m == 3));
+            Assert.True(group.Memberships.All(m => m == 2 || m == 3 || m == 1));
             Assert.True(group.Purchases.Any());
         }
 

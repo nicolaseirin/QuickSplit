@@ -50,7 +50,10 @@ namespace QuickSplit.Application.Groups.Commands
             };
             await _context.Groups.AddAsync(toCreate);
             await _context.SaveChangesAsync();
-            request.Memberships.Add(toCreate.Admin.Id);
+            
+            if (!request.Memberships.Contains(request.Admin))
+                request.Memberships.Add(toCreate.Admin.Id);
+            
             Domain.Membership[] memberships = await Task.WhenAll(request.Memberships.Select(i => GetMemberships(i, toCreate)));
             toCreate.Memberships = memberships;
             await _context.SaveChangesAsync();

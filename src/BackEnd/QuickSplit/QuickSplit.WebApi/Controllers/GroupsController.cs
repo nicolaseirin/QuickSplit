@@ -15,6 +15,24 @@ namespace QuickSplit.WebApi.Controllers
     [ApiController]
     public class GroupsController : BaseController
     {
+        //[Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GroupModel>> Get(int id)
+        {
+            GroupModel group = await Mediator.Send(new GetGroupByIdQuery()
+            {
+                Id = id
+            });
+            return Ok(group);
+        }
+        
+        [HttpGet()]
+        public async Task<ActionResult<GroupModel>> GetAll()
+        {
+            IEnumerable<GroupModel> group = await Mediator.Send(new GetGroupsQuery());
+            return Ok(group);
+        }
+        
         [HttpPost]
         public async Task<ActionResult<GroupModel>> CreateGroup([FromBody] CreateGroupCommand command)
         {
@@ -59,17 +77,6 @@ namespace QuickSplit.WebApi.Controllers
 
             return Ok(groups);
 
-        }
-
-        //[Authorize]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GroupModel>> Get(int id)
-        {
-            GroupModel group = await Mediator.Send(new GetGroupByIdQuery()
-            {
-                Id = id
-            });
-            return Ok(group);
         }
 
         [HttpPost("{id}/purchases")]
