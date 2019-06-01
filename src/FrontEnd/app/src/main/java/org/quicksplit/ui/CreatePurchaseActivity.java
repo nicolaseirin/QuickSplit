@@ -19,16 +19,19 @@ import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.GroupFriendsAdapter;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.Purchase;
+import org.quicksplit.models.Token;
 import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CreatePurchaseActivity extends AppCompatActivity {
+public class CreatePurchaseActivity extends AppCompatActivity implements  View.OnClickListener {
 
     private List<Group> groups;
     private ArrayAdapter<Group> groupArrayAdapter;
@@ -69,6 +72,12 @@ public class CreatePurchaseActivity extends AppCompatActivity {
             }
         });
 
+        mSpinnerCurrency = findViewById(R.id.spn_currency);
+
+        mEditTextCost = findViewById(R.id.txt_cost);
+
+        mButtonCreatePurchase = findViewById(R.id.btn_createPurchase);
+        mButtonCreatePurchase.setOnClickListener(this);
 
         getData();
     }
@@ -159,6 +168,28 @@ public class CreatePurchaseActivity extends AppCompatActivity {
     }
 
     private void loadCurrency() {
-        //TODO: LLENAR EL SPINNER CON LAS MONEDAS QUE HACEPTAMOS
+        //TODO: LLENAR EL SPINNER CON LAS MONEDAS QUE ACEPTAMOS
+    }
+
+    @Override
+    public void onClick(View v) {
+        createPurchase();
+    }
+
+    private void createPurchase() {
+
+        //TODO: FALTA LA IMAGEN Y LA MONEDA QUE VIENE DEL BACKEND
+        TokenManager tokenManager = new TokenManager(this);
+
+        Purchase purchase = new Purchase();
+        purchase.setCost(mEditTextCost.getText().toString());
+        purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
+        purchase.setGroup(((Group)mSpinnerGroups.getSelectedItem()).getId());
+
+        List<String> participantsString = new ArrayList<String>();
+        for (int i = 0; i < participants.size(); i++) participantsString.add(participants.get(i).getId());
+
+        purchase.setParticipants(participantsString);
+        purchase.setPurchaser(tokenManager.getUserIdFromToken());
     }
 }
