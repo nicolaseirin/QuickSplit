@@ -36,6 +36,7 @@ namespace QuickSplit.Application.Groups.Commands
             int id = request.Id;
             Group toUpdate = await _context.Groups.FindAsync(id);
             toUpdate.Name = request.Name ?? toUpdate.Name;
+            CleanMemberships(toUpdate);
             Domain.Membership[] memberships = await Task.WhenAll(request.Memberships.Select(i => GetMemberships(i, toUpdate)));
             toUpdate.Memberships = memberships;
 
@@ -43,6 +44,17 @@ namespace QuickSplit.Application.Groups.Commands
 
             return new GroupModel(toUpdate);
         }
+
+        private void CleanMemberships(Group toUpdate)
+        {
+            var memberships = toUpdate.Memberships;
+            foreach (var mem in memberships)
+            {
+                _context.Memberships.Remove(mem);
+            }
+            _context.SaveChanges();
+        }
+
 
         private async Task<Domain.Membership> GetMemberships(int userId, Group group)
         {

@@ -31,13 +31,12 @@ namespace QuickSplit.Application.Groups.Commands
 
         private async void DeleteMemberships(Group toDelete)
         {
-            var groupId = toDelete.Id;
             var memberships = toDelete.Memberships;
             foreach (var mem in memberships)
             {
                _context.Memberships.Remove(mem);
-               _context.SaveChanges();
             }
+            _context.SaveChanges();
         }
     }
     
