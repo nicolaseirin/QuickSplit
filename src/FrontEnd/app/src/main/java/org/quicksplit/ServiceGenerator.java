@@ -1,12 +1,14 @@
 package org.quicksplit;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGenerator {
 
-    private static final String BASE_URL = "http://192.168.1.10:5000/api/";
+    private static final String BASE_URL = "http://192.168.1.8:5000/api/";
 
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
@@ -18,10 +20,14 @@ public class ServiceGenerator {
     private static OkHttpClient.Builder httpClient =
             new OkHttpClient.Builder();
 
+
     public static <S> S createService(
             Class<S> serviceClass) {
 
-        builder.client(httpClient.build());
+        builder.client(httpClient.connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS).build());
+
         retrofit = builder.build();
 
 

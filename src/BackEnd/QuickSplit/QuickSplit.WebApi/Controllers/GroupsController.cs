@@ -8,6 +8,7 @@ using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Groups.Queries;
 using QuickSplit.Application.Purchases.Commands;
 using QuickSplit.Application.Users.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuickSplit.WebApi.Controllers
 {
@@ -15,7 +16,6 @@ namespace QuickSplit.WebApi.Controllers
     [ApiController]
     public class GroupsController : BaseController
     {
-        //[Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<GroupModel>> Get(int id)
         {
@@ -25,7 +25,7 @@ namespace QuickSplit.WebApi.Controllers
             });
             return Ok(group);
         }
-        
+
         [HttpGet()]
         public async Task<ActionResult<GroupModel>> GetAll()
         {
@@ -33,6 +33,7 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(group);
         }
         
+
         [HttpPost]
         public async Task<ActionResult<GroupModel>> CreateGroup([FromBody] CreateGroupCommand command)
         {
@@ -40,14 +41,16 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(newGroup);
         }
 
-        [HttpPut("leave")]
-        public async Task<ActionResult<GroupModel>> LeaveGroup([FromBody] LeaveGroupCommand command)
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<ActionResult<GroupModel>> Put(int id, [FromBody] UpdateGroupCommand command)
         {
-            await Mediator.Send(command);
-            return Ok();
+            command.Id = id;
+            GroupModel updated = await Mediator.Send(command);
+            return Ok(updated);
         }
 
-
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -59,13 +62,14 @@ namespace QuickSplit.WebApi.Controllers
             return Ok();
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<GroupModel>> Put(int id, [FromBody] UpdateGroupCommand command)
+        [Authorize]
+        [HttpPut("leave")]
+        public async Task<IActionResult> LeaveGroup([FromBody] LeaveGroupCommand command)
         {
-            command.Id = id;
-            GroupModel updated = await Mediator.Send(command);
-            return Ok(updated);
+            await Mediator.Send(command);
+            return Ok();
         }
+
 
         [HttpGet("{id}/memberships")]
         public async Task<ActionResult<ICollection<GroupModel>>> GetAll(int id)
@@ -76,16 +80,22 @@ namespace QuickSplit.WebApi.Controllers
             });
 
             return Ok(groups);
-
         }
 
-        [HttpPost("{id}/purchases")]
-        public async Task<ActionResult<PurchaseModel>> AddPurchase([FromBody] CreatePurchaseCommand command)
+
+        [Authorize]
+        [HttpGet("{id}/users")]
+        public async Task<ActionResult<IEnumerable<UserModel>>> GetParticipants(int id)
         {
-            PurchaseModel purchase = await Mediator.Send(command);
-            return Ok(purchase);
+            IEnumerable<UserModel> participants = await Mediator.Send(new GetMembersQuery()
+            {
+                GroupId = id
+            });
+
+            return Ok(participants);
         }
 
+        [Authorize]
         [HttpGet("{id}/purchases")]
         public async Task<ActionResult<IEnumerable<PurchaseModel>>> GetPurchases(int id)
         {
@@ -97,15 +107,12 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}/users")]
-        public async Task<ActionResult<IEnumerable<UserModel>>> GetParticipants(int id)
+        [Authorize]
+        [HttpPost("{id}/purchases")]
+        public async Task<ActionResult<PurchaseModel>> AddPurchase([FromBody] CreatePurchaseCommand command)
         {
-            IEnumerable<UserModel> participants = await Mediator.Send(new GetMembersQuery()
-            {
-                GroupId = id
-            });
-
-            return Ok(participants);
+            PurchaseModel purchase = await Mediator.Send(command);
+            return Ok(purchase);
         }
     }
 }
