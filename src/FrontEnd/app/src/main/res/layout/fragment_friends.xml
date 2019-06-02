@@ -1,14 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FriendsFragment">
+    tools:context=".ui.FriendsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.SearchView
+                android:id="@+id/search_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                app:iconifiedByDefault="false"
+                app:queryHint="@string/search_hint">
+
+            </android.support.v7.widget.SearchView>
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/friendsReciclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="SOY EL FRAGMENTO DE AMIGOS" />
+        android:layout_marginTop="55dp"
+        android:layout_marginBottom="55dp"
+        android:background="@android:color/white"
+        android:padding="4dp"
+        android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
 
 </FrameLayout>

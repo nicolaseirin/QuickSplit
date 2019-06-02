@@ -9,7 +9,7 @@ namespace QuickSplit.Domain
     {
         private string name;
 
-        public virtual ICollection<Membership> Memberships { get; set; }
+        public virtual ICollection<Membership> Memberships { get; set; } = new List<Membership>();
         public int Id { get; set; }
 
         public string Name
@@ -24,12 +24,11 @@ namespace QuickSplit.Domain
 
         public virtual User Admin { get; set; }
 
-        public virtual ICollection<Purchase> Purchases { get; set; }
+        public virtual ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
         
         public Group()
         {
             Memberships = new List<Membership>();
-            Purchases = new List<Purchase>();
         }
         
 

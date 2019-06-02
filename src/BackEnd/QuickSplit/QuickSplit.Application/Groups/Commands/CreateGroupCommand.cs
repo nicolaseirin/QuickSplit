@@ -1,4 +1,4 @@
-
+﻿
 
 using System.Collections.Generic;
 using System.Linq;
@@ -67,7 +67,7 @@ namespace QuickSplit.Application.Groups.Commands
 
         private async Task<Domain.Membership> GetMemberships(int userId, Group group)
         {
-            User user = await _context.Users.FindAsync(userId) ?? throw new InvalidCommandException($"Miembro del grupo con id {userId} no existe");;
+            User user = await _context.Users.FindAsync(userId) ?? throw new InvalidCommandException($"Miembro del grupo con id {userId} no existe"); ;
 
             return new Domain.Membership()
             {
@@ -78,13 +78,13 @@ namespace QuickSplit.Application.Groups.Commands
             };
         }
     }
-    
+
     public class CreateGroupCommand : IRequest<GroupModel>
     {
         public string Name { get; set; }
 
         public int Admin { get; set; }
 
-        public ICollection<int> Memberships {get; set;} = new List<int>();
+        public List<int> Memberships { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace QuickSplit.Domain
         }
 
         public int Id { get; set; }
-        
+
         public virtual User Purchaser { get; set; }
         
         public virtual ICollection<Participant> Participants { get; set; } = new List<Participant>();
