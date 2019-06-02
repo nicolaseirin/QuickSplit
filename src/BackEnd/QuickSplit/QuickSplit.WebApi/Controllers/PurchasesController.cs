@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using QuickSplit.Application.Groups.Models;
@@ -29,6 +30,17 @@ namespace QuickSplit.WebApi.Controllers
             });
 
             return Ok(purchase);
+        }
+        
+        [HttpGet("{id}/image")]
+        public async Task<ActionResult<Stream>> GetPurchaseImage(int id)
+        {
+            Stream image = await Mediator.Send(new GetPurchaseImageQuery()
+            {
+                PurchaseId = id
+            });
+
+            return Ok(image);
         }
 
         [HttpPost]
