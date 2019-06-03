@@ -166,6 +166,7 @@ namespace QuickSplit.Tests.Integration
             IEnumerable<UserModel> members = await response.DeserializeCollection<UserModel>();
 
             Assert.True(members.All(user => user.Id == 1 || user.Id == 2 || user.Id == 3));
+            Assert.Single(members.Where(u => u.Id == 1));
         }
 
         [Fact, Priority(4)]
@@ -318,19 +319,6 @@ namespace QuickSplit.Tests.Integration
         public async void CheckThatPurchaseWasModified()
         {
             HttpResponseMessage response = await _client.GetAsync(PurchasesUrl + "/1");
-            response.EnsureSuccessStatusCode();
-            PurchaseModel purchase = await response.DeserializeObject<PurchaseModel>();
-
-            Assert.Equal(1, purchase.Id);
-            Assert.Equal(100U, purchase.Cost);
-            Assert.Equal("Ars", purchase.Currency);
-            Assert.Single(purchase.Participants);
-        }
-        
-        [Fact, Priority(10)]
-        public async void SplitReportCheck()
-        {
-            HttpResponseMessage response = await _client.GetAsync(GroupUrl + "/1");
             response.EnsureSuccessStatusCode();
             PurchaseModel purchase = await response.DeserializeObject<PurchaseModel>();
 
