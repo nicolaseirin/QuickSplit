@@ -120,7 +120,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements  View.O
         TokenManager tokenManager = new TokenManager(this);
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<List<User>> call = client.getGroupMembers(tokenManager.getUserIdFromToken());
+        Call<List<User>> call = client.getGroupMembers(group.getId());
 
         final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
 
