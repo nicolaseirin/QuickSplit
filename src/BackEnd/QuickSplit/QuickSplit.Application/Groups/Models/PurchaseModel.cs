@@ -21,6 +21,8 @@ namespace QuickSplit.Application.Groups.Models
         
         public int Id { get; set; }
         
+        public string Name { get; set; }
+        
         public int Purchaser { get; set; }
 
         public int Group { get; set; }
