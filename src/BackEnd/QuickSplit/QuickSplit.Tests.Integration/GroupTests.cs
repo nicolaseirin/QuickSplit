@@ -173,6 +173,7 @@ namespace QuickSplit.Tests.Integration
         {
             var command = new CreatePurchaseCommand()
             {
+                Name = "Compra en dolares",
                 Group = 1,
                 Currency = "Usd",
                 Participants = new[] {1, 2},
@@ -255,6 +256,7 @@ namespace QuickSplit.Tests.Integration
         {
             var command = new CreatePurchaseCommand()
             {
+                Name = "Compra en pesos",
                 Cost = 100,
                 Currency = "Ars",
                 Group = 1,
@@ -316,6 +318,19 @@ namespace QuickSplit.Tests.Integration
         public async void CheckThatPurchaseWasModified()
         {
             HttpResponseMessage response = await _client.GetAsync(PurchasesUrl + "/1");
+            response.EnsureSuccessStatusCode();
+            PurchaseModel purchase = await response.DeserializeObject<PurchaseModel>();
+
+            Assert.Equal(1, purchase.Id);
+            Assert.Equal(100U, purchase.Cost);
+            Assert.Equal("Ars", purchase.Currency);
+            Assert.Single(purchase.Participants);
+        }
+        
+        [Fact, Priority(10)]
+        public async void SplitReportCheck()
+        {
+            HttpResponseMessage response = await _client.GetAsync(GroupUrl + "/1");
             response.EnsureSuccessStatusCode();
             PurchaseModel purchase = await response.DeserializeObject<PurchaseModel>();
 
