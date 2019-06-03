@@ -4,7 +4,15 @@ namespace QuickSplit.Domain
 {
    public class Membership
    {
-        private int userId;
+       public Membership(User user, Group @group)
+       {
+           User = user;
+           userId = user.Id;
+           Group = @group;
+           groupId = group.Id;
+       }
+
+       private int userId;
         private int groupId;
         public virtual User User { get; set; }
         public virtual Group Group { get; set; }

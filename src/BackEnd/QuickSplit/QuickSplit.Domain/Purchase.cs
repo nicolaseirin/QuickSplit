@@ -7,7 +7,7 @@ namespace QuickSplit.Domain
     {
         public Purchase() {}
         
-        public Purchase(User purchaser, Group @group, uint cost, Currency currency, IEnumerable<User> participants)
+        public Purchase(User purchaser, Group @group, double cost, Currency currency, IEnumerable<User> participants)
         {
             Purchaser = purchaser;
             Group = @group;
@@ -27,7 +27,7 @@ namespace QuickSplit.Domain
         
         public virtual Group Group { get; set; }
         
-        public uint Cost { get; set; }
+        public double Cost { get; set; }
         
         public virtual Currency Currency { get; set; }
 

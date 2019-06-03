@@ -27,7 +27,7 @@ namespace QuickSplit.Application.Groups.Models
 
         public IEnumerable<int> Participants { get; set; }
 
-        public uint Cost { get; set; }
+        public double Cost { get; set; }
 
         public string Currency { get; set; }
     }
