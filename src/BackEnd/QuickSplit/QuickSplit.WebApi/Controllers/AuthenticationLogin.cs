@@ -15,7 +15,7 @@ namespace QuickSplit.WebApi.Controllers
     public class AuthenticationsController : BaseController
     {
 
-        // POST api/values
+        // POST api/values        
         [HttpPost]
         public async Task<ActionResult<string>> Post([FromBody] PasswordIsValidQuery query)
         {
