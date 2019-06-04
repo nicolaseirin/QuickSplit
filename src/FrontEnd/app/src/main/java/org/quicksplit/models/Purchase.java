@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Purchase {
 
+    private String name;
     private String id;
     private String purchaser;
     private String group;
@@ -11,6 +12,14 @@ public class Purchase {
     private String cost;
     private String currency;
     private String image;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getId() {
         return id;

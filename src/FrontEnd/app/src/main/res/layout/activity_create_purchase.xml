@@ -37,6 +37,22 @@
             android:paddingBottom="16dp">
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/lblError_purchaseName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:errorEnabled="true">
+
+                <EditText
+                    android:id="@+id/txt_purchaseName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nombre de la compra"
+                    android:inputType="text" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
                 android:id="@+id/lblError_spnGroupName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
