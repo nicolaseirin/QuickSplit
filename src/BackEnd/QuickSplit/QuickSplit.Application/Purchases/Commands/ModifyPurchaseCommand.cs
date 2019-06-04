@@ -37,10 +37,17 @@ namespace QuickSplit.Application.Purchases.Commands
             UpdateCostIfNeeded(request, purchase);
             UpdateCurrencyIfNeeded(request, purchase);
             UpdateImageIfNeeded(request);
+            UpdateNameIfNeeded(request, purchase);
             await UpdateParticipantsIfNeeded(request, purchase);
             await _context.SaveChangesAsync();
             
             return new PurchaseModel(purchase);
+        }
+
+        private void UpdateNameIfNeeded(ModifyPurchaseCommand request, Purchase purchase)
+        {
+            if (!string.IsNullOrWhiteSpace(request.Name))
+                purchase.Name = request.Name;
         }
 
         private async Task UpdateParticipantsIfNeeded(ModifyPurchaseCommand request, Purchase purchase)
@@ -93,6 +100,8 @@ namespace QuickSplit.Application.Purchases.Commands
     public class ModifyPurchaseCommand : IRequest<PurchaseModel>
     {
         public int PurchaseId { get; set; }
+        
+        public string Name { get; set; }
 
         public IEnumerable<int> Participants { get; set; }
 

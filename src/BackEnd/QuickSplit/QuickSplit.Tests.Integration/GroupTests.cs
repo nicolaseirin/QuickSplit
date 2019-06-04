@@ -166,6 +166,7 @@ namespace QuickSplit.Tests.Integration
             IEnumerable<UserModel> members = await response.DeserializeCollection<UserModel>();
 
             Assert.True(members.All(user => user.Id == 1 || user.Id == 2 || user.Id == 3));
+            Assert.Single(members.Where(u => u.Id == 1));
         }
 
         [Fact, Priority(4)]
@@ -173,6 +174,7 @@ namespace QuickSplit.Tests.Integration
         {
             var command = new CreatePurchaseCommand()
             {
+                Name = "Compra en dolares",
                 Group = 1,
                 Currency = "Usd",
                 Participants = new[] {1, 2},
@@ -255,6 +257,7 @@ namespace QuickSplit.Tests.Integration
         {
             var command = new CreatePurchaseCommand()
             {
+                Name = "Compra en pesos",
                 Cost = 100,
                 Currency = "Ars",
                 Group = 1,

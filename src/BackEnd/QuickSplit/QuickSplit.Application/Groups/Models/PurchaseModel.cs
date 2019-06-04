@@ -21,13 +21,15 @@ namespace QuickSplit.Application.Groups.Models
         
         public int Id { get; set; }
         
+        public string Name { get; set; }
+        
         public int Purchaser { get; set; }
 
         public int Group { get; set; }
 
         public IEnumerable<int> Participants { get; set; }
 
-        public uint Cost { get; set; }
+        public double Cost { get; set; }
 
         public string Currency { get; set; }
     }
