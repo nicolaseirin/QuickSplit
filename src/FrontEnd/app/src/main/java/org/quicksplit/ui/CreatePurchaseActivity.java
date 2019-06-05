@@ -1,9 +1,9 @@
 package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
+import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -20,10 +20,10 @@ import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.GroupFriendsAdapter;
 import org.quicksplit.models.Group;
 import org.quicksplit.models.Purchase;
-import org.quicksplit.models.Token;
 import org.quicksplit.models.User;
 import org.quicksplit.service.CurrencyClient;
 import org.quicksplit.service.GroupClient;
+import org.quicksplit.service.PurchaseClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +43,18 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     private List<User> members;
     private List<User> participants;
 
+    private TextInputLayout mTextInputPurchaseName;
+    private EditText mEditTextPurchaseName;
+
     private TextInputLayout mTextInputLayotSpnGroupName;
     private Spinner mSpinnerGroups;
+
     private TextInputLayout mTextInputLayotSpnCurrency;
     private Spinner mSpinnerCurrency;
+
     private TextInputLayout mTextInputLayotTxtCost;
     private EditText mEditTextCost;
+
     private RecyclerView mRecyclerViewGroupMembers;
     private GroupFriendsAdapter mRecycleViewGroupFriendsAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
@@ -60,6 +66,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_create_purchase);
 
         mRecyclerViewGroupMembers = findViewById(R.id.purchisersReciclerView);
+
 
         mSpinnerGroups = findViewById(R.id.spn_groupName);
         mSpinnerGroups.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -75,7 +82,19 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         });
 
         mSpinnerCurrency = findViewById(R.id.spn_currency);
+        mSpinnerCurrency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        mEditTextPurchaseName = findViewById(R.id.txt_purchaseName);
         mEditTextCost = findViewById(R.id.txt_cost);
 
         mButtonCreatePurchase = findViewById(R.id.btn_createPurchase);
@@ -212,10 +231,14 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
 
     private void createPurchase() {
 
-        //TODO: FALTA LA IMAGEN Y LA MONEDA QUE VIENE DEL BACKEND
+        /*if (!validateForm())
+            return;*/
+
         TokenManager tokenManager = new TokenManager(this);
 
         Purchase purchase = new Purchase();
+
+        purchase.setName(mEditTextPurchaseName.getText().toString());
         purchase.setCost(mEditTextCost.getText().toString());
         purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
         purchase.setGroup(((Group) mSpinnerGroups.getSelectedItem()).getId());
@@ -226,5 +249,35 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
 
         purchase.setParticipants(participantsString);
         purchase.setPurchaser(tokenManager.getUserIdFromToken());
+
+        PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
+        Call<Purchase> call = client.createPurchase(purchase);
+
+        final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
+
+        call.enqueue(new Callback<Purchase>() {
+
+            @Override
+            public void onResponse(Call<Purchase> call, Response<Purchase> response) {
+                if (response.isSuccessful()) {
+                    loading.dismiss();
+                } else {
+                    loading.dismiss();
+                    Toast.makeText(CreatePurchaseActivity.this, "Error al crear la compra", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Purchase> call, Throwable t) {
+                loading.dismiss();
+                Toast.makeText(CreatePurchaseActivity.this, "Error en la comunicación al crear la compra.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private boolean validateForm() {
+        return mSpinnerGroups.isSelected() &&
+                mSpinnerCurrency.isSelected() &&
+                participants.size() > 0;
     }
 }
