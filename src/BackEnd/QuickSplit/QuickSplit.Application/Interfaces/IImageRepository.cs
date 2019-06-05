@@ -8,13 +8,15 @@ namespace QuickSplit.Application.Interfaces
     {
         string FolderName { get; set; }
         
+        int ImageQualityRatio { get; set; }
+        
         Stream GetImageStream(int id);
         
         Task<string> GetImageBase64(int id);
 
-        void AddImageFromStream(int id, Stream image, string imageExt);
+        void AddImageFromStream(int id, Stream image);
         
-        void AddImageFromBase64(int id, string image, string imageExt);
+        void AddImageFromBase64(int id, string image);
 
         void DeleteImage(int image);
     }

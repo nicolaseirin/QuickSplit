@@ -14,10 +14,11 @@ namespace QuickSplit.Persistence
 {
     public class ImageRepository : IImageRepository
     {
-        private const int ImageQualityRatio = 15;
+        private const string OutputExt = "jpg";
         private readonly string[] ValidFormats = {"png", "jpeg", "jpg"};
         private string ImageDir => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FolderName);
 
+        public int ImageQualityRatio { get; set; } = 15;
         public string FolderName { get; set; } = "Avatars";
 
         public Stream GetImageStream(int id)
@@ -47,32 +48,26 @@ namespace QuickSplit.Persistence
                 .Any(f => f.Equals(requestImageFormat, StringComparison.OrdinalIgnoreCase));
         }
 
-        public void AddImageFromStream(int id, Stream image, string imageExt)
+        public void AddImageFromStream(int id, Stream image)
         {
-            string avatarPath = GetImagePath(id, imageExt);
+            string avatarPath = GetImagePath(id);
             SaveJpeg(avatarPath, Image.FromStream(image), ImageQualityRatio);
         }
 
-        public void AddImageFromBase64(int id, string image, string imageExt)
+        public void AddImageFromBase64(int id, string image)
         {
-            string avatarPath = GetImagePath(id, imageExt);
+            string avatarPath = GetImagePath(id);
             using (var fs = new MemoryStream(Convert.FromBase64String(image)))
             {
                 SaveJpeg(avatarPath, Image.FromStream(fs), ImageQualityRatio);
             }
         }
 
-        private string GetImagePath(int id, string imageExt)
-        {
-            string ext = imageExt.Split('/').Last();
-            if (!FormatIsValid(ext))
-            {
-                throw new InvalidCommandException("Formato de imagen invalido.");
-            }
-
+        private string GetImagePath(int id)
+        { 
             Directory.CreateDirectory(ImageDir);
             DeleteImage(id);
-            string avatarPath = ImageDir + $"/{id}.{ext}";
+            string avatarPath = ImageDir + $"/{id}.{OutputExt}";
             return avatarPath;
         }
 
@@ -105,9 +100,7 @@ namespace QuickSplit.Persistence
             // Jpeg image codec 
             ImageCodecInfo jpegCodec = GetEncoderInfo("image/jpeg");
 
-            var encoderParams = new EncoderParameters(1);
-            encoderParams.Param[0] = qualityParam;
-
+            var encoderParams = new EncoderParameters(1) {Param = {[0] = qualityParam}};
             img.Save(path, jpegCodec, encoderParams);
         }
         

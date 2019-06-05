@@ -127,7 +127,6 @@ namespace QuickSplit.WebApi.Controllers
             {
                 UserId = id,
                 ImageStream = image.OpenReadStream(),
-                ImageFormat = image.ContentType.Split().Last()
             };
             
             await Mediator.Send(command);
