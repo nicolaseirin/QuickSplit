@@ -1,5 +1,6 @@
 package org.quicksplit.service;
 
+import org.quicksplit.models.DebtorDebtee;
 import org.quicksplit.models.Group;
 import org.quicksplit.models.LeaveGroup;
 import org.quicksplit.models.Purchase;
@@ -43,6 +44,9 @@ public interface GroupClient {
 
     @POST("groups/{id}/purchases")
     Call<Purchase> addPurchase(@Path("id") String id);
+
+    @GET("groups/{id}/reports")
+    Call<List<DebtorDebtee>> get0SplitReport(@Path("id") String id);
 }
 
 

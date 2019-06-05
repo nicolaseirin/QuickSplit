@@ -26,7 +26,7 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(group);
         }
 
-        [HttpGet()]
+        [HttpGet]
         public async Task<ActionResult<GroupModel>> GetAll()
         {
             IEnumerable<GroupModel> group = await Mediator.Send(new GetGroupsQuery());
