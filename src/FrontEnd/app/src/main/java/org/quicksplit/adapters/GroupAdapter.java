@@ -63,13 +63,13 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
         call.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     currentMembers = response.body();
                     AvatarAdapter avatarAdapter = new AvatarAdapter(currentMembers);
                     groupViewHolder.mRecyclerView.setHasFixedSize(true);
                     groupViewHolder.mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                     groupViewHolder.mRecyclerView.setAdapter(avatarAdapter);
-                }else{
+                } else {
                     System.out.println("Error: " + response.errorBody());
                 }
             }

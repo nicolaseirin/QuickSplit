@@ -45,7 +45,7 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
     @NonNull
     @Override
     public PurchaseViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_group, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_purchase, viewGroup, false);
         PurchaseViewHolder purchasesViewHolder = new PurchaseViewHolder(view, mListener, purchases);
         return purchasesViewHolder;
     }
@@ -53,12 +53,15 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
     @Override
     public void onBindViewHolder(@NonNull final PurchaseViewHolder groupViewHolder, int i) {
         final Purchase currentItem = purchases.get(i);
-        groupViewHolder.mTextViewGroupName.setText(currentItem.getName());
+        groupViewHolder.mTextViewPurchaseName.setText(currentItem.getName());
+        groupViewHolder.mTextViewCurrency.setText(currentItem.getCurrency());
 
         //For sigle item call the users
         TokenManager tokenManager = new TokenManager(context);
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
 
+
+        //TODO: ESTO ESTÁ MAL!! ACÁ HAY QUE PEDIR LOS MIEMBROS DE UNA COMPRA
         Call<List<User>> call = client.getGroupMembers(currentItem.getId());
         call.enqueue(new Callback<List<User>>() {
             @Override
@@ -95,16 +98,20 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
     public static class PurchaseViewHolder extends RecyclerView.ViewHolder {
 
         public RecyclerView mRecyclerView;
+
         public ImageView mImageEdit;
         public ImageView mImageLeave;
         public ImageView mImageDelete;
-        public TextView mTextViewGroupName;
+
+        public TextView mTextViewPurchaseName;
+        public TextView mTextViewCurrency;
 
         public PurchaseViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<Purchase> purchases) {
             super(itemView);
 
             mRecyclerView = itemView.findViewById(R.id.rview_avatars);
-            mTextViewGroupName = itemView.findViewById(R.id.txt_groupName);
+            mTextViewPurchaseName = itemView.findViewById(R.id.txt_purchaseName);
+            mTextViewCurrency = itemView.findViewById(R.id.txt_currency);
             mImageEdit = itemView.findViewById(R.id.img_modify);
             mImageEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
