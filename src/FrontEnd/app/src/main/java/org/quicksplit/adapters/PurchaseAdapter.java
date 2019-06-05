@@ -13,7 +13,7 @@ import android.widget.TextView;
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
-import org.quicksplit.models.Group;
+import org.quicksplit.models.Purchase;
 import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 
@@ -23,19 +23,19 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHolder> {
+public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.PurchaseViewHolder> {
 
-    private List<Group> groups;
+    private List<Purchase> purchases;
     private List<User> currentMembers;
     private Context context;
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onModifyClick(Group group);
+        void onModifyClick(Purchase purchase);
 
-        void onDeleteClick(Group group);
+        void onDeleteClick(Purchase purchase);
 
-        void onLeaveClick(Group group);
+        void onLeaveClick(Purchase purchase);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -44,15 +44,15 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
     @NonNull
     @Override
-    public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public PurchaseViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_group, viewGroup, false);
-        GroupViewHolder friendsViewHolder = new GroupViewHolder(view, mListener, groups);
-        return friendsViewHolder;
+        PurchaseViewHolder purchasesViewHolder = new PurchaseViewHolder(view, mListener, purchases);
+        return purchasesViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final GroupViewHolder groupViewHolder, int i) {
-        final Group currentItem = groups.get(i);
+    public void onBindViewHolder(@NonNull final PurchaseViewHolder groupViewHolder, int i) {
+        final Purchase currentItem = purchases.get(i);
         groupViewHolder.mTextViewGroupName.setText(currentItem.getName());
 
         //For sigle item call the users
@@ -63,13 +63,13 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
         call.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     currentMembers = response.body();
                     AvatarAdapter avatarAdapter = new AvatarAdapter(currentMembers);
                     groupViewHolder.mRecyclerView.setHasFixedSize(true);
                     groupViewHolder.mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                     groupViewHolder.mRecyclerView.setAdapter(avatarAdapter);
-                }else{
+                } else {
                     System.out.println("Error: " + response.errorBody());
                 }
             }
@@ -84,15 +84,15 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
     @Override
     public int getItemCount() {
-        return groups.size();
+        return purchases.size();
     }
 
-    public GroupAdapter(List<Group> groups, Context context) {
-        this.groups = groups;
+    public PurchaseAdapter(List<Purchase> purchases, Context context) {
+        this.purchases = purchases;
         this.context = context;
     }
 
-    public static class GroupViewHolder extends RecyclerView.ViewHolder {
+    public static class PurchaseViewHolder extends RecyclerView.ViewHolder {
 
         public RecyclerView mRecyclerView;
         public ImageView mImageEdit;
@@ -100,7 +100,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
         public ImageView mImageDelete;
         public TextView mTextViewGroupName;
 
-        public GroupViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<Group> groups) {
+        public PurchaseViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<Purchase> purchases) {
             super(itemView);
 
             mRecyclerView = itemView.findViewById(R.id.rview_avatars);
@@ -112,7 +112,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                     if (listener != null) {
                         int i = getAdapterPosition();
                         if (i != RecyclerView.NO_POSITION) {
-                            listener.onModifyClick(groups.get(i));
+                            listener.onModifyClick(purchases.get(i));
                         }
                     }
                 }
@@ -124,7 +124,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                     if (listener != null) {
                         int i = getAdapterPosition();
                         if (i != RecyclerView.NO_POSITION) {
-                            listener.onLeaveClick(groups.get(i));
+                            listener.onLeaveClick(purchases.get(i));
                         }
                     }
                 }
@@ -137,7 +137,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                     if (listener != null) {
                         int i = getAdapterPosition();
                         if (i != RecyclerView.NO_POSITION) {
-                            listener.onDeleteClick(groups.get(i));
+                            listener.onDeleteClick(purchases.get(i));
                         }
                     }
                 }

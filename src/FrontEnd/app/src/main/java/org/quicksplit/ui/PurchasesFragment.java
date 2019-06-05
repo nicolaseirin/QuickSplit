@@ -1,16 +1,31 @@
 package org.quicksplit.ui;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.quicksplit.R;
+import org.quicksplit.ServiceGenerator;
+import org.quicksplit.TokenManager;
+import org.quicksplit.adapters.GroupAdapter;
+import org.quicksplit.models.Purchase;
+import org.quicksplit.service.PurchaseClient;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -22,6 +37,11 @@ import org.quicksplit.R;
  * create an instance of this fragment.
  */
 public class PurchasesFragment extends Fragment {
+
+    private List<Purchase> purchases;
+    private RecyclerView mRecyclerViewPurchases;
+    private GroupAdapter mRecyclerViewPurchasesAdapter;
+    private RecyclerView.LayoutManager mRecyclerViewManager;
 
     private FloatingActionButton mButtonAddPurchase;
 
@@ -66,7 +86,45 @@ public class PurchasesFragment extends Fragment {
                 startActivity(newPurchaseActivity);
             }
         });
+
+        mRecyclerViewPurchases = view.findViewById(R.id.purchasesReciclerView);
+
+        getPurchases();
+
         return view;
+    }
+
+    private void getPurchases() {
+        TokenManager tokenManager = new TokenManager(getContext());
+        PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
+
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+
+        Call<List<Purchase>> call = client.getPurchases();
+        call.enqueue(new Callback<List<Purchase>>() {
+            @Override
+            public void onResponse(Call<List<Purchase>> call, Response<List<Purchase>> response) {
+                if (response.isSuccessful()) {
+                    purchases = response.body();
+                    loading.dismiss();
+                } else {
+                    loading.dismiss();
+                    Toast.makeText(getActivity(), "Error al obtener compras.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Purchase>> call, Throwable t) {
+                loading.dismiss();
+                Toast.makeText(getActivity(), "Error en la conexión al obtener compras.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void buildRecyclerViewPurchases() {
+        mRecyclerViewPurchases.setHasFixedSize(true);
+        mRecyclerViewManager = new LinearLayoutManager(getContext());
+
     }
 
     public void onButtonPressed(Uri uri) {
