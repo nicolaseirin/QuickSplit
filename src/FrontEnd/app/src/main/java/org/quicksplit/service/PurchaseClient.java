@@ -4,6 +4,7 @@ import org.quicksplit.models.Purchase;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -21,6 +22,9 @@ public interface PurchaseClient {
 
     @POST("purchases")
     Call<Purchase> createPurchase(@Body Purchase purchase);
+
+    @GET("purchases/{id}/image")
+    Call<ResponseBody> getPurchaseImage(@Path("id") String id);
 
     @PUT("purchases/{id}")
     Call<Purchase> modifyPurchase(@Path("id") String id, @Body Purchase purchase);

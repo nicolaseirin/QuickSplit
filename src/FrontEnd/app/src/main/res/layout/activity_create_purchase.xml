@@ -74,7 +74,6 @@
                 android:id="@+id/lblError_spnCurrency"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 app:errorEnabled="true">
 
                 <Spinner
@@ -92,7 +91,6 @@
                 android:id="@+id/lblError_txtCost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 app:errorEnabled="true">
 
                 <EditText
@@ -114,13 +112,23 @@
                 android:layout_marginTop="16dp"
                 android:text="Subir Imagen" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/purchisersReciclerView"
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/lblError_groupMembers"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@android:color/white"
-                android:scrollbars="vertical" />
+                app:errorEnabled="true">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/purchisersReciclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:background="@android:color/white"
+                    android:scrollbars="vertical" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <TextView
                 android:id="@+id/lbl_errorMessage"

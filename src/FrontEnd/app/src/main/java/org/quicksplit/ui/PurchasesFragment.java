@@ -18,6 +18,7 @@ import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.GroupAdapter;
+import org.quicksplit.adapters.PurchaseAdapter;
 import org.quicksplit.models.Purchase;
 import org.quicksplit.service.PurchaseClient;
 
@@ -40,7 +41,7 @@ public class PurchasesFragment extends Fragment {
 
     private List<Purchase> purchases;
     private RecyclerView mRecyclerViewPurchases;
-    private GroupAdapter mRecyclerViewPurchasesAdapter;
+    private PurchaseAdapter mRecyclerViewPurchasesAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
 
     private FloatingActionButton mButtonAddPurchase;
@@ -106,6 +107,7 @@ public class PurchasesFragment extends Fragment {
             public void onResponse(Call<List<Purchase>> call, Response<List<Purchase>> response) {
                 if (response.isSuccessful()) {
                     purchases = response.body();
+                    buildRecyclerViewPurchases();
                     loading.dismiss();
                 } else {
                     loading.dismiss();
@@ -124,7 +126,9 @@ public class PurchasesFragment extends Fragment {
     private void buildRecyclerViewPurchases() {
         mRecyclerViewPurchases.setHasFixedSize(true);
         mRecyclerViewManager = new LinearLayoutManager(getContext());
-
+        mRecyclerViewPurchasesAdapter = new PurchaseAdapter(purchases, getContext());
+        mRecyclerViewPurchases.setLayoutManager(mRecyclerViewManager);
+        mRecyclerViewPurchases.setAdapter(mRecyclerViewPurchasesAdapter);
     }
 
     public void onButtonPressed(Uri uri) {

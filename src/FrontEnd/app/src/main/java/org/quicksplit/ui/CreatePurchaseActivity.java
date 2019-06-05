@@ -43,18 +43,19 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     private List<User> members;
     private List<User> participants;
 
-    private TextInputLayout mTextInputPurchaseName;
+    private TextInputLayout mTextInputLayoutPurchaseName;
     private EditText mEditTextPurchaseName;
 
-    private TextInputLayout mTextInputLayotSpnGroupName;
+    private TextInputLayout mTextInputLayoutSpnGroupName;
     private Spinner mSpinnerGroups;
 
-    private TextInputLayout mTextInputLayotSpnCurrency;
+    private TextInputLayout mTextInputLayoutSpnCurrency;
     private Spinner mSpinnerCurrency;
 
-    private TextInputLayout mTextInputLayotTxtCost;
+    private TextInputLayout mTextInputLayoutTxtCost;
     private EditText mEditTextCost;
 
+    private TextInputLayout mTextInputLayoutGroupMembers;
     private RecyclerView mRecyclerViewGroupMembers;
     private GroupFriendsAdapter mRecycleViewGroupFriendsAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
@@ -65,8 +66,8 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_purchase);
 
+        mTextInputLayoutGroupMembers = findViewById(R.id.lblError_groupMembers);
         mRecyclerViewGroupMembers = findViewById(R.id.purchisersReciclerView);
-
 
         mSpinnerGroups = findViewById(R.id.spn_groupName);
         mSpinnerGroups.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -94,7 +95,10 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
             }
         });
 
+        mTextInputLayoutPurchaseName = findViewById(R.id.lblError_purchaseName);
         mEditTextPurchaseName = findViewById(R.id.txt_purchaseName);
+
+        mTextInputLayoutTxtCost = findViewById(R.id.lblError_txtCost);
         mEditTextCost = findViewById(R.id.txt_cost);
 
         mButtonCreatePurchase = findViewById(R.id.btn_createPurchase);
@@ -187,7 +191,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
                     members = response.body();
-                    participants = members;
+                    participants = new ArrayList<>(members);
                     buildRecyclerViewCreateGroupFriendsAdapter();
                     loading.dismiss();
                 } else {
@@ -231,8 +235,10 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
 
     private void createPurchase() {
 
-        /*if (!validateForm())
-            return;*/
+        showFormErrors();
+
+        if (!validateForm())
+            return;
 
         TokenManager tokenManager = new TokenManager(this);
 
@@ -275,9 +281,26 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         });
     }
 
+    private void showFormErrors() {
+        if(!(mEditTextPurchaseName.getText().toString().trim().length() > 0))
+            mTextInputLayoutPurchaseName.setError("El nombre es requerído.");
+        else
+            mTextInputLayoutPurchaseName.setError("");
+
+        if(!(mEditTextCost.getText().toString().trim().length() > 0))
+            mTextInputLayoutTxtCost.setError("El costo es requerído.");
+        else
+            mTextInputLayoutTxtCost.setError("");
+
+        if(!(participants.size() > 0))
+            mTextInputLayoutGroupMembers.setError("Por lo menos debe seleccionar un miembro para la compra.");
+        else
+            mTextInputLayoutGroupMembers.setError("");
+    }
+
     private boolean validateForm() {
-        return mSpinnerGroups.isSelected() &&
-                mSpinnerCurrency.isSelected() &&
-                participants.size() > 0;
+        return mEditTextPurchaseName.getText().toString().trim().length() > 0
+                && mEditTextCost.getText().length() > 0
+                && participants.size() > 0;
     }
 }
