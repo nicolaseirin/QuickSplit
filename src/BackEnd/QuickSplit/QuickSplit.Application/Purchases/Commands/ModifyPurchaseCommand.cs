@@ -39,6 +39,12 @@ namespace QuickSplit.Application.Purchases.Commands
             return new PurchaseModel(purchase);
         }
 
+        private void UpdateNameIfNeeded(ModifyPurchaseCommand request, Purchase purchase)
+        {
+            if (!string.IsNullOrWhiteSpace(request.Name))
+                purchase.Name = request.Name;
+        }
+
         private async Task UpdateParticipantsIfNeeded(ModifyPurchaseCommand request, Purchase purchase)
         {
             if (request.Participants == null) return;
@@ -80,6 +86,8 @@ namespace QuickSplit.Application.Purchases.Commands
     public class ModifyPurchaseCommand : IRequest<PurchaseModel>
     {
         public int PurchaseId { get; set; }
+        
+        public string Name { get; set; }
 
         public IEnumerable<int> Participants { get; set; }
 

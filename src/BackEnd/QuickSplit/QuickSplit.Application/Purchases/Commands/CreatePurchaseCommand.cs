@@ -22,12 +22,14 @@ namespace QuickSplit.Application.Purchases.Commands
 
         public async Task<PurchaseModel> Handle(CreatePurchaseCommand request, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(request.Name))
+                throw new InvalidCommandException($"Nombre de la compra {request.Name} es invalido");
             Group group = await GetGroupIfValid(request);
             User purchaser = await GetPurchaserIfValid(request);
             IEnumerable<User> participants = await GetParticipantsIfValid(request.Participants, group);
             Currency currency = GetCurrencyIfValid(request);
 
-            var purchase = new Purchase(purchaser, group, request.Cost, currency, participants);
+            var purchase = new Purchase(purchaser, group, request.Cost, currency, participants, request.Name);
             group.Purchases.Add(purchase);
             await _context.SaveChangesAsync();
             
@@ -68,6 +70,8 @@ namespace QuickSplit.Application.Purchases.Commands
         public int Purchaser { get; set; }
 
         public int Group { get; set; }
+        
+        public string Name { get; set; }
 
         public IEnumerable<int> Participants { get; set; }
 

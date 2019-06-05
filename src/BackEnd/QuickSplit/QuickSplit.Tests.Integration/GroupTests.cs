@@ -173,6 +173,7 @@ namespace QuickSplit.Tests.Integration
         {
             var command = new CreatePurchaseCommand()
             {
+                Name = "Compra en dolares",
                 Group = 1,
                 Currency = "Usd",
                 Participants = new[] {1, 2},
@@ -255,6 +256,7 @@ namespace QuickSplit.Tests.Integration
         {
             var command = new CreatePurchaseCommand()
             {
+                Name = "Compra en pesos",
                 Cost = 100,
                 Currency = "Ars",
                 Group = 1,
