@@ -72,7 +72,7 @@ namespace QuickSplit.Test.Application
                 Purchaser = 1,
                 Cost = 15
             };
-            var handler = new CreateAddPurchaseCommandHandler(Context, new ImageRepository());
+            var handler = new CreateAddPurchaseCommandHandler(Context);
 
             PurchaseModel result = await handler.Handle(command, CancellationToken.None);
             Group @group = await Groups.FindAsync(1);
@@ -103,7 +103,7 @@ namespace QuickSplit.Test.Application
                 Purchaser = 1,
                 Cost = 15
             };
-            var handler = new CreateAddPurchaseCommandHandler(Context, new ImageRepository());
+            var handler = new CreateAddPurchaseCommandHandler(Context);
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
         
@@ -118,7 +118,7 @@ namespace QuickSplit.Test.Application
                 Purchaser = 911,
                 Cost = 15
             };
-            var handler = new CreateAddPurchaseCommandHandler(Context, new ImageRepository());
+            var handler = new CreateAddPurchaseCommandHandler(Context);
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
         
@@ -133,7 +133,7 @@ namespace QuickSplit.Test.Application
                 Purchaser = 1,
                 Cost = 15
             };
-            var handler = new CreateAddPurchaseCommandHandler(Context, new ImageRepository());
+            var handler = new CreateAddPurchaseCommandHandler(Context);
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
         
@@ -148,7 +148,7 @@ namespace QuickSplit.Test.Application
                 Purchaser = 1,
                 Cost = 15
             };
-            var handler = new CreateAddPurchaseCommandHandler(Context, new ImageRepository());
+            var handler = new CreateAddPurchaseCommandHandler(Context);
             Assert.ThrowsAny<Exception>(() => handler.Handle(command, CancellationToken.None).Result);
         }
     }

@@ -15,7 +15,7 @@ namespace QuickSplit.Application.Groups.Models
             Cost = purchase.Cost;
             Currency = purchase.Currency.ToString();
             Group = purchase.Group.Id;
-            Participants = purchase.Participants.Select(participant => participant.UserId).ToList();
+            Participants = purchase.Participants.Select(participant => participant.UserId);
             Purchaser = purchase.Purchaser.Id;
         }
         

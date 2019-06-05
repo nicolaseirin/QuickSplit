@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Purchases.Commands;
@@ -43,6 +44,22 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(image);
         }
 
+        [HttpPost("{id}/image")]
+        [Consumes("image/jpg", "image/jpeg", "image/png", "multipart/form-data")]
+        public async Task<ActionResult<Stream>> AddPurchaseImage(int id, IFormFile image)
+        {
+            if (image == null)
+                return BadRequest("Imagen invalida");
+            
+            await Mediator.Send(new AddPurchaseImageCommand()
+            {
+                PurchaseId = id,
+                Image = image.OpenReadStream(),
+            });
+            
+            return Ok();
+        }
+        
         [HttpPost]
         public async Task<ActionResult<IEnumerable<PurchaseModel>>> CreatePurchase([FromBody] CreatePurchaseCommand command)
         {
