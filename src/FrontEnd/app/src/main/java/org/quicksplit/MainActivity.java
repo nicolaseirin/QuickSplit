@@ -16,6 +16,9 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import org.quicksplit.ui.FriendsFragment;
+import org.quicksplit.ui.PurchasesFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
