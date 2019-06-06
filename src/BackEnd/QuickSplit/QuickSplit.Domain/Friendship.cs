@@ -2,14 +2,10 @@ namespace QuickSplit.Domain
 {
     public class Friendship
     {
-        private User friend1;
-        private User friend2;
-
         public Friendship()
         {
-            
         }
-        
+
         public Friendship(User friend1, User friend2)
         {
             Friend1 = friend1;
@@ -33,7 +29,7 @@ namespace QuickSplit.Domain
 
         protected bool Equals(Friendship other)
         {
-            return Equals(friend1, other.friend1) && Equals(friend2, other.friend2);
+            return Equals(Friend1, other.Friend1) && Equals(Friend2, other.Friend2);
         }
 
         public override bool Equals(object obj)
@@ -48,7 +44,7 @@ namespace QuickSplit.Domain
         {
             unchecked
             {
-                return ((friend1 != null ? friend1.GetHashCode() : 0) * 397) ^ (friend2 != null ? friend2.GetHashCode() : 0);
+                return ((Friend1 != null ? Friend1.GetHashCode() : 0) * 397) ^ (Friend2 != null ? Friend2.GetHashCode() : 0);
             }
         }
     }

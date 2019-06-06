@@ -22,19 +22,15 @@ namespace QuickSplit.Application.Groups.Queries
 
         public async Task<IEnumerable<GroupModel>> Handle(GetGroupsQuery request, CancellationToken cancellationToken)
         {
-            IEnumerable<Domain.Membership> memberships = await _context
-                              .Memberships
-                              .Include(mem => mem.Group)
-                              .ThenInclude(group => group.Purchases)
-                              .ThenInclude(mem => mem.Group)
-                              .ThenInclude(admin => admin.Admin)
-                              .Where(mem => mem.UserId == request.Id)
-                              .ToListAsync();
-                            
-            return await Task.WhenAll(memberships.Select(m => MapToModel(m.Group)));
+            return await _context.Groups
+                .Include(group => group.Admin)
+                .Include(group => group.Purchases)
+                .Include(group => group.Memberships)
+                .Select(group => MapToModel(group))
+                .ToListAsync(cancellationToken: cancellationToken);
         }
 
-        private async Task<GroupModel> MapToModel(Group group)
+        private GroupModel MapToModel(Group group)
         {
             var groupModel = new GroupModel
             {

@@ -100,7 +100,7 @@ namespace QuickSplit.Tests.Integration
             {
                 Name = "Red Wedding",
                 Admin = 1,
-                Memberships = {2, 3}
+                Memberships = {2, 3, 1}
             };
 
             HttpResponseMessage response = await _client.PostObjectAsync(GroupUrl, group);
@@ -155,7 +155,7 @@ namespace QuickSplit.Tests.Integration
             Assert.Equal(1, group.Id);
             Assert.Equal(1, group.Admin);
             Assert.Equal("Red Wedding", group.Name);
-            Assert.True(group.Memberships.All(m => m == 2 || m == 3));
+            Assert.True(group.Memberships.All(m => m == 2 || m == 3 || m == 1));
         }
 
         [Fact, Priority(3)]
@@ -166,6 +166,7 @@ namespace QuickSplit.Tests.Integration
             IEnumerable<UserModel> members = await response.DeserializeCollection<UserModel>();
 
             Assert.True(members.All(user => user.Id == 1 || user.Id == 2 || user.Id == 3));
+            Assert.Single(members.Where(u => u.Id == 1));
         }
 
         [Fact, Priority(4)]
@@ -173,6 +174,7 @@ namespace QuickSplit.Tests.Integration
         {
             var command = new CreatePurchaseCommand()
             {
+                Name = "Compra en dolares",
                 Group = 1,
                 Currency = "Usd",
                 Participants = new[] {1, 2},
@@ -217,7 +219,7 @@ namespace QuickSplit.Tests.Integration
             Assert.Equal(1, group.Id);
             Assert.Equal(1, group.Admin);
             Assert.Equal("Red Wedding", group.Name);
-            Assert.True(group.Memberships.All(m => m == 2 || m == 3));
+            Assert.True(group.Memberships.All(m => m == 2 || m == 3 || m == 1));
             Assert.True(group.Purchases.Any());
         }
 
@@ -255,6 +257,7 @@ namespace QuickSplit.Tests.Integration
         {
             var command = new CreatePurchaseCommand()
             {
+                Name = "Compra en pesos",
                 Cost = 100,
                 Currency = "Ars",
                 Group = 1,

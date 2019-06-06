@@ -2,6 +2,15 @@ namespace QuickSplit.Domain
 {
     public class Participant
     {
+        public Participant() {}
+        public Participant(User user, Purchase purchase)
+        {
+            User = user;
+            UserId = User.Id;
+            Purchase = purchase;
+            PurchaseId = purchase.Id;
+        }
+
         public int UserId { get; set; }
         public virtual User User { get; set; }
         

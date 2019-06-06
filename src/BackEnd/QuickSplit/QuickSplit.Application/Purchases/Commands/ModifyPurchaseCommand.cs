@@ -15,13 +15,10 @@ namespace QuickSplit.Application.Purchases.Commands
     public class ModifyPurchaseCommandHandler : IRequestHandler<ModifyPurchaseCommand, PurchaseModel>
     {
         private readonly IQuickSplitContext _context;
-        private readonly IImageRepository _imageRepository;
 
-        public ModifyPurchaseCommandHandler(IQuickSplitContext context, IImageRepository imageRepository)
+        public ModifyPurchaseCommandHandler(IQuickSplitContext context)
         {
             _context = context;
-            _imageRepository = imageRepository;
-            _imageRepository.FolderName = "Purchases";
         }
 
         public async Task<PurchaseModel> Handle(ModifyPurchaseCommand request, CancellationToken cancellationToken)
@@ -36,11 +33,16 @@ namespace QuickSplit.Application.Purchases.Commands
 
             UpdateCostIfNeeded(request, purchase);
             UpdateCurrencyIfNeeded(request, purchase);
-            UpdateImageIfNeeded(request);
             await UpdateParticipantsIfNeeded(request, purchase);
             await _context.SaveChangesAsync();
             
             return new PurchaseModel(purchase);
+        }
+
+        private void UpdateNameIfNeeded(ModifyPurchaseCommand request, Purchase purchase)
+        {
+            if (!string.IsNullOrWhiteSpace(request.Name))
+                purchase.Name = request.Name;
         }
 
         private async Task UpdateParticipantsIfNeeded(ModifyPurchaseCommand request, Purchase purchase)
@@ -67,15 +69,6 @@ namespace QuickSplit.Application.Purchases.Commands
 
             return participants;
         }
-
-        private void UpdateImageIfNeeded(ModifyPurchaseCommand request)
-        {
-            if (string.IsNullOrEmpty(request.Image) || string.IsNullOrWhiteSpace(request.ImageExt)) return;
-
-            _imageRepository.DeleteImage(request.PurchaseId);
-            _imageRepository.AddImageFromBase64(request.PurchaseId, request.Image, request.ImageExt);
-        }
-
         private static void UpdateCurrencyIfNeeded(ModifyPurchaseCommand request, Purchase purchase)
         {
             if (string.IsNullOrWhiteSpace(request.Currency)) return;
@@ -93,15 +86,13 @@ namespace QuickSplit.Application.Purchases.Commands
     public class ModifyPurchaseCommand : IRequest<PurchaseModel>
     {
         public int PurchaseId { get; set; }
+        
+        public string Name { get; set; }
 
         public IEnumerable<int> Participants { get; set; }
 
         public uint? Cost { get; set; }
 
         public string Currency { get; set; }
-
-        public string Image { get; set; }
-
-        public string ImageExt { get; set; }
     }
 }

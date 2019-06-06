@@ -24,6 +24,7 @@ namespace QuickSplit.Application.Purchases.Queries
                 .Purchases
                 .Include(purchase => purchase.Group)
                 .ThenInclude(group => group.Purchases)
+                .Include(group => group.Participants)
                 .Include(purchase => purchase.Purchaser)
                 .Select(purchase => new PurchaseModel(purchase))
                 .ToListAsync(cancellationToken);

@@ -37,7 +37,6 @@ namespace QuickSplit.Application.Groups.Queries
                 .Memberships
                 .Select(membership => membership.User)
                 .ToList();
-            users.Add(group.Admin);
 
             return await Task.WhenAll(users.Where(user => user != null).Select(MapToModel));
         }

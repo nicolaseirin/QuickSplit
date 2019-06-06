@@ -15,10 +15,13 @@ namespace QuickSplit.Application.Users.Queries
     public class GetPurchasesByUserQueryHandler : IRequestHandler<GetPurchasesByUserQuery, IEnumerable<PurchaseModel>>
     {
         private readonly IQuickSplitContext _context;
+        private readonly IImageRepository _imageRepository;
 
-        public GetPurchasesByUserQueryHandler(IQuickSplitContext context)
+        public GetPurchasesByUserQueryHandler(IQuickSplitContext context, IImageRepository imageRepository)
         {
             _context = context;
+            _imageRepository = imageRepository;
+            _imageRepository.FolderName = "Participants";
         }
 
         public async Task<IEnumerable<PurchaseModel>> Handle(GetPurchasesByUserQuery request, CancellationToken cancellationToken)
@@ -35,12 +38,13 @@ namespace QuickSplit.Application.Users.Queries
                 .Include(participant => participant.Purchase)
                 .ThenInclude(purchase => purchase.Participants)
                 .ToListAsync(cancellationToken: cancellationToken);
-            
+
             return participants
-                .Select(participant =>  new PurchaseModel(participant.Purchase))
+                .Select(participant => new PurchaseModel(participant.Purchase))
                 .ToList();
         }
     }
+
 
     public class GetPurchasesByUserQuery : IRequest<IEnumerable<PurchaseModel>>
     {

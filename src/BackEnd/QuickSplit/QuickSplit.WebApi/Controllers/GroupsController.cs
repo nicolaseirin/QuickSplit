@@ -16,7 +16,6 @@ namespace QuickSplit.WebApi.Controllers
     [ApiController]
     public class GroupsController : BaseController
     {
-        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<GroupModel>> Get(int id)
         {
@@ -27,7 +26,14 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(group);
         }
 
-        [Authorize]
+        [HttpGet()]
+        public async Task<ActionResult<GroupModel>> GetAll()
+        {
+            IEnumerable<GroupModel> group = await Mediator.Send(new GetGroupsQuery());
+            return Ok(group);
+        }
+
+
         [HttpPost]
         public async Task<ActionResult<GroupModel>> CreateGroup([FromBody] CreateGroupCommand command)
         {
@@ -76,6 +82,7 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(groups);
         }
 
+
         [Authorize]
         [HttpGet("{id}/users")]
         public async Task<ActionResult<IEnumerable<UserModel>>> GetParticipants(int id)
@@ -106,6 +113,16 @@ namespace QuickSplit.WebApi.Controllers
         {
             PurchaseModel purchase = await Mediator.Send(command);
             return Ok(purchase);
+        }
+
+        [HttpGet("{id}/reports")]
+        public async Task<ActionResult<IEnumerable<DebtorDebteeModel>>> GetSplitReport(int id)
+        {
+            IEnumerable<DebtorDebteeModel> debts = await Mediator.Send(new GetSplitCostReportQuery()
+            {
+                GroupId = id
+            });
+            return Ok(debts);
         }
     }
 }
