@@ -129,6 +129,13 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
 
         mRecyclerViewGroupsAdapter.setOnItemClickListener(new GroupAdapter.OnItemClickListener() {
             @Override
+            public void onViewReportClick(Group group) {
+                Intent intent = new Intent(getContext(), ReportActivity.class);
+                intent.putExtra("EXTRA_GROUP_ID", group.getId());
+                startActivity(intent);
+            }
+
+            @Override
             public void onModifyClick(Group group) {
                 Intent intent = new Intent(getContext(), ModifyGroupActivity.class);
                 intent.putExtra("EXTRA_GROUP_ID", group.getId());

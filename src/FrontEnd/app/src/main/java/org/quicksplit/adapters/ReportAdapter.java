@@ -58,6 +58,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
 
         public ReportViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<DebtorDebtee> reports) {
             super(itemView);
+
             mTextViewDebtorName = itemView.findViewById(R.id.txt_debtorName);
             mTextViewDebteeName = itemView.findViewById(R.id.txt_debteeName);
             mTextViewAmountValue = itemView.findViewById(R.id.txt_amountValue);

@@ -14,7 +14,13 @@
             android:id="@+id/toolbar_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
+android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="55dp"
+        android:layout_marginBottom="55dp"
+        android:background="@android:color/white"
+        android:padding="4dp"
+        android:scrollbars="vertical"
             <android.support.v7.widget.SearchView
                 android:id="@+id/search_bar"
                 android:layout_width="match_parent"
@@ -24,6 +30,7 @@
                 app:queryHint="@string/search_hint">
 
             </android.support.v7.widget.SearchView>
+
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

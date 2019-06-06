@@ -31,6 +31,7 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
+
         void onModifyClick(Purchase purchase);
 
         void onDeleteClick(Purchase purchase);
