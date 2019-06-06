@@ -129,6 +129,14 @@ public class PurchasesFragment extends Fragment {
         mRecyclerViewPurchasesAdapter = new PurchaseAdapter(purchases, getContext());
         mRecyclerViewPurchases.setLayoutManager(mRecyclerViewManager);
         mRecyclerViewPurchases.setAdapter(mRecyclerViewPurchasesAdapter);
+        mRecyclerViewPurchasesAdapter.setOnItemClickListener(new PurchaseAdapter.OnItemClickListener() {
+            @Override
+            public void onModifyClick(Purchase purchase) {
+                Intent intent = new Intent(getContext(), ModifyPurchaseActivity.class);
+                intent.putExtra("EXTRA_PURCHASE_ID", purchase.getId());
+                startActivity(intent);
+            }
+        });
     }
 
     public void onButtonPressed(Uri uri) {

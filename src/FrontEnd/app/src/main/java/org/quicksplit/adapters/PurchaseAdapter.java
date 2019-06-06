@@ -33,10 +33,6 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
     public interface OnItemClickListener {
 
         void onModifyClick(Purchase purchase);
-
-        void onDeleteClick(Purchase purchase);
-
-        void onLeaveClick(Purchase purchase);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -101,8 +97,6 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
         public RecyclerView mRecyclerView;
 
         public ImageView mImageEdit;
-        public ImageView mImageLeave;
-        public ImageView mImageDelete;
 
         public TextView mTextViewPurchaseName;
         public TextView mTextViewCurrency;
@@ -121,31 +115,6 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
                         int i = getAdapterPosition();
                         if (i != RecyclerView.NO_POSITION) {
                             listener.onModifyClick(purchases.get(i));
-                        }
-                    }
-                }
-            });
-            mImageLeave = itemView.findViewById(R.id.img_exit);
-            mImageLeave.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int i = getAdapterPosition();
-                        if (i != RecyclerView.NO_POSITION) {
-                            listener.onLeaveClick(purchases.get(i));
-                        }
-                    }
-                }
-            });
-
-            mImageDelete = itemView.findViewById(R.id.img_delete);
-            mImageDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int i = getAdapterPosition();
-                        if (i != RecyclerView.NO_POSITION) {
-                            listener.onDeleteClick(purchases.get(i));
                         }
                     }
                 }

@@ -69,24 +69,6 @@
                 android:layout_marginRight="12dp"
                 android:src="@drawable/ic_edit_green" />
 
-            <ImageView
-                android:id="@+id/img_exit"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="12dp"
-                android:src="@drawable/ic_exit_to_app_green" />
-
-            <ImageView
-                android:id="@+id/img_delete"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="12dp"
-                android:src="@drawable/ic_delete_red" />
-
         </LinearLayout>
 
     </RelativeLayout>
