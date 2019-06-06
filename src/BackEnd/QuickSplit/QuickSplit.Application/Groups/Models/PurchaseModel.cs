@@ -12,6 +12,7 @@ namespace QuickSplit.Application.Groups.Models
         public PurchaseModel(Purchase purchase)
         {
             Id = purchase.Id;
+            Name = purchase.Name;
             Cost = purchase.Cost;
             Currency = purchase.Currency.ToString();
             Group = purchase.Group.Id;
