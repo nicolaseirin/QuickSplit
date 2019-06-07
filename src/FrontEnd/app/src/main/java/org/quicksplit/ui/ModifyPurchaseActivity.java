@@ -90,14 +90,14 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
                     loading.dismiss();
                 } else {
                     loading.dismiss();
-                    Toast.makeText(ModifyPurchaseActivity.this, "Error al obtener grupos.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ModifyPurchaseActivity.this, "Error al obtener compras.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Purchase> call, Throwable t) {
                 loading.dismiss();
-                Toast.makeText(ModifyPurchaseActivity.this, "Error en la comunicación al obtener grupos.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ModifyPurchaseActivity.this, "Error en la comunicación al obtener compras.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -107,6 +107,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
 
         TokenManager tokenManager = new TokenManager(this);
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
+
         Call<Group> call = client.getGroup(purchase.getGroup());
         call.enqueue(new Callback<Group>() {
             @Override
@@ -118,7 +119,8 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
                     mEditTextPurchaseName.setText(purchase.getName());
                     mEditTextCost.setText(purchase.getCost());
                     getAvilableCurrencies();
-                    //TODO: GET PURCHASE MEMBERS HERE
+
+                    //TODO: PONER LOS MIEMBROS DEL GRUPO Y TRAER LOS MIMEMBROS DE LA COMPRA
                 } else {
                     System.out.println("Error: " + response.errorBody());
                 }
@@ -142,18 +144,19 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
                     currencies = response.body();
                     buildCurrenciesAdapter();
                 } else {
-
+                    System.out.println("Error: " + response.errorBody());
                 }
             }
 
             @Override
             public void onFailure(Call<List<String>> call, Throwable t) {
-
+                System.out.println("Error: " + t.getMessage());
             }
         });
     }
 
     private void buildCurrenciesAdapter() {
+
         String currency = purchase.getCurrency();
         currenciesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, currencies);
         currenciesArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -194,6 +197,14 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         if (!validFields())
             return;
 
+        Purchase purchase = new Purchase();
+
+        purchase.setName(mEditTextPurchaseName.getText().toString());
+        purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
+        purchase.setCost(mEditTextCost.getText().toString());
+
+        //TODO: PASAR PARTICIPANTES
+        purchase.setParticipants(null);
     }
 
     private void showErrors() {

@@ -44,6 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
                     android:text="John Doe"
                     android:textColor="@android:color/black"
                     android:textSize="18sp" />
@@ -78,6 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
                     android:text="Jane Doe"
                     android:textColor="@android:color/black"
                     android:textSize="18sp" />

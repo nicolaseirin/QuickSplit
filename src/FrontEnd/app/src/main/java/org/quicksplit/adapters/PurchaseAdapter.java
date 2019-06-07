@@ -1,6 +1,7 @@
 package org.quicksplit.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
@@ -20,9 +23,11 @@ import org.quicksplit.service.PurchaseClient;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Url;
 
 public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.PurchaseViewHolder> {
 
@@ -51,6 +56,15 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
     @Override
     public void onBindViewHolder(@NonNull final PurchaseViewHolder groupViewHolder, int i) {
         final Purchase currentItem = purchases.get(i);
+
+
+        Uri imageUri = Uri.parse(ServiceGenerator.getBaseUrl() + "purchases/" + currentItem.getId() + "/image");
+        Picasso.get()
+                .load(imageUri)
+                .resize(200, 200)
+                .centerCrop()
+                .into(groupViewHolder.mImagePurchase);
+
         groupViewHolder.mTextViewPurchaseName.setText(currentItem.getName());
         groupViewHolder.mTextViewCurrency.setText(currentItem.getCurrency());
 
@@ -93,6 +107,7 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
     public static class PurchaseViewHolder extends RecyclerView.ViewHolder {
 
         public RecyclerView mRecyclerView;
+        public ImageView mImagePurchase;
 
         public ImageView mImageEdit;
 
@@ -103,6 +118,7 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
             super(itemView);
 
             mRecyclerView = itemView.findViewById(R.id.rview_avatars);
+            mImagePurchase = itemView.findViewById(R.id.img_purchase);
             mTextViewPurchaseName = itemView.findViewById(R.id.txt_purchaseName);
             mTextViewCurrency = itemView.findViewById(R.id.txt_currency);
             mImageEdit = itemView.findViewById(R.id.img_modify);

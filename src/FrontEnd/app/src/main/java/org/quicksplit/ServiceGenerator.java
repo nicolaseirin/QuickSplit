@@ -54,4 +54,8 @@ public class ServiceGenerator {
     public static Retrofit retrofit() {
         return retrofit;
     }
+
+    public static String getBaseUrl() {
+        return BASE_URL;
+    }
 }
