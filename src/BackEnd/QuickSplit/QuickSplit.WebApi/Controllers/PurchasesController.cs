@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Purchases.Commands;
 using QuickSplit.Application.Purchases.Queries;
+using QuickSplit.Application.Users.Models;
 using QuickSplit.Application.Users.Queries;
 
 namespace QuickSplit.WebApi.Controllers
@@ -75,6 +76,17 @@ namespace QuickSplit.WebApi.Controllers
             PurchaseModel purchase = await Mediator.Send(command);
 
             return Ok(purchase);
+        }
+
+        [HttpGet("{id}/users")]
+        public async Task<ActionResult<IEnumerable<UserModel>>> GetParticipants(int id)
+        {
+            IEnumerable<UserModel> users = await Mediator.Send(new GetPurchaseParticipantsQuery()
+            {
+                PurchaseId = id
+            });
+
+            return Ok(users);
         }
     }
 }

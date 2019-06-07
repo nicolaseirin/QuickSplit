@@ -1,12 +1,14 @@
+using QuickSplit.Application.Users.Models;
+
 namespace QuickSplit.Application.Groups.Models
 {
     public class DebtorDebteeModel
     {
         public double Amount { get; set; }
 
-        public int Debtor { get; set; } // El que debe plata 
+        public UserModel Debtor { get; set; } // El que debe plata 
 
-        public int Debtee { get; set; } // Al que le deben plata
+        public UserModel Debtee { get; set; } // Al que le deben plata
 
         /*
                                                                                         
