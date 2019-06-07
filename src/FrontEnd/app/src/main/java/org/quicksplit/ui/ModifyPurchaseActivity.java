@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,7 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ModifyPurchaseActivity extends AppCompatActivity {
+public class ModifyPurchaseActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Purchase purchase;
     private Group group;
@@ -50,6 +52,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity {
     private RecyclerView mRecyclerViewGroupMembers;
     private GroupFriendsAdapter mRecycleViewGroupFriendsAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
+    private Button mButtonModifyPurchase;
 
     ArrayAdapter<String> currenciesArrayAdapter;
 
@@ -63,6 +66,8 @@ public class ModifyPurchaseActivity extends AppCompatActivity {
         mSpinnerCurrency = findViewById(R.id.spn_currency);
         mEditTextCost = findViewById(R.id.txt_cost);
         mRecyclerViewPurchasers = findViewById(R.id.purchasesReciclerView);
+        mButtonModifyPurchase = findViewById(R.id.btn_modifyPurchase);
+        mButtonModifyPurchase.setOnClickListener(this);
 
         getPurchase();
     }
@@ -176,6 +181,42 @@ public class ModifyPurchaseActivity extends AppCompatActivity {
                 participants.remove(user);
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        modifyPurchase();
+    }
+
+    private void modifyPurchase() {
+        showErrors();
+
+        if (!validFields())
+            return;
+
+    }
+
+    private void showErrors() {
+        /*if (!(mEditTextPurchaseName.getText().toString().trim().length() > 0))
+            mTextInputLayoutPurchaseName.setError("El nombre es requerído.");
+        else
+            mTextInputLayoutPurchaseName.setError("");
+
+        if (!(mEditTextCost.getText().toString().trim().length() > 0))
+            mTextInputLayoutTxtCost.setError("El costo es requerído.");
+        else
+            mTextInputLayoutTxtCost.setError("");
+
+        if (!(participants.size() > 0))
+            mTextInputLayoutGroupMembers.setError("Por lo menos debe seleccionar un miembro para la compra.");
+        else
+            mTextInputLayoutGroupMembers.setError("");*/
+    }
+
+    private boolean validFields() {
+        return mEditTextPurchaseName.getText().toString().trim().length() > 0
+                && mEditTextCost.getText().toString().length() > 0
+                && participants.size() > 0;
     }
 }
 
