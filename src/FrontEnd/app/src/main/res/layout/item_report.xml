@@ -27,16 +27,28 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/txt_debtorName"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="8dp"
-                android:text="John Doe"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
+                android:orientation="horizontal">
 
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/img_debtor"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:padding="2dp" />
+
+                <TextView
+                    android:id="@+id/txt_debtorName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="8dp"
+                    android:text="John Doe"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/txt_debtee"
@@ -49,15 +61,28 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/txt_debteeName"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="8dp"
-                android:text="Jane Doe"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
+                android:orientation="horizontal">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/img_debtee"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:padding="2dp" />
+
+                <TextView
+                    android:id="@+id/txt_debteeName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="8dp"
+                    android:text="Jane Doe"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/txt_amount"
