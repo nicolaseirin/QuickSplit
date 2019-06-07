@@ -1,6 +1,7 @@
 package org.quicksplit.service;
 
 import org.quicksplit.models.Purchase;
+import org.quicksplit.models.User;
 
 import java.util.List;
 
@@ -19,6 +20,9 @@ public interface PurchaseClient {
 
     @GET("purchases/{id}")
     Call<Purchase> getPurchases(@Path("id") String id);
+
+    @GET("purchases/{id}/users")
+    Call<List<User>> getParticipants(@Path("id") String id);
 
     @POST("purchases")
     Call<Purchase> createPurchase(@Body Purchase purchase);

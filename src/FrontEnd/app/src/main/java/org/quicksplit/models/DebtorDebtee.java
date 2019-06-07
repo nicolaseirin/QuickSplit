@@ -3,8 +3,8 @@ package org.quicksplit.models;
 public class DebtorDebtee {
 
     private String amount;
-    private String debtor;
-    private String debtee;
+    private User debtor;
+    private User debtee;
 
     public String getAmount() {
         return amount;
@@ -14,19 +14,19 @@ public class DebtorDebtee {
         this.amount = amount;
     }
 
-    public String getDebtor() {
+    public User getDebtor() {
         return debtor;
     }
 
-    public void setDebtor(String debtor) {
+    public void setDebtor(User debtor) {
         this.debtor = debtor;
     }
 
-    public String getDebtee() {
+    public User getDebtee() {
         return debtee;
     }
 
-    public void setDebtee(String debtee) {
+    public void setDebtee(User debtee) {
         this.debtee = debtee;
     }
 }

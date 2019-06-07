@@ -16,6 +16,7 @@ import org.quicksplit.TokenManager;
 import org.quicksplit.models.Purchase;
 import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
+import org.quicksplit.service.PurchaseClient;
 
 import java.util.List;
 
@@ -55,11 +56,9 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
 
         //For sigle item call the users
         TokenManager tokenManager = new TokenManager(context);
-        GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
+        PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
 
-
-        //TODO: ESTO ESTÁ MAL!! ACÁ HAY QUE PEDIR LOS MIEMBROS DE UNA COMPRA
-        Call<List<User>> call = client.getGroupMembers(currentItem.getId());
+        Call<List<User>> call = client.getParticipants(currentItem.getId());
         call.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
@@ -79,7 +78,6 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
                 System.out.println("Error: " + t.getMessage());
             }
         });
-
     }
 
     @Override

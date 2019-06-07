@@ -36,8 +36,8 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     public void onBindViewHolder(@NonNull ReportViewHolder groupViewHolder, int i) {
         final DebtorDebtee currentItem = reports.get(i);
 
-        groupViewHolder.mTextViewDebtorName.setText(currentItem.getDebtor());
-        groupViewHolder.mTextViewDebteeName.setText(currentItem.getDebtee());
+        groupViewHolder.mTextViewDebtorName.setText(currentItem.getDebtor().getName() + " " + currentItem.getDebtor().getLastName());
+        groupViewHolder.mTextViewDebteeName.setText(currentItem.getDebtee().getName() + " " + currentItem.getDebtee().getLastName());
         groupViewHolder.mTextViewAmountValue.setText(currentItem.getAmount());
     }
 
