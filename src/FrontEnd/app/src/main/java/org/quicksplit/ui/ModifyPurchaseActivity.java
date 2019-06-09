@@ -1,6 +1,7 @@
 package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +26,7 @@ import org.quicksplit.service.CurrencyClient;
 import org.quicksplit.service.GroupClient;
 import org.quicksplit.service.PurchaseClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -37,26 +39,31 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
     private Group group;
 
     private TextView mTextViewGroupName;
+
+    private TextInputLayout mTextInputLayoutPurchaseName;
     private EditText mEditTextPurchaseName;
+
     private Spinner mSpinnerCurrency;
+
+    private TextInputLayout mTextInputLayoutTxtCost;
     private EditText mEditTextCost;
-    private RecyclerView mRecyclerViewPurchasers;
 
     private List<String> currencies;
-
     private List<User> members;
     private List<User> participants;
 
     private RecyclerView.LayoutManager mRecyclerViewManager;
     private Button mButtonModifyPurchase;
 
+    private TextInputLayout mTextInputLayoutGroupMembers;
     private RecyclerView mRecyclerViewMembers;
     private AddFriendsAdapter mRecycleViewGroupMembersAdapter;
 
     private RecyclerView mRecyclerViewPaticipants;
     private DeleteFriendsAdapter mRecycleViewDeleteMembersAdapter;
 
-    ArrayAdapter<String> currenciesArrayAdapter;
+    private ArrayAdapter<String> currenciesArrayAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,14 +74,19 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         mRecyclerViewPaticipants = findViewById(R.id.purchasersReciclerView);
 
         mTextViewGroupName = findViewById(R.id.txt_groupName);
+
+        mTextInputLayoutPurchaseName = findViewById(R.id.lblError_purchaseName);
         mEditTextPurchaseName = findViewById(R.id.txt_purchaseName);
+
         mSpinnerCurrency = findViewById(R.id.spn_currency);
+
+        mTextInputLayoutTxtCost = findViewById(R.id.lblError_txtCost);
         mEditTextCost = findViewById(R.id.txt_cost);
-        mRecyclerViewPurchasers = findViewById(R.id.purchasesReciclerView);
 
         mButtonModifyPurchase = findViewById(R.id.btn_modifyPurchase);
         mButtonModifyPurchase.setOnClickListener(this);
 
+        mTextInputLayoutGroupMembers = findViewById(R.id.lblError_groupMembers);
         loadPurchaseData();
     }
 
@@ -278,12 +290,40 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
         purchase.setCost(mEditTextCost.getText().toString());
 
-        //TODO: PASAR PARTICIPANTES
-        purchase.setParticipants(null);
+        ArrayList<String> participantsString = new ArrayList<>();
+        for (int i = 0; i < participants.size(); i++)
+            participantsString.add(participants.get(i).getId());
+        purchase.setParticipants(participantsString);
+
+        TokenManager tokenManager = new TokenManager(this);
+
+        PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
+        Call<Purchase> call = client.modifyPurchase(getIntent().getStringExtra("EXTRA_PURCHASE_ID"), purchase);
+
+        final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
+
+        call.enqueue(new Callback<Purchase>() {
+
+            @Override
+            public void onResponse(Call<Purchase> call, Response<Purchase> response) {
+                if (response.isSuccessful()) {
+                    loading.dismiss();
+                } else {
+                    loading.dismiss();
+                    Toast.makeText(ModifyPurchaseActivity.this, "Error al modificar la compra", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Purchase> call, Throwable t) {
+                loading.dismiss();
+                Toast.makeText(ModifyPurchaseActivity.this, "Error en la comunicación al modificar la compra.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void showErrors() {
-        /*if (!(mEditTextPurchaseName.getText().toString().trim().length() > 0))
+        if (!(mEditTextPurchaseName.getText().toString().trim().length() > 0))
             mTextInputLayoutPurchaseName.setError("El nombre es requerído.");
         else
             mTextInputLayoutPurchaseName.setError("");
@@ -294,9 +334,9 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
             mTextInputLayoutTxtCost.setError("");
 
         if (!(participants.size() > 0))
-            mTextInputLayoutGroupMembers.setError("Por lo menos debe seleccionar un miembro para la compra.");
+            mTextInputLayoutGroupMembers.setError("Por lo menos debe agregar un miembro para la compra.");
         else
-            mTextInputLayoutGroupMembers.setError("");*/
+            mTextInputLayoutGroupMembers.setError("");
     }
 
     private boolean validFields() {
