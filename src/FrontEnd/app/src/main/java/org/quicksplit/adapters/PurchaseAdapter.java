@@ -61,7 +61,7 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
         Uri imageUri = Uri.parse(ServiceGenerator.getBaseUrl() + "purchases/" + currentItem.getId() + "/image");
         Picasso.get()
                 .load(imageUri)
-                .resize(200, 200)
+                .resize(250, 250)
                 .centerCrop()
                 .into(groupViewHolder.mImagePurchase);
 
