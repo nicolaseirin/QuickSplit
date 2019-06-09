@@ -56,4 +56,12 @@ public class User {
     public String toString() {
         return name + " " + lastName;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User)
+            return this.getId().equals(((User) obj).getId());
+        else
+            return false;
+    }
 }

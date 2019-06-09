@@ -112,22 +112,46 @@
                 android:text="Subir Imagen" />
 
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/lblError_groupMembers"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:errorEnabled="true">
+                android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Miembros del grupo:"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/purchisersReciclerView"
+                    android:id="@+id/membersReciclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@android:color/white"
                     android:scrollbars="vertical" />
 
-            </android.support.design.widget.TextInputLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Miembros de la compra:"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/purchasersReciclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@android:color/white"
+                    android:padding="4dp"
+                    android:scrollbars="vertical" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/lbl_errorMessage"
