@@ -10,6 +10,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
@@ -35,6 +36,7 @@ public interface PurchaseClient {
     @PUT("purchases/{id}")
     Call<Purchase> modifyPurchase(@Path("id") String id, @Body Purchase purchase);
 
+    @Multipart
     @POST("purchases/{id}/image")
     Call<ResponseBody> addPurchaseImage(@Path("id") String id, @Part MultipartBody.Part filePart);
 }

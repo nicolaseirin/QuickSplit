@@ -20,7 +20,9 @@ import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.GroupAdapter;
 import org.quicksplit.adapters.PurchaseAdapter;
 import org.quicksplit.models.Purchase;
+import org.quicksplit.models.User;
 import org.quicksplit.service.PurchaseClient;
+import org.quicksplit.service.UserClient;
 
 import java.util.List;
 
@@ -97,11 +99,11 @@ public class PurchasesFragment extends Fragment {
 
     private void getPurchases() {
         TokenManager tokenManager = new TokenManager(getContext());
-        PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
+        UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
 
         final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
 
-        Call<List<Purchase>> call = client.getPurchases();
+        Call<List<Purchase>> call = client.getUserPurchases(tokenManager.getUserIdFromToken());
         call.enqueue(new Callback<List<Purchase>>() {
             @Override
             public void onResponse(Call<List<Purchase>> call, Response<List<Purchase>> response) {

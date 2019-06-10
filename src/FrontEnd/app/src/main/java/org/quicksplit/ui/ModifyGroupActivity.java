@@ -93,14 +93,14 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
 
     private void loadFields(Group group) {
         mEditTextGroupName.setText(group.getName());
-        getGroupMembers();
+        getGroupMembers(group);
     }
 
-    private void getGroupMembers() {
+    private void getGroupMembers(Group group) {
         TokenManager tokenManager = new TokenManager(this);
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<List<User>> call = client.getGroupMembers(tokenManager.getUserIdFromToken());
+        Call<List<User>> call = client.getGroupMembers(group.getId());
 
         final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
 
@@ -216,7 +216,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         group.setMemberships(memberships);
 
         GroupClient groupClient = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<Group> call = groupClient.modifyGroup(groupId);
+        Call<Group> call = groupClient.modifyGroup(groupId, group);
         call.enqueue(new Callback<Group>() {
             @Override
             public void onResponse(Call<Group> call, Response<Group> response) {

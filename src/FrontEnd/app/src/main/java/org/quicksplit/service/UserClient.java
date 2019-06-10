@@ -1,6 +1,8 @@
 package org.quicksplit.service;
 
+import org.quicksplit.models.Group;
 import org.quicksplit.models.Login;
+import org.quicksplit.models.Purchase;
 import org.quicksplit.models.Token;
 import org.quicksplit.models.User;
 
@@ -57,4 +59,10 @@ public interface UserClient {
     @Multipart
     @POST("users/{id}/avatars")
     Call<ResponseBody> setUserAvatar(@Path("id") String id, @Part MultipartBody.Part filePart);
+
+    @GET("users/{id}/groups")
+    Call<List<Group>> getUserGroups(@Path("id") String id);
+
+    @GET("users/{id}/purchases")
+    Call<List<Purchase>> getUserPurchases(@Path("id") String id);
 }

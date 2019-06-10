@@ -18,9 +18,6 @@ import retrofit2.http.Path;
 
 public interface GroupClient {
 
-    @GET("groups/{id}/memberships")
-    Call<List<Group>> getUserGroups(@Path("id") String id);
-
     @GET("groups/{id}")
     Call<Group> getGroup(@Path("id") String id);
 
@@ -28,7 +25,7 @@ public interface GroupClient {
     Call<Group> createGroup(@Body Group group);
 
     @PUT("groups/{id}")
-    Call<Group> modifyGroup(@Path("id") String id);
+    Call<Group> modifyGroup(@Path("id") String id, @Body Group group);
 
     @DELETE("groups/{id}")
     Call<Void> deleteGroup(@Path("id") String id);

@@ -22,6 +22,7 @@ import org.quicksplit.models.Group;
 import org.quicksplit.models.LeaveGroup;
 import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
+import org.quicksplit.service.UserClient;
 
 import java.util.List;
 
@@ -94,7 +95,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
 
     private void getGroups() {
         TokenManager tokenManager = new TokenManager(getContext());
-        GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
+        UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
         Call<List<Group>> call = client.getUserGroups(tokenManager.getUserIdFromToken());
 
         final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);

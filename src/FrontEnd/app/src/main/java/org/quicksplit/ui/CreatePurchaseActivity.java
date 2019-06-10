@@ -160,7 +160,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
 
     private void getData() {
         TokenManager tokenManager = new TokenManager(this);
-        GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
+        UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
         Call<List<Group>> call = client.getUserGroups(tokenManager.getUserIdFromToken());
 
         final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
@@ -308,6 +308,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         }
     }*/
 
+    /*
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -325,7 +326,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
             }
         }
     }
-
+*/
     @Override
     public void onClick(View v) {
         createPurchase();
@@ -381,14 +382,14 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     }
 
     private void uploadImageToServer(Purchase purchase) {
-        if(imgPath != null) {
+        if (imgPath != null) {
             TokenManager tokenManager = new TokenManager(this);
 
             PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
 
             destination = new File(imgPath);
 
-            RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/" + filePath.substring(filePath.lastIndexOf(".") + 1)), destination);
+            RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/" + imgPath.substring(imgPath.lastIndexOf(".") + 1)), destination);
             MultipartBody.Part part = MultipartBody.Part.createFormData("image", destination.getName(), fileReqBody);
 
             Call call = client.addPurchaseImage(tokenManager.getUserIdFromToken(), part);
@@ -438,12 +439,12 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     private void selectImage() {
 
         ActivityCompat.requestPermissions(CreatePurchaseActivity.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                PICK_IMAGE_GALLERY);
-
-        ActivityCompat.requestPermissions(CreatePurchaseActivity.this,
                 new String[]{Manifest.permission.CAMERA},
                 PICK_IMAGE_CAMERA);
+
+        ActivityCompat.requestPermissions(CreatePurchaseActivity.this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                PICK_IMAGE_GALLERY);
 
         try {
             PackageManager pm = getPackageManager();
