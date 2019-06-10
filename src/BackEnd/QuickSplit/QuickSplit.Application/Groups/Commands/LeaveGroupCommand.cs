@@ -35,8 +35,9 @@ namespace QuickSplit.Application.Groups.Commands
         private async Task<Unit> TryToHandle(LeaveGroupCommand request)
         {
             User user = await _context.Users.FindAsync(request.UserId) ?? throw new InvalidCommandException($"El usuario con id {request.UserId} no existe");
-            Group group = await _context.Groups.FindAsync(request.GroupId) ?? throw new InvalidCommandException($"El grupo con id {request.GroupId} no existe");
-            Domain.Membership membership = await _context.Memberships.FirstOrDefaultAsync(m => m.Group == group && m.User == user);
+            Group group = await _context.Groups.Include(group1 => group1.Admin).FirstOrDefaultAsync(g => g.Id == request.GroupId) ?? throw new InvalidCommandException($"El grupo con id {request.GroupId} no existe");
+            if (group.Admin.Id == request.UserId) throw new InvalidCommandException("El administrador no puede irse del grupo");
+            Domain.Membership membership = await _context.Memberships.FirstOrDefaultAsync(m => m.Group.Id == group.Id && m.User.Id == user.Id) ?? throw new InvalidCommandException($"Usuario no es parte del grupo");
 
             group.Memberships.Remove(membership);
             _context.Memberships.Remove(membership);

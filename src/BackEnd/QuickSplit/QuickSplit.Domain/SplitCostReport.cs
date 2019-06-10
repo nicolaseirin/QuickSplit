@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Cache;
 
 namespace QuickSplit.Domain
 {
     public class SplitCostReport
     {
         private readonly Dictionary<(User, User), double> _dictionary = new Dictionary<(User, User), double>();
-        public SplitCostReport(Group @group)
+        
+        public SplitCostReport(Group @group, Currency currency)
         {
-            foreach (Purchase purchase in group.Purchases)
+            foreach (Purchase purchase in group.Purchases.Select(p => ConvertToCurrency(p, currency)))
             {
                 int participants = purchase.Participants.Count + 1; // Participants plus purchaser
                 double portion = purchase.Cost / participants;
@@ -62,5 +64,22 @@ namespace QuickSplit.Domain
         public double this[(User, User) key] => _dictionary[key];
 
         public IReadOnlyDictionary<(User, User), double> Dictionary => _dictionary;
+
+        private Purchase ConvertToCurrency(Purchase purchase, Currency currency)
+        {
+            double cost = purchase.Currency.ToUsd(purchase.Cost);
+            cost = currency.FromUsd(cost);
+            
+            return new Purchase()
+            {
+                Name = purchase.Name,
+                Id = purchase.Id,
+                Participants =  purchase.Participants,
+                Purchaser = purchase.Purchaser,
+                Group = purchase.Group,
+                Currency = currency,
+                Cost = cost
+            };
+        }
     }
 }

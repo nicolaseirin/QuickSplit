@@ -42,9 +42,9 @@ namespace QuickSplit.Domain
             return Memberships.Any(membership => membership.UserId == user.Id);
         }
 
-        public SplitCostReport GenerateSplitCostReport()
+        public SplitCostReport GenerateSplitCostReport(Currency currency)
         {
-            return new SplitCostReport(this);
+            return new SplitCostReport(this, currency);
         }
         
         protected bool Equals(Group other)

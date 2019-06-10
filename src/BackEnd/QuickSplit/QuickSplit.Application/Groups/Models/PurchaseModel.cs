@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
 using QuickSplit.Domain;
 
 namespace QuickSplit.Application.Groups.Models
@@ -11,6 +13,8 @@ namespace QuickSplit.Application.Groups.Models
         public PurchaseModel() {}
         public PurchaseModel(Purchase purchase)
         {
+            if (purchase.Purchaser == null || purchase.Group == null || purchase.Participants == null || purchase.Participants.Any(participant => participant == null))
+                Console.WriteLine("e");
             Id = purchase.Id;
             Name = purchase.Name;
             Cost = purchase.Cost;
@@ -28,7 +32,7 @@ namespace QuickSplit.Application.Groups.Models
 
         public int Group { get; set; }
 
-        public IEnumerable<int> Participants { get; set; }
+        public IEnumerable<int> Participants { get; set; } = new List<int>();
 
         public double Cost { get; set; }
 

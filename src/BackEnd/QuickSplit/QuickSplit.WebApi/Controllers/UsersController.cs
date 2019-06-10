@@ -147,5 +147,25 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(purchases);
         }
         
+        [HttpGet("{id}/groups")]
+        public async Task<ActionResult<IEnumerable<PurchaseModel>>> GetGroups(int id)
+        {
+            try
+            {
+                IEnumerable<GroupModel> purchases = await Mediator.Send(new GetUserGroupsQuery()
+                {
+                    UserId = id
+                });
+
+
+                return Ok(purchases);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("efwfefw");
+                throw e;
+            }
+        }
+        
     }
 }

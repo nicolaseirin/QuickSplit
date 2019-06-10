@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Domain;
 
@@ -24,6 +26,7 @@ namespace QuickSplit.Application.Users.Commands
             User toDelete = await _context.Users.FindAsync(request.Id);
             IEnumerable<Friendship> friendshipsToDelete = _context.Friendships.Where(friendship => friendship.Friend1Id == toDelete.Id || friendship.Friend2Id == toDelete.Id);
 
+            if (_context.Groups.Include(group => group.Admin).Any(g => g.Admin.Id == request.Id)) throw new InvalidCommandException("No te podes borrar porque sos admin de una grupo");
             if (toDelete == null) return Unit.Value;
             
             _context.Friendships.RemoveRange(friendshipsToDelete);

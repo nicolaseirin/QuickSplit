@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -6,6 +7,7 @@ using MediatR;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Interfaces;
+using QuickSplit.Application.Purchases.Commands;
 using QuickSplit.Application.Users.Models;
 using QuickSplit.Domain;
 
@@ -25,15 +27,24 @@ namespace QuickSplit.Application.Groups.Queries
         public async Task<IEnumerable<DebtorDebteeModel>> Handle(GetSplitCostReportQuery request, CancellationToken cancellationToken)
         {
             Group @group = await _context.Groups.FindAsync(request.GroupId) ?? throw new InvalidQueryException("No existe el grupo");
-
+            Currency currency = GetCurrencyIfValid(request.Currency);
+            
             return await Task.WhenAll(
                 group
-                    .GenerateSplitCostReport()
+                    .GenerateSplitCostReport(currency)
                     .Dictionary
                     .Select(MapDebtorDebtee)
             );
         }
 
+        private static Currency GetCurrencyIfValid(string c)
+        {
+            bool currencyIsValid = Enum.TryParse(c, out Currency currency);
+            if (!currencyIsValid)
+                throw new InvalidCommandException($"{c} no es una moneda valida");
+            return currency;
+        }
+        
         private async Task<DebtorDebteeModel> MapDebtorDebtee(KeyValuePair<(User, User), double> pair)
         {
             Task<UserModel> debtor = MapUser(pair.Key.Item1);
@@ -58,5 +69,7 @@ namespace QuickSplit.Application.Groups.Queries
     public class GetSplitCostReportQuery : IRequest<IEnumerable<DebtorDebteeModel>>
     {
         public int GroupId { get; set; }
+
+        public string Currency { get; set; } = "Usd";
     }
 }
