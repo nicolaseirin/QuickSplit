@@ -11,6 +11,8 @@ public class Purchase {
     private String cost;
     private String currency;
     private String image;
+    private Double longitude;
+    private Double latitude;
 
     public String getId() {
         return id;
@@ -66,5 +68,21 @@ public class Purchase {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

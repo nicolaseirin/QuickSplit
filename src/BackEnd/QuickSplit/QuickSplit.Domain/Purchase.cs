@@ -7,13 +7,15 @@ namespace QuickSplit.Domain
     {
         public Purchase() {}
         
-        public Purchase(User purchaser, Group @group, uint cost, Currency currency, IEnumerable<User> participants, string name)
+        public Purchase(User purchaser, Group @group, uint cost, Currency currency, IEnumerable<User> participants, string name, double longitude, double latitude)
         {
             Purchaser = purchaser;
             Group = @group;
             Cost = cost;
             Currency = currency;
             Name = name;
+            Longitude = longitude;
+            Latitude = latitude;
             foreach (User participant in participants)
             {
                 AddParticipant(participant);
@@ -33,6 +35,10 @@ namespace QuickSplit.Domain
         public double Cost { get; set; }
         
         public virtual Currency Currency { get; set; }
+
+        public double Longitude { get; set; }
+
+        public double Latitude { get; set; }
 
         public void AddParticipant(User user)
         {

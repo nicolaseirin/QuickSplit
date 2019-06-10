@@ -34,4 +34,7 @@
     <string name="title_createGroup">Nuevo Grupo</string>
     <string name="title_groupName">Nombre del Grupo</string>
     <string name="title_createPurchase">Nueva Compra</string>
+
+
+    <string name="google_maps_API_key">AIzaSyCv61x2spNrmVw3m3Gg4R31NuYr8-UWiHY</string>
 </resources>

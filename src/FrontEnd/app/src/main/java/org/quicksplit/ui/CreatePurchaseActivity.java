@@ -1,11 +1,22 @@
 package org.quicksplit.ui;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,6 +24,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.maps.SupportMapFragment;
 
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
@@ -33,6 +48,9 @@ import retrofit2.Response;
 
 public class CreatePurchaseActivity extends AppCompatActivity implements  View.OnClickListener {
 
+    private static final String TAG = "CreatePurchaseActivity";
+    private static final int ERROR_DIALOG_REQUEST = 9001;
+
     private List<Group> groups;
     private ArrayAdapter<Group> groupArrayAdapter;
 
@@ -51,6 +69,8 @@ public class CreatePurchaseActivity extends AppCompatActivity implements  View.O
     private GroupFriendsAdapter mRecycleViewGroupFriendsAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
     private Button mButtonCreatePurchase;
+    private Button mButtonAddMap;
+    private Bundle myBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +99,18 @@ public class CreatePurchaseActivity extends AppCompatActivity implements  View.O
         mButtonCreatePurchase = findViewById(R.id.btn_createPurchase);
         mButtonCreatePurchase.setOnClickListener(this);
 
+        mButtonAddMap = findViewById(R.id.btn_addMap);
+        mButtonAddMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CreatePurchaseActivity.this, MapActivity.class );
+                startActivity(intent);
+            }
+        });
+
+        myBundle = this.getIntent().getExtras();
         getData();
+
     }
 
     private void getData() {
@@ -185,6 +216,10 @@ public class CreatePurchaseActivity extends AppCompatActivity implements  View.O
         purchase.setCost(mEditTextCost.getText().toString());
         purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
         purchase.setGroup(((Group)mSpinnerGroups.getSelectedItem()).getId());
+        if(myBundle != null){
+            purchase.setLatitude(myBundle.getDouble("latitude"));
+            purchase.setLongitude(myBundle.getDouble("longitude"));
+        }
 
         List<String> participantsString = new ArrayList<String>();
         for (int i = 0; i < participants.size(); i++) participantsString.add(participants.get(i).getId());
