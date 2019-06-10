@@ -29,7 +29,7 @@ namespace QuickSplit.Application.Purchases.Commands
             IEnumerable<User> participants = await GetParticipantsIfValid(request.Participants, group);
             Currency currency = GetCurrencyIfValid(request);
 
-            var purchase = new Purchase(purchaser, group, request.Cost, currency, participants, request.Name, request.Longitude, request.Latitudelatitude);
+            var purchase = new Purchase(purchaser, group, request.Cost, currency, participants, request.Name, request.Longitude, request.Latitude);
             group.Purchases.Add(purchase);
             await _context.SaveChangesAsync();
             
