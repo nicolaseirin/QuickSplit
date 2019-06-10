@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Interfaces;
@@ -26,7 +27,7 @@ namespace QuickSplit.Application.Groups.Queries
 
         public async Task<IEnumerable<DebtorDebteeModel>> Handle(GetSplitCostReportQuery request, CancellationToken cancellationToken)
         {
-            Group @group = await _context.Groups.FindAsync(request.GroupId) ?? throw new InvalidQueryException("No existe el grupo");
+            Group @group = await _context.Groups.Include(group1 => group1.Memberships).Include(group1 => group1.Purchases).ThenInclude(purchase => purchase.Participants).FirstOrDefaultAsync(g => g.Id == request.GroupId, cancellationToken: cancellationToken) ?? throw new InvalidQueryException("No existe el grupo");
             Currency currency = GetCurrencyIfValid(request.Currency);
             
             return await Task.WhenAll(

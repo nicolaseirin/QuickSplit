@@ -78,7 +78,7 @@ namespace QuickSplit.WebApi
 
         private void GenerateDbOptions(IServiceProvider serviceProvider, DbContextOptionsBuilder options)
         {
-            //options.UseLazyLoadingProxies();
+            options.UseLazyLoadingProxies();
             options.UseSqlServer(Configuration.GetConnectionString("QuickSplitDb"));
         }
 
