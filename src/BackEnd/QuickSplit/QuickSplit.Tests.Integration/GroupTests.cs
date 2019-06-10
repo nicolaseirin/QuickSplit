@@ -294,6 +294,7 @@ namespace QuickSplit.Tests.Integration
             PurchaseModel purchase = await response.DeserializeObject<PurchaseModel>();
 
             Assert.Equal(1, purchase.Id);
+            Assert.Equal("Compra en dolares", purchase.Name);
         }
 
         [Fact, Priority(8)]
