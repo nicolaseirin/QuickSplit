@@ -70,6 +70,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements  View.O
     private RecyclerView.LayoutManager mRecyclerViewManager;
     private Button mButtonCreatePurchase;
     private Button mButtonAddMap;
+    private Bundle myBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +108,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements  View.O
             }
         });
 
+        myBundle = this.getIntent().getExtras();
         getData();
 
     }
@@ -214,6 +216,10 @@ public class CreatePurchaseActivity extends AppCompatActivity implements  View.O
         purchase.setCost(mEditTextCost.getText().toString());
         purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
         purchase.setGroup(((Group)mSpinnerGroups.getSelectedItem()).getId());
+        if(myBundle != null){
+            purchase.setLatitude(myBundle.getDouble("latitude"));
+            purchase.setLongitude(myBundle.getDouble("longitude"));
+        }
 
         List<String> participantsString = new ArrayList<String>();
         for (int i = 0; i < participants.size(); i++) participantsString.add(participants.get(i).getId());
