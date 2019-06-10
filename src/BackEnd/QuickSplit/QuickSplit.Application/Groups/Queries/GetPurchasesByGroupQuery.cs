@@ -14,13 +14,10 @@ namespace QuickSplit.Application.Groups.Queries
     public class GetPurchasesByGroupQueryHandler : IRequestHandler<GetPurchasesByGroupQuery, IEnumerable<PurchaseModel>>
     {
         private readonly IQuickSplitContext _context;
-        private readonly IImageRepository _imageRepository;
 
         public GetPurchasesByGroupQueryHandler(IQuickSplitContext context, IImageRepository imageRepository)
         {
             _context = context;
-            _imageRepository = imageRepository;
-            _imageRepository.FolderName = "Purchases";
         }
 
         public async Task<IEnumerable<PurchaseModel>> Handle(GetPurchasesByGroupQuery request, CancellationToken cancellationToken)
@@ -35,13 +32,7 @@ namespace QuickSplit.Application.Groups.Queries
                               .FirstOrDefaultAsync(group1 => group1.Id == request.GroupId, cancellationToken: cancellationToken)
                           ?? throw new InvalidQueryException($"No existe el grupo");
 
-            return await Task.WhenAll(group.Purchases.Select(MapPurchase));
-        }
-
-        private async Task<PurchaseModel> MapPurchase(Purchase purchase)
-        {
-            string image = await _imageRepository.GetImageBase64(purchase.Id);
-            return new PurchaseModel(purchase, image);
+            return group.Purchases.Select(purchase => new PurchaseModel(purchase));
         }
     }
 

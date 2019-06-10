@@ -37,6 +37,22 @@
             android:paddingBottom="16dp">
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/lblError_purchaseName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:errorEnabled="true">
+
+                <EditText
+                    android:id="@+id/txt_purchaseName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nombre de la compra"
+                    android:inputType="text" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
                 android:id="@+id/lblError_spnGroupName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -58,7 +74,6 @@
                 android:id="@+id/lblError_spnCurrency"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 app:errorEnabled="true">
 
                 <Spinner
@@ -76,7 +91,6 @@
                 android:id="@+id/lblError_txtCost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 app:errorEnabled="true">
 
                 <EditText
@@ -90,13 +104,31 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/purchisersReciclerView"
+            <Button
+                android:id="@+id/btn_uploadImage"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@android:color/white"
-                android:scrollbars="vertical" />
+                android:text="Subir Imagen" />
+
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/lblError_groupMembers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:errorEnabled="true">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/purchisersReciclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:background="@android:color/white"
+                    android:scrollbars="vertical" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <TextView
                 android:id="@+id/lbl_errorMessage"

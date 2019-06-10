@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Purchases.Commands;
 using QuickSplit.Application.Purchases.Queries;
+using QuickSplit.Application.Users.Models;
 using QuickSplit.Application.Users.Queries;
 
 namespace QuickSplit.WebApi.Controllers
@@ -30,7 +33,34 @@ namespace QuickSplit.WebApi.Controllers
 
             return Ok(purchase);
         }
+        
+        [HttpGet("{id}/image")]
+        public async Task<ActionResult<Stream>> GetPurchaseImage(int id)
+        {
+            Stream image = await Mediator.Send(new GetPurchaseImageQuery()
+            {
+                PurchaseId = id
+            });
 
+            return Ok(image);
+        }
+
+        [HttpPost("{id}/image")]
+        [Consumes("image/jpg", "image/jpeg", "image/png", "multipart/form-data")]
+        public async Task<ActionResult<Stream>> AddPurchaseImage(int id, IFormFile image)
+        {
+            if (image == null)
+                return BadRequest("Imagen invalida");
+            
+            await Mediator.Send(new AddPurchaseImageCommand()
+            {
+                PurchaseId = id,
+                Image = image.OpenReadStream(),
+            });
+            
+            return Ok();
+        }
+        
         [HttpPost]
         public async Task<ActionResult<IEnumerable<PurchaseModel>>> CreatePurchase([FromBody] CreatePurchaseCommand command)
         {
@@ -46,6 +76,17 @@ namespace QuickSplit.WebApi.Controllers
             PurchaseModel purchase = await Mediator.Send(command);
 
             return Ok(purchase);
+        }
+
+        [HttpGet("{id}/users")]
+        public async Task<ActionResult<IEnumerable<UserModel>>> GetParticipants(int id)
+        {
+            IEnumerable<UserModel> users = await Mediator.Send(new GetPurchaseParticipantsQuery()
+            {
+                PurchaseId = id
+            });
+
+            return Ok(users);
         }
     }
 }

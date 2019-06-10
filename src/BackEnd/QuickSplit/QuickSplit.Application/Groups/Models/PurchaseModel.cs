@@ -12,19 +12,17 @@ namespace QuickSplit.Application.Groups.Models
         public PurchaseModel(Purchase purchase)
         {
             Id = purchase.Id;
+            Name = purchase.Name;
             Cost = purchase.Cost;
             Currency = purchase.Currency.ToString();
             Group = purchase.Group.Id;
-            Participants = purchase.Participants.Select(participant => participant.UserId).ToList();
+            Participants = purchase.Participants.Select(participant => participant.UserId);
             Purchaser = purchase.Purchaser.Id;
         }
-
-        public PurchaseModel(Purchase purchase, string image) : this(purchase)
-        {
-            Image = image;
-        }
-
+        
         public int Id { get; set; }
+        
+        public string Name { get; set; }
         
         public int Purchaser { get; set; }
 
@@ -32,10 +30,8 @@ namespace QuickSplit.Application.Groups.Models
 
         public IEnumerable<int> Participants { get; set; }
 
-        public uint Cost { get; set; }
+        public double Cost { get; set; }
 
         public string Currency { get; set; }
-        
-        public string Image { get; set; }
     }
 }

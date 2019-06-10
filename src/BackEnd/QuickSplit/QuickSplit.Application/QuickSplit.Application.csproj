@@ -23,12 +23,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Avatars\default.png">
+      <None Update="Avatars\default.jpg">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
   <ItemGroup>
-    <None Update="Purchases\default.png">
+    <None Update="Purchases\default.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

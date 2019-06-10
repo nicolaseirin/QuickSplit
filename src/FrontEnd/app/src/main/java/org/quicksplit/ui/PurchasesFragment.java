@@ -1,16 +1,32 @@
 package org.quicksplit.ui;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.quicksplit.R;
+import org.quicksplit.ServiceGenerator;
+import org.quicksplit.TokenManager;
+import org.quicksplit.adapters.GroupAdapter;
+import org.quicksplit.adapters.PurchaseAdapter;
+import org.quicksplit.models.Purchase;
+import org.quicksplit.service.PurchaseClient;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -23,14 +39,16 @@ import org.quicksplit.R;
  */
 public class PurchasesFragment extends Fragment {
 
+    private List<Purchase> purchases;
+    private RecyclerView mRecyclerViewPurchases;
+    private PurchaseAdapter mRecyclerViewPurchasesAdapter;
+    private RecyclerView.LayoutManager mRecyclerViewManager;
+
     private FloatingActionButton mButtonAddPurchase;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -39,15 +57,6 @@ public class PurchasesFragment extends Fragment {
     public PurchasesFragment() {
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PurchasesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static PurchasesFragment newInstance(String param1, String param2) {
         PurchasesFragment fragment = new PurchasesFragment();
         Bundle args = new Bundle();
@@ -78,7 +87,56 @@ public class PurchasesFragment extends Fragment {
                 startActivity(newPurchaseActivity);
             }
         });
+
+        mRecyclerViewPurchases = view.findViewById(R.id.purchasesReciclerView);
+
+        getPurchases();
+
         return view;
+    }
+
+    private void getPurchases() {
+        TokenManager tokenManager = new TokenManager(getContext());
+        PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
+
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+
+        Call<List<Purchase>> call = client.getPurchases();
+        call.enqueue(new Callback<List<Purchase>>() {
+            @Override
+            public void onResponse(Call<List<Purchase>> call, Response<List<Purchase>> response) {
+                if (response.isSuccessful()) {
+                    purchases = response.body();
+                    buildRecyclerViewPurchases();
+                    loading.dismiss();
+                } else {
+                    loading.dismiss();
+                    Toast.makeText(getActivity(), "Error al obtener compras.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Purchase>> call, Throwable t) {
+                loading.dismiss();
+                Toast.makeText(getActivity(), "Error en la conexión al obtener compras.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void buildRecyclerViewPurchases() {
+        mRecyclerViewPurchases.setHasFixedSize(true);
+        mRecyclerViewManager = new LinearLayoutManager(getContext());
+        mRecyclerViewPurchasesAdapter = new PurchaseAdapter(purchases, getContext());
+        mRecyclerViewPurchases.setLayoutManager(mRecyclerViewManager);
+        mRecyclerViewPurchases.setAdapter(mRecyclerViewPurchasesAdapter);
+        mRecyclerViewPurchasesAdapter.setOnItemClickListener(new PurchaseAdapter.OnItemClickListener() {
+            @Override
+            public void onModifyClick(Purchase purchase) {
+                Intent intent = new Intent(getContext(), ModifyPurchaseActivity.class);
+                intent.putExtra("EXTRA_PURCHASE_ID", purchase.getId());
+                startActivity(intent);
+            }
+        });
     }
 
     public void onButtonPressed(Uri uri) {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -41,6 +40,11 @@ namespace QuickSplit.Domain
         public bool UserIsPartOfGroup(User user)
         {
             return Memberships.Any(membership => membership.UserId == user.Id);
+        }
+
+        public SplitCostReport GenerateSplitCostReport()
+        {
+            return new SplitCostReport(this);
         }
         
         protected bool Equals(Group other)

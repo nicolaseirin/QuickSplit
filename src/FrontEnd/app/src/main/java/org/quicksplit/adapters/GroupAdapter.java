@@ -17,8 +17,6 @@ import org.quicksplit.models.Group;
 import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -33,6 +31,9 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
+
+        void onViewReportClick(Group group);
+
         void onModifyClick(Group group);
 
         void onDeleteClick(Group group);
@@ -65,13 +66,13 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
         call.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     currentMembers = response.body();
                     AvatarAdapter avatarAdapter = new AvatarAdapter(currentMembers);
                     groupViewHolder.mRecyclerView.setHasFixedSize(true);
                     groupViewHolder.mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                     groupViewHolder.mRecyclerView.setAdapter(avatarAdapter);
-                }else{
+                } else {
                     System.out.println("Error: " + response.errorBody());
                 }
             }
@@ -97,16 +98,33 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
     public static class GroupViewHolder extends RecyclerView.ViewHolder {
 
         public RecyclerView mRecyclerView;
+        public TextView mTextViewGroupName;
+
+        public ImageView mImageViewReport;
         public ImageView mImageEdit;
         public ImageView mImageLeave;
         public ImageView mImageDelete;
-        public TextView mTextViewGroupName;
+
 
         public GroupViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<Group> groups) {
             super(itemView);
 
             mRecyclerView = itemView.findViewById(R.id.rview_avatars);
             mTextViewGroupName = itemView.findViewById(R.id.txt_groupName);
+
+            mImageViewReport = itemView.findViewById(R.id.img_report);
+            mImageViewReport.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        int i = getAdapterPosition();
+                        if (i != RecyclerView.NO_POSITION) {
+                            listener.onViewReportClick(groups.get(i));
+                        }
+                    }
+                }
+            });
+
             mImageEdit = itemView.findViewById(R.id.img_modify);
             mImageEdit.setOnClickListener(new View.OnClickListener() {
                 @Override

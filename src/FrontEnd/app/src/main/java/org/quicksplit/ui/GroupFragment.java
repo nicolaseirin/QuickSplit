@@ -95,7 +95,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
     private void getGroups() {
         TokenManager tokenManager = new TokenManager(getContext());
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<List<Group>> call = client.getAllGroups();
+        Call<List<Group>> call = client.getUserGroups(tokenManager.getUserIdFromToken());
 
         final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
 
@@ -128,6 +128,13 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         mRecyclerViewGroups.setAdapter(mRecyclerViewGroupsAdapter);
 
         mRecyclerViewGroupsAdapter.setOnItemClickListener(new GroupAdapter.OnItemClickListener() {
+            @Override
+            public void onViewReportClick(Group group) {
+                Intent intent = new Intent(getContext(), ReportActivity.class);
+                intent.putExtra("EXTRA_GROUP_ID", group.getId());
+                startActivity(intent);
+            }
+
             @Override
             public void onModifyClick(Group group) {
                 Intent intent = new Intent(getContext(), ModifyGroupActivity.class);

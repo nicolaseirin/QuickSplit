@@ -1,26 +1,40 @@
 package org.quicksplit.service;
 
 import org.quicksplit.models.Purchase;
+import org.quicksplit.models.User;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface PurchaseClient {
 
     @GET("purchases")
-    Call<List<Purchase>> getAllPurchases();
+    Call<List<Purchase>> getPurchases();
 
     @GET("purchases/{id}")
-    Call<Purchase> getPurchase(@Path("id") String id);
+    Call<Purchase> getPurchases(@Path("id") String id);
 
-    @POST("purchase")
-    Call<Purchase> createPurchase(Purchase purchase);
+    @GET("purchases/{id}/users")
+    Call<List<User>> getParticipants(@Path("id") String id);
 
-    @PUT("purchase/{id}")
-    Call<Purchase> modifyPurchase(@Path("id") String id, Purchase purchase);
+    @POST("purchases")
+    Call<Purchase> createPurchase(@Body Purchase purchase);
+
+    @GET("purchases/{id}/image")
+    Call<ResponseBody> getPurchaseImage(@Path("id") String id);
+
+    @PUT("purchases/{id}")
+    Call<Purchase> modifyPurchase(@Path("id") String id, @Body Purchase purchase);
+
+    @POST("purchases/{id}/image")
+    Call<ResponseBody> addPurchaseImage(@Path("id") String id, @Part MultipartBody.Part filePart);
 }

@@ -22,7 +22,6 @@ import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 import org.quicksplit.service.UserClient;
 
-import java.nio.file.attribute.GroupPrincipal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,6 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
 
     private List<User> members;
     private List<User> friends;
-    private List<String> friendsSelected;
 
     private Button mButtonModifyGroup;
     private EditText mEditTextGroupName;
@@ -53,9 +51,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_group);
-
-        friendsSelected = new ArrayList<String>();
+        setContentView(R.layout.activity_modify_group);
 
         mEditTextGroupName = findViewById(R.id.txt_groupName);
         mRecyclerViewMembers = findViewById(R.id.membersReciclerView);
@@ -84,13 +80,13 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
                 if (response.isSuccessful()) {
                     loadFields(response.body());
                 } else {
-
+                    System.out.println("Error: " + response.errorBody());
                 }
             }
 
             @Override
             public void onFailure(Call<Group> call, Throwable t) {
-
+                System.out.println("Error: " + t.getMessage());
             }
         });
     }

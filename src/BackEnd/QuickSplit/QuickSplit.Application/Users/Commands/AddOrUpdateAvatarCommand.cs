@@ -25,7 +25,7 @@ namespace QuickSplit.Application.Users.Commands
         {
             User user = await _context.Users.FindAsync(request.UserId) ?? throw new InvalidCommandException("No existe el usuario");
 
-            _imageRepository.AddImageFromStream(request.UserId, request.ImageStream, request.ImageFormat);
+            _imageRepository.AddImageFromStream(request.UserId, request.ImageStream);
 
             return Unit.Value;
         }
@@ -34,8 +34,6 @@ namespace QuickSplit.Application.Users.Commands
     public class AddOrUpdateAvatarCommand : IRequest
     {
         public Stream ImageStream { get; set; }
-
-        public string ImageFormat { get; set; }
 
         public int UserId { get; set; }
     }

@@ -34,4 +34,7 @@
     <string name="title_createGroup">Nuevo Grupo</string>
     <string name="title_groupName">Nombre del Grupo</string>
     <string name="title_createPurchase">Nueva Compra</string>
+    <string name="title_report">División de Gastos</string>
+    <string name="title_modifyPurchase">Modificar Compra</string>
+    <string name="modify">Modificar</string>
 </resources>

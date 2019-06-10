@@ -14,28 +14,25 @@ namespace QuickSplit.Application.Purchases.Commands
     public class CreateAddPurchaseCommandHandler : IRequestHandler<CreatePurchaseCommand, PurchaseModel>
     {
         private readonly IQuickSplitContext _context;
-        private readonly IImageRepository _imageRepository;
 
-        public CreateAddPurchaseCommandHandler(IQuickSplitContext context, IImageRepository imageRepository)
+        public CreateAddPurchaseCommandHandler(IQuickSplitContext context)
         {
-            _context = context;
-            _imageRepository = imageRepository;
-            _imageRepository.FolderName = "Purchases";
+            _context = context; ;
         }
 
         public async Task<PurchaseModel> Handle(CreatePurchaseCommand request, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(request.Name))
+                throw new InvalidCommandException($"Nombre de la compra {request.Name} es invalido");
             Group group = await GetGroupIfValid(request);
             User purchaser = await GetPurchaserIfValid(request);
             IEnumerable<User> participants = await GetParticipantsIfValid(request.Participants, group);
             Currency currency = GetCurrencyIfValid(request);
 
-            var purchase = new Purchase(purchaser, group, request.Cost, currency, participants);
+            var purchase = new Purchase(purchaser, group, request.Cost, currency, participants, request.Name);
             group.Purchases.Add(purchase);
             await _context.SaveChangesAsync();
-
-            if (!string.IsNullOrWhiteSpace(request.Image) && !string.IsNullOrWhiteSpace(request.ImageExt)) 
-                _imageRepository.AddImageFromBase64(purchase.Id, request.Image, request.ImageExt);
+            
             
             return new PurchaseModel(purchase);
         }
@@ -73,15 +70,13 @@ namespace QuickSplit.Application.Purchases.Commands
         public int Purchaser { get; set; }
 
         public int Group { get; set; }
+        
+        public string Name { get; set; }
 
         public IEnumerable<int> Participants { get; set; }
 
         public uint Cost { get; set; }
 
         public string Currency { get; set; }
-        
-        public string Image { get; set; }
-        
-        public string ImageExt { get; set; }
     }
 }
