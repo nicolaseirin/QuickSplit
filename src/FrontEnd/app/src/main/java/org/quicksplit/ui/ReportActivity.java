@@ -1,10 +1,13 @@
 package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import org.quicksplit.R;
@@ -23,6 +26,9 @@ import retrofit2.Response;
 public class ReportActivity extends AppCompatActivity {
 
     private List<DebtorDebtee> reports;
+
+    private Toolbar mToolbar;
+
     private RecyclerView mRecyclerViewReports;
     private ReportAdapter mRecyclerViewReportAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
@@ -32,8 +38,23 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
+        mToolbar = findViewById(R.id.toolbar_top);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         mRecyclerViewReports = findViewById(R.id.reportsRecyclerView);
         getReports();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void getReports() {

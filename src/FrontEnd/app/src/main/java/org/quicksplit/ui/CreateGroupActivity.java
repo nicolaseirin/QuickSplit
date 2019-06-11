@@ -2,10 +2,13 @@ package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,6 +36,9 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     private List<User> friends;
     private List<String> friendsSelected;
     private Button mButtonCreateGroup;
+
+    private Toolbar mToolbar;
+
     private TextView mLabelErrorFriendsSelected;
     private TextInputLayout mLabelErrorGroupName;
     private EditText mEditTextGroupName;
@@ -44,6 +50,12 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
+
+        mToolbar = findViewById(R.id.toolbar_top);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         friendsSelected = new ArrayList<String>();
 
@@ -57,7 +69,17 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         mButtonCreateGroup = findViewById(R.id.btn_createGroup);
         mButtonCreateGroup.setOnClickListener(this);
 
+
         getFriends();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void getFriends() {

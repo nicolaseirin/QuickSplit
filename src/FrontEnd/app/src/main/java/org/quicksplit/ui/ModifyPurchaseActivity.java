@@ -2,10 +2,13 @@ package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -37,6 +40,8 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
 
     private Purchase purchase;
     private Group group;
+
+    private Toolbar mToolbar;
 
     private TextView mTextViewGroupName;
 
@@ -70,6 +75,12 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_purchase);
 
+        mToolbar = findViewById(R.id.toolbar_top);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         mRecyclerViewMembers = findViewById(R.id.membersReciclerView);
         mRecyclerViewPaticipants = findViewById(R.id.purchasersReciclerView);
 
@@ -88,6 +99,15 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
 
         mTextInputLayoutGroupMembers = findViewById(R.id.lblError_groupMembers);
         loadPurchaseData();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadPurchaseData() {

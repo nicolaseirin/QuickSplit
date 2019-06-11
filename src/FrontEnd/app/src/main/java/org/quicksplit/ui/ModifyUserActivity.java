@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,6 +44,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private User user;
     private File file;
 
+    private Toolbar mToolbar;
+
     private TextView mBigNameLastname;
     private TextView mBigEmail;
     private TextInputLayout mLabelErrorName;
@@ -63,6 +67,12 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_user);
+
+        mToolbar = findViewById(R.id.toolbar_top);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mBigNameLastname = findViewById(R.id.txt_bigNameLastname);
         mBigEmail = findViewById(R.id.txt_bigEmail);

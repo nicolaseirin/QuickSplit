@@ -3,9 +3,12 @@ package org.quicksplit.ui;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +37,8 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
     private List<User> members;
     private List<User> friends;
 
+    private Toolbar mToolbar;
+
     private Button mButtonModifyGroup;
     private EditText mEditTextGroupName;
 
@@ -53,6 +58,12 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_group);
 
+        mToolbar = findViewById(R.id.toolbar_top);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         mEditTextGroupName = findViewById(R.id.txt_groupName);
         mRecyclerViewMembers = findViewById(R.id.membersReciclerView);
         mRecyclerViewFriends = findViewById(R.id.friendsReciclerView);
@@ -61,6 +72,15 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         mButtonModifyGroup.setOnClickListener(this);
 
         loadGroupData();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadGroupData() {

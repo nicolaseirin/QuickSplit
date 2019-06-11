@@ -13,10 +13,13 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -83,6 +86,8 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     private List<User> members;
     private List<User> participants;
 
+    private Toolbar mToolbar;
+
     private TextInputLayout mTextInputLayoutPurchaseName;
     private EditText mEditTextPurchaseName;
 
@@ -107,6 +112,12 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_purchase);
+
+        mToolbar = findViewById(R.id.toolbar_top);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mTextInputLayoutGroupMembers = findViewById(R.id.lblError_groupMembers);
         mRecyclerViewGroupMembers = findViewById(R.id.purchisersReciclerView);
@@ -156,6 +167,15 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         mButtonCreatePurchase.setOnClickListener(this);
 
         getData();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void getData() {

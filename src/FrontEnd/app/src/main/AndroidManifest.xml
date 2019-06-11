@@ -15,13 +15,26 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.ModifyPurchaseActivity"></activity>
-        <activity android:name=".ui.ReportActivity" />
-        <activity android:name=".ui.CreatePurchaseActivity" />
-        <activity android:name=".ui.ModifyGroupActivity" />
-        <activity android:name=".ui.CreateGroupActivity" />
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity android:name=".ui.ModifyPurchaseActivity" />
+        <activity
+            android:name=".ui.ReportActivity"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity
+            android:name=".ui.CreatePurchaseActivity"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity
+            android:name=".ui.ModifyGroupActivity"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity
+            android:name=".ui.CreateGroupActivity"
+            android:parentActivityName=".ui.MainActivity" />
         <activity android:name=".ui.LoginActivity" />
-        <activity android:name=".ui.ModifyUserActivity" />
+        <activity
+            android:name=".ui.ModifyUserActivity"
+            android:parentActivityName=".ui.SettingsActivity" />
         <activity android:name=".ui.RegisterActivity" />
         <activity
             android:name=".ui.MainActivity"
