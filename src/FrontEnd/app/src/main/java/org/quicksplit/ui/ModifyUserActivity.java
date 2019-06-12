@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -54,7 +55,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private static final int PICK_IMAGE_CAMERA = 1;
     private static final int PICK_IMAGE_GALLERY = 2;
 
-    private String inputStreamImg;
     private Bitmap bitmap;
     private String avatarImagePath;
     private File mImageFileAvatar;
@@ -258,7 +258,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-
     private void selectAvatarImage() {
 
         final CharSequence[] options = {"Tomar Foto", "Elegir foto de Galería", "Cancelar"};
@@ -305,72 +304,51 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        inputStreamImg = null;
-        if (requestCode == PICK_IMAGE_CAMERA && resultCode == RESULT_OK && data.hasExtra("data")) {
-            try {
-                getImageFromCamera(data);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (requestCode == PICK_IMAGE_GALLERY && resultCode == RESULT_OK) {
-            Uri selectedImage = data.getData();
-            try {
-                getImageFromGallery(selectedImage);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (requestCode == REQUEST_TAKE_PHOTO) {
-            if (resultCode == RESULT_OK) {
-                if (currentImagePath.length() > 0)
-                    uploadToServer(currentImagePath);
-            } else {
-                currentImagePath = "";
-                Toast.makeText(ModifyUserActivity.this, "Error capturing image", Toast.LENGTH_SHORT).show();
-            }
+        switch (requestCode) {
+            case PICK_IMAGE_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    if (currentImagePath.length() > 0) {
+                        uploadToServer(currentImagePath);
+                        bitmap = BitmapFactory.decodeFile(currentImagePath);
+                        mImageAvatar.setImageBitmap(bitmap);
+                    }
+                } else {
+                    currentImagePath = "";
+                    Toast.makeText(ModifyUserActivity.this, "Error al tomar imagen.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case PICK_IMAGE_GALLERY:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        Uri selectedImage = data.getData();
+                        getImageFromGallery(selectedImage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    currentImagePath = "";
+                    Toast.makeText(ModifyUserActivity.this, "Error al seleccionar imagen", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 
-    private void getImageFromCamera(Intent data) throws IOException {
-
-        bitmap = (Bitmap) data.getExtras().get("data");
-        mImageAvatar.setImageBitmap(bitmap);
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
-
-        mImageFileAvatar = image;
-        avatarImagePath = image.getAbsolutePath();
-        ;
-
-        uploadToServer(avatarImagePath);
-    }
-
-
-    static final int REQUEST_TAKE_PHOTO = 3;
-
     private void dispatchTakePictureIntent() {
+
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
             File photoFile = null;
+
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                // Error occurred while creating the File
                 ex.printStackTrace();
             }
-            // Continue only if the File was successfully created
+
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(ModifyUserActivity.this, "org.quicksplit.android.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA);
             }
         }
     }
@@ -386,10 +364,9 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                 storageDir
         );
 
-        currentImagePath = image.getPath(); //Save current image path to send later to server
+        currentImagePath = image.getPath();
         return image;
     }
-
 
     private void getImageFromGallery(Uri selectedImage) throws IOException {
 
