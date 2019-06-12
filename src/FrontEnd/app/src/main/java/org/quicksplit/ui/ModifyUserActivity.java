@@ -2,14 +2,18 @@ package org.quicksplit.ui;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +35,11 @@ import org.quicksplit.Utils;
 import org.quicksplit.models.User;
 import org.quicksplit.service.UserClient;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -41,6 +49,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ModifyUserActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final int PICK_IMAGE_CAMERA = 1;
+    private static final int PICK_IMAGE_GALLERY = 2;
+
+    private String inputStreamImg;
+    private Bitmap bitmap;
+    private String avatarImagePath;
 
     private static int RESULT_LOAD_IMAGE = 1;
 
@@ -108,7 +123,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         mLayoutChangeAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                selectAvatarImage();
             }
         });
 
@@ -130,6 +145,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                 updateUserData();
                 return true;
             case R.id.picture:
+                selectAvatarImage();
                 return true;
         }
 
@@ -210,30 +226,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         updateUserData();
     }
 
-    private void openGallery() {
-        ActivityCompat.requestPermissions(ModifyUserActivity.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                1);
-    }
-
-    @Override
-    protected void onActivityResult(int recuestCode, int resultCode, Intent data) {
-        super.onActivityResult(recuestCode, resultCode, data);
-
-        if (recuestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            String[] filePath = {MediaStore.Images.Media.DATA};
-            Cursor c = getContentResolver().query(selectedImage, filePath,
-                    null, null, null);
-            c.moveToFirst();
-            int columnIndex = c.getColumnIndex(filePath[0]);
-            String FilePathStr = c.getString(columnIndex);
-            c.close();
-
-            uploadToServer(FilePathStr);
-        }
-    }
-
     private void uploadToServer(String filePath) {
 
         TokenManager tokenManager = new TokenManager(this);
@@ -263,21 +255,114 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    private void selectAvatarImage() {
 
-                    Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(i, RESULT_LOAD_IMAGE);
-                } else {
-                    Toast.makeText(ModifyUserActivity.this, "Permission denied to read your External storage.", Toast.LENGTH_SHORT).show();
+        final CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ModifyUserActivity.this);
+        builder.setTitle("Select Option");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Take Photo")) {
+
+                    PackageManager packageManager = getPackageManager();
+                    int checkPermission = packageManager.checkPermission(Manifest.permission.CAMERA, getPackageName());
+
+                    if (checkPermission == PackageManager.PERMISSION_GRANTED) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(intent, PICK_IMAGE_CAMERA);
+                    } else {
+                        ActivityCompat.requestPermissions(ModifyUserActivity.this,
+                                new String[]{Manifest.permission.CAMERA},
+                                PICK_IMAGE_CAMERA);
+                    }
+                } else if (options[item].equals("Choose From Gallery")) {
+
+                    PackageManager packageManager = getPackageManager();
+                    int checkPermission = packageManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getPackageName());
+
+                    if (checkPermission == PackageManager.PERMISSION_GRANTED) {
+                        dialog.dismiss();
+                        Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
+                    } else {
+                        ActivityCompat.requestPermissions(ModifyUserActivity.this,
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                PICK_IMAGE_GALLERY);
+                    }
+                } else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
                 }
-                return;
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        inputStreamImg = null;
+        if (requestCode == PICK_IMAGE_CAMERA && resultCode == RESULT_OK && data.hasExtra("data")) {
+            try {
+                getImageFromCamera(data);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == PICK_IMAGE_GALLERY && resultCode == RESULT_OK) {
+            Uri selectedImage = data.getData();
+            try {
+                getImageFromGallery(selectedImage);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
+    }
+
+    private void getImageFromCamera(Intent data) throws IOException {
+
+        bitmap = (Bitmap) data.getExtras().get("data");
+        mImageAvatar.setImageBitmap(bitmap);
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+
+        Uri photoURI = FileProvider.getUriForFile(this, "org.quicksplit.android.fileprovider", image);
+        avatarImagePath = photoURI.getPath();
+
+        //avatarImagePath = getRealPathFromURI(photoURI);
+
+        avatarImagePath = image.getAbsolutePath();
+        uploadToServer(avatarImagePath);
+    }
+
+    private void getImageFromGallery(Uri selectedImage) throws IOException {
+
+        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+
+        avatarImagePath = getRealPathFromURI(selectedImage);
+        mImageAvatar.setImageBitmap(bitmap);
+        uploadToServer(avatarImagePath);
+    }
+
+    public String getRealPathFromURI(Uri contentUri) {
+
+        String[] filePath = {MediaStore.Images.Media.DATA};
+        Cursor c = getContentResolver().query(contentUri, filePath,
+                null, null, null);
+        c.moveToFirst();
+        int columnIndex = c.getColumnIndex(filePath[0]);
+        String FilePathStr = c.getString(columnIndex);
+        c.close();
+
+        return FilePathStr;
     }
 }
