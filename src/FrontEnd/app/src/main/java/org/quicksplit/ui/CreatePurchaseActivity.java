@@ -45,15 +45,12 @@ import org.quicksplit.service.UserClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -64,20 +61,14 @@ import retrofit2.Response;
 
 public class CreatePurchaseActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //TEST
     private static int PICK_IMAGE_CAMERA = 1;
     private static int PICK_IMAGE_GALLERY = 2;
-    private ImageView imageview;
-    private Button btnSelectImage;
+    private ImageView mImageViewPurchase;
     private Bitmap bitmap;
     private File destination = null;
     private InputStream inputStreamImg;
-    private String imgPath = null;
-    //FIN TEST
+    private String purchaseImagePath = null;
 
-    private static int RESULT_LOAD_IMAGE = 1;
-
-    private String filePath;
 
     private List<Group> groups;
     private ArrayAdapter<Group> groupArrayAdapter;
@@ -121,6 +112,8 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        mImageViewPurchase = findViewById(R.id.img_purchase);
+
         mTextInputLayoutGroupMembers = findViewById(R.id.lblError_groupMembers);
         mRecyclerViewGroupMembers = findViewById(R.id.purchisersReciclerView);
 
@@ -160,8 +153,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         mButtonUploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //getPurchaseImage();
-                selectImage();
+                selectPurchaseImage();
             }
         });
 
@@ -190,11 +182,9 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
                 createPurchase();
                 break;
             case R.id.picture:
-                selectImage();
+                selectPurchaseImage();
                 break;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -319,54 +309,6 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         });
     }
 
-    private void getPurchaseImage() {
-        openGallery();
-    }
-
-    private void openGallery() {
-        ActivityCompat.requestPermissions(CreatePurchaseActivity.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                1);
-    }
-
-    /*
-    @Override
-    protected void onActivityResult(int recuestCode, int resultCode, Intent data) {
-        super.onActivityResult(recuestCode, resultCode, data);
-
-        if (recuestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            String[] filePath = {MediaStore.Images.Media.DATA};
-            Cursor c = getContentResolver().query(selectedImage, filePath,
-                    null, null, null);
-            c.moveToFirst();
-            int columnIndex = c.getColumnIndex(filePath[0]);
-            String FilePathStr = c.getString(columnIndex);
-            c.close();
-
-            this.filePath = FilePathStr;
-        }
-    }*/
-
-    /*
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(i, RESULT_LOAD_IMAGE);
-                } else {
-                    Toast.makeText(CreatePurchaseActivity.this, "Permission denied to read your External storage.", Toast.LENGTH_SHORT).show();
-                }
-                return;
-            }
-        }
-    }
-*/
     @Override
     public void onClick(View v) {
         createPurchase();
@@ -422,14 +364,15 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     }
 
     private void uploadImageToServer(Purchase purchase) {
-        if (imgPath != null) {
+
+        if (purchaseImagePath != null) {
             TokenManager tokenManager = new TokenManager(this);
 
             PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
 
-            destination = new File(imgPath);
+            destination = new File(purchaseImagePath);
 
-            RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/" + imgPath.substring(imgPath.lastIndexOf(".") + 1)), destination);
+            RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/" + purchaseImagePath.substring(purchaseImagePath.lastIndexOf(".") + 1)), destination);
             MultipartBody.Part part = MultipartBody.Part.createFormData("image", destination.getName(), fileReqBody);
 
             Call call = client.addPurchaseImage(tokenManager.getUserIdFromToken(), part);
@@ -474,9 +417,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
                 && participants.size() > 0;
     }
 
-
-    //Test
-    private void selectImage() {
+    private void selectPurchaseImage() {
 
         ActivityCompat.requestPermissions(CreatePurchaseActivity.this,
                 new String[]{Manifest.permission.CAMERA},
@@ -522,52 +463,49 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         inputStreamImg = null;
-        if (requestCode == PICK_IMAGE_CAMERA) {
+        if (requestCode == PICK_IMAGE_CAMERA && resultCode == RESULT_OK && data.hasExtra("data")) {
             try {
-                Uri selectedImage = data.getData();
-                bitmap = (Bitmap) data.getExtras().get("data");
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-
-                Log.e("Activity", "Pick from Camera::>>> ");
-
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-                destination = new File(Environment.getExternalStorageDirectory() + "/" +
-                        getString(R.string.app_name), "IMG_" + timeStamp + ".jpg");
-                FileOutputStream fo;
-                try {
-                    destination.createNewFile();
-                    fo = new FileOutputStream(destination);
-                    fo.write(bytes.toByteArray());
-                    fo.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                imgPath = destination.getAbsolutePath();
-                imageview.setImageBitmap(bitmap);
-
+                getImageFromCamera(data);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (requestCode == PICK_IMAGE_GALLERY) {
+        } else if (requestCode == PICK_IMAGE_GALLERY && resultCode == RESULT_OK && data.hasExtra("data")) {
             Uri selectedImage = data.getData();
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-                Log.e("Activity", "Pick from Gallery::>>> ");
-
-                imgPath = getRealPathFromURI(selectedImage);
-                destination = new File(imgPath.toString());
-                imageview.setImageBitmap(bitmap);
-
+                getImageFromGallery(selectedImage);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void getImageFromCamera(Intent data) throws IOException {
+
+        bitmap = (Bitmap) data.getExtras().get("data");
+        mImageViewPurchase.setImageBitmap(bitmap);
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+
+        purchaseImagePath = image.getAbsolutePath();
+    }
+
+    private void getImageFromGallery(Uri selectedImage) throws IOException {
+
+        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+        Log.e("Activity", "Pick from Gallery::>>> ");
+
+        purchaseImagePath = getRealPathFromURI(selectedImage);
+        destination = new File(purchaseImagePath);
+        mImageViewPurchase.setImageBitmap(bitmap);
     }
 
     public String getRealPathFromURI(Uri contentUri) {
@@ -577,7 +515,6 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
-    //Fin Test
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

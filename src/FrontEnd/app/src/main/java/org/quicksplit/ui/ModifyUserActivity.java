@@ -119,16 +119,20 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.settings, menu);
+        menuInflater.inflate(R.menu.picture, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.done) {
-            updateUserData();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.done:
+                updateUserData();
+                return true;
+            case R.id.picture:
+                return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
