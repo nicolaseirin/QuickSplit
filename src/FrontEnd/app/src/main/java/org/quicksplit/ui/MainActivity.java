@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,7 @@ import org.quicksplit.R;
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
+    private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
 
-        loadFragment(new PurchasesFragment());
+        actionBar = MainActivity.this.getSupportActionBar();
 
-        //SearchView search = findViewById(R.id.search_bar);
-        //search.setOnQueryTextListener(mOnQueryTextListener);
+        loadFragment(new PurchasesFragment());
 
         BottomNavigationView navigation = findViewById(R.id.navigation_botton);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -60,15 +61,18 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_purchases:
                     mToolbar.setTitle(R.string.title_purchases);
+                    actionBar.show();
                     fragment = new PurchasesFragment();
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_friends:
                     mToolbar.setTitle(R.string.title_friends);
+                    actionBar.hide();
                     fragment = new FriendsFragment();
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_groups:
+                    actionBar.show();
                     mToolbar.setTitle(R.string.title_groups);
                     fragment = new GroupFragment();
                     loadFragment(fragment);

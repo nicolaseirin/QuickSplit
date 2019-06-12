@@ -328,9 +328,12 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
             public void onResponse(Call<Purchase> call, Response<Purchase> response) {
                 if (response.isSuccessful()) {
                     loading.dismiss();
+                    setResult(RESULT_OK);
+                    finish();
                 } else {
                     loading.dismiss();
                     Toast.makeText(ModifyPurchaseActivity.this, "Error al modificar la compra", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_CANCELED);
                 }
             }
 

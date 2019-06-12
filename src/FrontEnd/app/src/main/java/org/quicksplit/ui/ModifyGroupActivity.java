@@ -241,15 +241,18 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onResponse(Call<Group> call, Response<Group> response) {
                 if (response.isSuccessful()) {
-
+                    setResult(RESULT_OK);
+                    finish();
                 } else {
                     Toast.makeText(ModifyGroupActivity.this, "Error al modificar grupo.", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_CANCELED);
                 }
             }
 
             @Override
             public void onFailure(Call<Group> call, Throwable t) {
                 Toast.makeText(ModifyGroupActivity.this, "Error en la comunicación al modificar grupo.", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_CANCELED);
             }
         });
     }

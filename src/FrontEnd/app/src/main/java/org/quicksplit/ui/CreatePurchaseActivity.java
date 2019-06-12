@@ -19,6 +19,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -175,6 +177,24 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
             onBackPressed();
             return true;
         }
+
+        if (item.getItemId() == R.id.done) {
+            createPurchase();
+        }
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            case R.id.done:
+                createPurchase();
+                break;
+            case R.id.picture:
+                selectImage();
+                break;
+        }
+
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -558,4 +578,11 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         return cursor.getString(column_index);
     }
     //Fin Test
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.picture, menu);
+        return true;
+    }
 }

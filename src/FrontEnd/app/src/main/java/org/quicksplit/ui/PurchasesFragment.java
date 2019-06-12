@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,6 +31,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.app.Activity.RESULT_OK;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +43,8 @@ import retrofit2.Response;
  * create an instance of this fragment.
  */
 public class PurchasesFragment extends Fragment {
+
+    static final int MODIFY_PURCHASE_REQUEST = 0;
 
     private List<Purchase> purchases;
     private RecyclerView mRecyclerViewPurchases;
@@ -120,9 +125,16 @@ public class PurchasesFragment extends Fragment {
             @Override
             public void onFailure(Call<List<Purchase>> call, Throwable t) {
                 loading.dismiss();
-                Toast.makeText(getActivity(), "Error en la conexión al obtener compras.", Toast.LENGTH_SHORT).show();
+                loadFragment(new ErrorFragment());
             }
         });
+    }
+
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private void buildRecyclerViewPurchases() {
@@ -156,6 +168,16 @@ public class PurchasesFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == MODIFY_PURCHASE_REQUEST) {
+            if (resultCode == RESULT_OK)
+                getPurchases();
+        }
     }
 
     public interface OnFragmentInteractionListener {

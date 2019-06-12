@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import org.quicksplit.R;
@@ -30,6 +31,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -40,17 +43,17 @@ import retrofit2.Response;
  */
 public class GroupFragment extends Fragment implements View.OnClickListener {
 
+    static final int ADD_GROUP_REQUEST = 0;
+    static final int MODIFY_GROUP_REQUEST = 1;
+
     private List<Group> groups;
     private RecyclerView mRecyclerViewGroups;
     private GroupAdapter mRecyclerViewGroupsAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -131,80 +134,94 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         mRecyclerViewGroupsAdapter.setOnItemClickListener(new GroupAdapter.OnItemClickListener() {
             @Override
             public void onViewReportClick(Group group) {
-                Intent intent = new Intent(getContext(), ReportActivity.class);
-                intent.putExtra("EXTRA_GROUP_ID", group.getId());
-                startActivity(intent);
+                getReport(group);
             }
 
             @Override
             public void onModifyClick(Group group) {
-                Intent intent = new Intent(getContext(), ModifyGroupActivity.class);
-                intent.putExtra("EXTRA_GROUP_ID", group.getId());
-                startActivity(intent);
+                modifyGroup(group);
             }
 
             @Override
             public void onLeaveClick(Group group) {
-                TokenManager tokenManager = new TokenManager(getContext());
-
-                GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-
-                final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
-
-                LeaveGroup leaveGroup = new LeaveGroup();
-                leaveGroup.setUserId(Integer.parseInt(tokenManager.getUserIdFromToken()));
-                leaveGroup.setGroupId(Integer.parseInt(group.getId()));
-
-                Call<Void> call = client.leaveGroup(leaveGroup);
-                call.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            getGroups();
-                            loading.dismiss();
-                        } else {
-                            loading.dismiss();
-                            System.out.println("Error: " + response.errorBody());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        loading.dismiss();
-                        System.out.println("Error: " + t.getMessage());
-                    }
-                });
+                leaveGroup(group);
             }
 
             @Override
             public void onDeleteClick(Group group) {
-                TokenManager tokenManager = new TokenManager(getContext());
+                deleteGroup(group);
+            }
+        });
+    }
 
-                GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
+    private void getReport(Group group) {
+        Intent intent = new Intent(getContext(), ReportActivity.class);
+        intent.putExtra("EXTRA_GROUP_ID", group.getId());
+        startActivity(intent);
+    }
 
-                final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+    private void modifyGroup(Group group) {
+        Intent intent = new Intent(getContext(), ModifyGroupActivity.class);
+        intent.putExtra("EXTRA_GROUP_ID", group.getId());
+        startActivityForResult(intent, MODIFY_GROUP_REQUEST);
+    }
 
-                Call<Void> call = client.deleteGroup(group.getId());
-                call.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            loading.dismiss();
-                        } else {
-                            loading.dismiss();
-                            Toast.makeText(getActivity(), "Error al borrar grupo.", Toast.LENGTH_SHORT).show();
-                        }
+    private void leaveGroup(Group group) {
+        TokenManager tokenManager = new TokenManager(getContext());
 
-                    }
+        GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        loading.dismiss();
-                        Toast.makeText(getActivity(), "Error en la comunicación al borrar grupo.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
 
+        LeaveGroup leaveGroup = new LeaveGroup();
+        leaveGroup.setUserId(Integer.parseInt(tokenManager.getUserIdFromToken()));
+        leaveGroup.setGroupId(Integer.parseInt(group.getId()));
 
+        Call<Void> call = client.leaveGroup(leaveGroup);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    getGroups();
+                    loading.dismiss();
+                } else {
+                    loading.dismiss();
+                    System.out.println("Error: " + response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                loading.dismiss();
+                System.out.println("Error: " + t.getMessage());
+            }
+        });
+    }
+
+    private void deleteGroup(Group group) {
+        TokenManager tokenManager = new TokenManager(getContext());
+
+        GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
+
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+
+        Call<Void> call = client.deleteGroup(group.getId());
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    loading.dismiss();
+                } else {
+                    loading.dismiss();
+                    Toast.makeText(getActivity(), "Error al borrar grupo.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                loading.dismiss();
+                Toast.makeText(getActivity(), "Error en la comunicación al borrar grupo.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -229,7 +246,17 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         Intent createGroup = new Intent(getActivity(), CreateGroupActivity.class);
-        startActivity(createGroup);
+        startActivityForResult(createGroup, ADD_GROUP_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ADD_GROUP_REQUEST || requestCode == MODIFY_GROUP_REQUEST) {
+            if (resultCode == RESULT_OK)
+                getGroups();
+        }
     }
 
     public interface OnFragmentInteractionListener {
