@@ -7,7 +7,7 @@ namespace QuickSplit.Domain
     {
         public Purchase() {}
         
-        public Purchase(User purchaser, Group @group, uint cost, Currency currency, IEnumerable<User> participants, string name)
+        public Purchase(User purchaser, Group @group, double cost, Currency currency, IEnumerable<User> participants, string name)
         {
             Purchaser = purchaser;
             Group = @group;
