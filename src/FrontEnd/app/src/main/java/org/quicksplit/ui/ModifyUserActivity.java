@@ -30,6 +30,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
@@ -61,6 +63,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
 
     private User user;
     private File file;
+    private Uri imageUri;
 
     private Toolbar mToolbar;
 
@@ -182,10 +185,16 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void loadUserData() {
-        mBigNameLastname.setText(user.getName() + " " + user.getLastName());
+        mBigNameLastname.setText(user.toString());
         mBigEmail.setText(user.getMail());
 
-        mImageAvatar.setImageBitmap(Utils.stringToBitMap(user.getAvatar()));
+        imageUri = Uri.parse(ServiceGenerator.getBaseUrl() + user.getAvatar());
+        Picasso.get()
+                .load(imageUri)
+                .resize(100, 100)
+                .centerCrop()
+                .into(mImageAvatar);
+
         mTextName.setText(user.getName());
         mTextLastName.setText(user.getLastName());
         mTextEmail.setText(user.getMail());
@@ -243,6 +252,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onResponse(Call call, Response response) {
                 if (response.isSuccessful()) {
+                    Picasso.get().invalidate(imageUri);
                     Toast.makeText(ModifyUserActivity.this, "La imagen se actualizó correctamente.", Toast.LENGTH_SHORT).show();
                 } else {
                     System.out.println("Error al actualizar la imagen.");

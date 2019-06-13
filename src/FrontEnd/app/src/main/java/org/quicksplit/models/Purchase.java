@@ -11,7 +11,6 @@ public class Purchase {
     private List<String> participants;
     private String cost;
     private String currency;
-    private String image;
 
     public String getName() {
         return name;
@@ -67,13 +66,5 @@ public class Purchase {
 
     public void setCurrency(String currency) {
         this.currency = currency;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 }

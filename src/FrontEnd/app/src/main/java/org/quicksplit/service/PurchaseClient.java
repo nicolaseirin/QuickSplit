@@ -1,5 +1,6 @@
 package org.quicksplit.service;
 
+import org.quicksplit.models.ModifyPurchase;
 import org.quicksplit.models.Purchase;
 import org.quicksplit.models.User;
 
@@ -34,7 +35,7 @@ public interface PurchaseClient {
     Call<ResponseBody> getPurchaseImage(@Path("id") String id);
 
     @PUT("purchases/{id}")
-    Call<Purchase> modifyPurchase(@Path("id") String id, @Body Purchase purchase);
+    Call<Purchase> modifyPurchase(@Path("id") String id, @Body ModifyPurchase purchase);
 
     @Multipart
     @POST("purchases/{id}/image")
