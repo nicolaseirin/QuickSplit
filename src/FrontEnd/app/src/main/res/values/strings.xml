@@ -38,4 +38,5 @@
     <string name="title_modifyPurchase">Modificar Compra</string>
     <string name="modify">Modificar</string>
     <string name="cancel">Cancelar</string>
+    <string name="google_maps_API_key">AIzaSyCv61x2spNrmVw3m3Gg4R31NuYr8-UWiHY</string>
 </resources>

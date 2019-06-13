@@ -11,6 +11,7 @@ public class Purchase {
     private List<String> participants;
     private String cost;
     private String currency;
+<<<<<<< HEAD
 
     public String getName() {
         return name;
@@ -19,6 +20,11 @@ public class Purchase {
     public void setName(String name) {
         this.name = name;
     }
+=======
+    private String image;
+    private Double longitude;
+    private Double latitude;
+>>>>>>> develop
 
     public String getId() {
         return id;
@@ -67,4 +73,31 @@ public class Purchase {
     public void setCurrency(String currency) {
         this.currency = currency;
     }
+<<<<<<< HEAD
+=======
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+>>>>>>> develop
 }

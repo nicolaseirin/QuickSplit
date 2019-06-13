@@ -70,6 +70,9 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     private String currentImagePath = null;
 
 
+    private static final String TAG = "CreatePurchaseActivity";
+    private static final int ERROR_DIALOG_REQUEST = 9001;
+
     private List<Group> groups;
     private ArrayAdapter<Group> groupArrayAdapter;
     private ArrayAdapter<String> currenciesArrayAdapter;
@@ -100,6 +103,8 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
 
     private Button mButtonUploadImage;
     private Button mButtonCreatePurchase;
+    private Button mButtonAddMap;
+    private Bundle myBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,7 +165,18 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         mButtonCreatePurchase = findViewById(R.id.btn_createPurchase);
         mButtonCreatePurchase.setOnClickListener(this);
 
+        mButtonAddMap = findViewById(R.id.btn_location);
+        mButtonAddMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CreatePurchaseActivity.this, MapActivity.class );
+                startActivity(intent);
+            }
+        });
+
+        myBundle = this.getIntent().getExtras();
         getData();
+
     }
 
     @Override
@@ -319,7 +335,12 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         purchase.setName(mEditTextPurchaseName.getText().toString());
         purchase.setCost(mEditTextCost.getText().toString());
         purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
-        purchase.setGroup(((Group) mSpinnerGroups.getSelectedItem()).getId());
+
+        purchase.setGroup(((Group)mSpinnerGroups.getSelectedItem()).getId());
+        if(myBundle != null){
+            purchase.setLatitude(myBundle.getDouble("latitude"));
+            purchase.setLongitude(myBundle.getDouble("longitude"));
+        }
 
         List<String> participantsString = new ArrayList<String>();
         for (int i = 0; i < participants.size(); i++)

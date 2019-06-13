@@ -19,6 +19,7 @@ public class ServiceGenerator implements GsonResponseListener {
     private static File cacheDir = new File("cache", "HttpCache");
     private static final String BASE_URL = "http://192.168.43.245:5000/api/";
 
+
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
                     .baseUrl(BASE_URL)
