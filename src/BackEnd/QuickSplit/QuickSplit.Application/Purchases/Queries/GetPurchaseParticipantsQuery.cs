@@ -31,18 +31,9 @@ namespace QuickSplit.Application.Purchases.Queries
                                     .FirstOrDefaultAsync(r => r.Id == request.PurchaseId, cancellationToken: cancellationToken) 
                                 ?? throw new InvalidQueryException("No existe la compra");
 
-            return await Task.WhenAll(
-                purchase
+            return purchase
                     .Participants
-                    .Select(p => MapUser(p.User))
-                );
-        }
-        
-        private async Task<UserModel> MapUser(User user)
-        {
-            string image = await _imageRepository.GetImageBase64(user.Id);
-
-            return new UserModel(user, image);
+                    .Select(p => new UserModel(p.User));
         }
     }
 

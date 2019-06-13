@@ -26,32 +26,20 @@ namespace QuickSplit.Application.Groups.Queries
         {
             Group @group = await _context.Groups.FindAsync(request.GroupId) ?? throw new InvalidQueryException("No existe el grupo");
 
-            return await Task.WhenAll(
-                group
+            return group
                     .GenerateSplitCostReport()
                     .Dictionary
-                    .Select(MapDebtorDebtee)
-            );
+                    .Select(MapDebtorDebtee);
         }
 
-        private async Task<DebtorDebteeModel> MapDebtorDebtee(KeyValuePair<(User, User), double> pair)
+        private DebtorDebteeModel MapDebtorDebtee(KeyValuePair<(User, User), double> pair)
         {
-            Task<UserModel> debtor = MapUser(pair.Key.Item1);
-            Task<UserModel> debtee = MapUser(pair.Key.Item2);
-
             return new DebtorDebteeModel()
             {
                 Amount = pair.Value,
-                Debtor = await debtor,
-                Debtee = await debtee
+                Debtor = new UserModel(pair.Key.Item1),
+                Debtee = new UserModel(pair.Key.Item2)
             };
-        }
-
-        private async Task<UserModel> MapUser(User user)
-        {
-            string image = await _imageRepository.GetImageBase64(user.Id);
-
-            return new UserModel(user, image);
         }
     }
 
