@@ -29,10 +29,8 @@ namespace QuickSplit.Application.Users.Queries
             
             if(user == null)
                 throw new InvalidQueryException($"No existe usuario con id {request.Id}.");
-
-            string avatar = await _imageRepository.GetImageBase64(request.Id);
             
-            return new UserModel(user, avatar);
+            return new UserModel(user);
         }
     }
     

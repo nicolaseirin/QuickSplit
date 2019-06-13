@@ -37,22 +37,14 @@ namespace QuickSplit.Application.Users.Queries
 
             List<User> users = await query.ToListAsync(cancellationToken);
 
-            return await Task.WhenAll(users.Select(MapToModel));
-        }
-
-        private async Task<UserModel> MapToModel(User user)
-        {
-            string avatar = await _imageRepository.GetImageBase64(user.Id);
-
-            return new UserModel(user, avatar);
+            return users.Select(u => new UserModel(u));
         }
     }
-    
+
     public class GetUsersQuery : IRequest<IEnumerable<UserModel>>
     {
         public string SearchNameQuery { get; set; }
-        
-        public int? NotFriendWithQuery { get; set; }
 
+        public int? NotFriendWithQuery { get; set; }
     }
 }

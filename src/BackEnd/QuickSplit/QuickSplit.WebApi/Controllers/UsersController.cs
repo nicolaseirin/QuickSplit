@@ -102,7 +102,7 @@ namespace QuickSplit.WebApi.Controllers
             return Ok();
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("{id}/avatars")]
         public async Task<ActionResult> GetImage(int id)
         {
@@ -115,7 +115,7 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(stream);
         }
         
-        [Authorize]
+        //[Authorize]
         [HttpPost("{id}/avatars")]
         [Consumes("image/jpg", "image/jpeg", "image/png", "multipart/form-data")]
         public async Task<IActionResult> AddImage(int id, IFormFile image)
