@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -53,11 +55,11 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private static final int PICK_IMAGE_CAMERA = 1;
     private static final int PICK_IMAGE_GALLERY = 2;
 
-    private String inputStreamImg;
     private Bitmap bitmap;
     private String avatarImagePath;
+    private File mImageFileAvatar;
 
-    private static int RESULT_LOAD_IMAGE = 1;
+    private String currentImagePath;
 
     private User user;
     private File file;
@@ -209,6 +211,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(ModifyUserActivity.this, "Datos modificados correctamente.", Toast.LENGTH_SHORT).show();
+                    finish();
                 } else {
                     Toast.makeText(ModifyUserActivity.this, "Error al intentar modificar datos.", Toast.LENGTH_SHORT).show();
                 }
@@ -234,8 +237,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
 
         file = new File(filePath);
 
-        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/" + filePath.substring(filePath.lastIndexOf(".") + 1)), file);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("image", file.getName(), fileReqBody);
+        RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/" + filePath.substring(filePath.lastIndexOf(".") + 1)), file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("image", file.getName(), fileRequestBody);
 
         Call call = client.setUserAvatar(tokenManager.getUserIdFromToken(), part);
         call.enqueue(new Callback() {
@@ -257,27 +260,26 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
 
     private void selectAvatarImage() {
 
-        final CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
+        final CharSequence[] options = {"Tomar Foto", "Elegir foto de Galería", "Cancelar"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ModifyUserActivity.this);
-        builder.setTitle("Select Option");
+        builder.setTitle("Seleccione una Opción");
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take Photo")) {
+                if (options[item].equals("Tomar Foto")) {
 
                     PackageManager packageManager = getPackageManager();
                     int checkPermission = packageManager.checkPermission(Manifest.permission.CAMERA, getPackageName());
 
                     if (checkPermission == PackageManager.PERMISSION_GRANTED) {
                         dialog.dismiss();
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(intent, PICK_IMAGE_CAMERA);
+                        dispatchTakePictureIntent();
                     } else {
                         ActivityCompat.requestPermissions(ModifyUserActivity.this,
                                 new String[]{Manifest.permission.CAMERA},
                                 PICK_IMAGE_CAMERA);
                     }
-                } else if (options[item].equals("Choose From Gallery")) {
+                } else if (options[item].equals("Elegir foto de Galería")) {
 
                     PackageManager packageManager = getPackageManager();
                     int checkPermission = packageManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getPackageName());
@@ -291,7 +293,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                                 PICK_IMAGE_GALLERY);
                     }
-                } else if (options[item].equals("Cancel")) {
+                } else if (options[item].equals("Cancelar")) {
                     dialog.dismiss();
                 }
             }
@@ -302,27 +304,56 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        inputStreamImg = null;
-        if (requestCode == PICK_IMAGE_CAMERA && resultCode == RESULT_OK && data.hasExtra("data")) {
+        switch (requestCode) {
+            case PICK_IMAGE_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    if (currentImagePath.length() > 0) {
+                        uploadToServer(currentImagePath);
+                        bitmap = BitmapFactory.decodeFile(currentImagePath);
+                        mImageAvatar.setImageBitmap(bitmap);
+                    }
+                } else {
+                    currentImagePath = "";
+                    Toast.makeText(ModifyUserActivity.this, "Error al tomar imagen.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case PICK_IMAGE_GALLERY:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        Uri selectedImage = data.getData();
+                        getImageFromGallery(selectedImage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    currentImagePath = "";
+                    Toast.makeText(ModifyUserActivity.this, "Error al seleccionar imagen", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
+    private void dispatchTakePictureIntent() {
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+
             try {
-                getImageFromCamera(data);
-            } catch (Exception e) {
-                e.printStackTrace();
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
-        } else if (requestCode == PICK_IMAGE_GALLERY && resultCode == RESULT_OK) {
-            Uri selectedImage = data.getData();
-            try {
-                getImageFromGallery(selectedImage);
-            } catch (Exception e) {
-                e.printStackTrace();
+
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(ModifyUserActivity.this, "org.quicksplit.android.fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA);
             }
         }
     }
 
-    private void getImageFromCamera(Intent data) throws IOException {
-
-        bitmap = (Bitmap) data.getExtras().get("data");
-        mImageAvatar.setImageBitmap(bitmap);
+    private File createImageFile() throws IOException {
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -333,13 +364,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                 storageDir
         );
 
-        Uri photoURI = FileProvider.getUriForFile(this, "org.quicksplit.android.fileprovider", image);
-        avatarImagePath = photoURI.getPath();
-
-        //avatarImagePath = getRealPathFromURI(photoURI);
-
-        avatarImagePath = image.getAbsolutePath();
-        uploadToServer(avatarImagePath);
+        currentImagePath = image.getPath();
+        return image;
     }
 
     private void getImageFromGallery(Uri selectedImage) throws IOException {
