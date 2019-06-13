@@ -16,15 +16,6 @@ namespace QuickSplit.Application.Users.Models
             Mail = user.Mail;
         }
         
-        public UserModel(User user, string avatar)
-        {
-            Id = user.Id;
-            Name = user.Name;
-            LastName = user.LastName;
-            Mail = user.Mail;
-            Avatar = avatar;
-        }
-        
         public int Id { get; set; }
         
         public string Name { get; set; }
@@ -32,7 +23,7 @@ namespace QuickSplit.Application.Users.Models
         public string LastName { get; set; }
         
         public string Mail { get; set; }
-        
-        public string Avatar { get; set; }
+
+        public string Avatar => $"users/{Id}/avatars";
     }
 }

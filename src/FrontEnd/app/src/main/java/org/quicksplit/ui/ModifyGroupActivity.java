@@ -3,9 +3,12 @@ package org.quicksplit.ui;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +25,6 @@ import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 import org.quicksplit.service.UserClient;
 
-import java.nio.file.attribute.GroupPrincipal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,8 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
 
     private List<User> members;
     private List<User> friends;
-    private List<String> friendsSelected;
+
+    private Toolbar mToolbar;
 
     private Button mButtonModifyGroup;
     private EditText mEditTextGroupName;
@@ -53,9 +56,13 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_group);
+        setContentView(R.layout.activity_modify_group);
 
-        friendsSelected = new ArrayList<String>();
+        mToolbar = findViewById(R.id.toolbar_top);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mEditTextGroupName = findViewById(R.id.txt_groupName);
         mRecyclerViewMembers = findViewById(R.id.membersReciclerView);
@@ -65,6 +72,15 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         mButtonModifyGroup.setOnClickListener(this);
 
         loadGroupData();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadGroupData() {
@@ -84,27 +100,27 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
                 if (response.isSuccessful()) {
                     loadFields(response.body());
                 } else {
-
+                    System.out.println("Error: " + response.errorBody());
                 }
             }
 
             @Override
             public void onFailure(Call<Group> call, Throwable t) {
-
+                System.out.println("Error: " + t.getMessage());
             }
         });
     }
 
     private void loadFields(Group group) {
         mEditTextGroupName.setText(group.getName());
-        getGroupMembers();
+        getGroupMembers(group);
     }
 
-    private void getGroupMembers() {
+    private void getGroupMembers(Group group) {
         TokenManager tokenManager = new TokenManager(this);
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<List<User>> call = client.getGroupMembers(tokenManager.getUserIdFromToken());
+        Call<List<User>> call = client.getGroupMembers(group.getId());
 
         final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
 
@@ -220,20 +236,23 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         group.setMemberships(memberships);
 
         GroupClient groupClient = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<Group> call = groupClient.modifyGroup(groupId);
+        Call<Group> call = groupClient.modifyGroup(groupId, group);
         call.enqueue(new Callback<Group>() {
             @Override
             public void onResponse(Call<Group> call, Response<Group> response) {
                 if (response.isSuccessful()) {
-
+                    setResult(RESULT_OK);
+                    finish();
                 } else {
                     Toast.makeText(ModifyGroupActivity.this, "Error al modificar grupo.", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_CANCELED);
                 }
             }
 
             @Override
             public void onFailure(Call<Group> call, Throwable t) {
                 Toast.makeText(ModifyGroupActivity.this, "Error en la comunicación al modificar grupo.", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_CANCELED);
             }
         });
     }

@@ -15,9 +15,4 @@
         android:id="@+id/navigation_groups"
         android:icon="@drawable/ic_person_pin_black"
         android:title="@string/title_groups" />
-
-    <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings_black"
-        android:title="@string/title_settings" />
 </menu>

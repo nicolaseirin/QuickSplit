@@ -3,11 +3,12 @@
     package="org.quicksplit">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -18,20 +19,46 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="org.quicksplit.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
+
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity android:name=".ui.ModifyPurchaseActivity" />
+        <activity
+            android:name=".ui.ReportActivity"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity
+            android:name=".ui.CreatePurchaseActivity"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity
+            android:name=".ui.ModifyGroupActivity"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity
+            android:name=".ui.CreateGroupActivity"
+            android:parentActivityName=".ui.MainActivity" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCv61x2spNrmVw3m3Gg4R31NuYr8-UWiHY"/>
-
+            android:value="AIzaSyCv61x2spNrmVw3m3Gg4R31NuYr8-UWiHY" />
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".ui.CreatePurchaseActivity"/>
-        <activity android:name=".ui.ModifyGroupActivity" />
-        <activity android:name=".ui.CreateGroupActivity" />
         <activity android:name=".ui.LoginActivity" />
-        <activity android:name=".ui.ModifyUserActivity" />
+        <activity
+            android:name=".ui.ModifyUserActivity"
+            android:parentActivityName=".ui.SettingsActivity" />
         <activity android:name=".ui.RegisterActivity" />
         <activity
             android:name=".ui.MainActivity"
@@ -52,7 +79,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.MapActivity"/>
+        <activity android:name=".ui.MapActivity" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
     </application>
 
 </manifest>

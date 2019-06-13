@@ -37,14 +37,7 @@ namespace QuickSplit.Application.Users.Queries
                 .Select(friendship => friendship.Friend1)
                 .ToListAsync(cancellationToken: cancellationToken);
 
-            return await Task.WhenAll(friends.Select(MapToModel));
-        }
-        
-        private async Task<UserModel> MapToModel(User user)
-        {
-            string avatar = await _imageRepository.GetImageBase64(user.Id);
-
-            return new UserModel(user, avatar);
+            return friends.Select(f => new UserModel(f));
         }
     }
 

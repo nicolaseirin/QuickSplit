@@ -1,5 +1,6 @@
 package org.quicksplit.adapters;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.quicksplit.R;
+import org.quicksplit.ServiceGenerator;
 import org.quicksplit.Utils;
 import org.quicksplit.models.User;
 
@@ -39,9 +43,14 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.Fr
     public void onBindViewHolder(@NonNull FriendsViewHolder friendsViewHolder, int i) {
         User currentItem = users.get(i);
 
-        String avatar = currentItem.getAvatar();
-        friendsViewHolder.mImageView.setImageBitmap(Utils.stringToBitMap(avatar));
-        friendsViewHolder.mTextViewNameLastname.setText(currentItem.getName() + " " + currentItem.getLastName());
+        Uri imageUri = Uri.parse(ServiceGenerator.getBaseUrl() + "users/" + currentItem.getId() + "/avatars");
+        Picasso.get()
+                .load(imageUri)
+                .resize(100, 100)
+                .centerCrop()
+                .into(friendsViewHolder.mImageView);
+
+        friendsViewHolder.mTextViewNameLastname.setText(currentItem.toString());
         friendsViewHolder.mTextViewEmail.setText(currentItem.getMail());
     }
 

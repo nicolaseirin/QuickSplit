@@ -27,17 +27,15 @@ namespace QuickSplit.Application.Groups.Queries
 
         public async Task<IEnumerable<DebtorDebteeModel>> Handle(GetSplitCostReportQuery request, CancellationToken cancellationToken)
         {
-            Group @group = await _context.Groups.Include(group1 => group1.Memberships).Include(group1 => group1.Purchases).ThenInclude(purchase => purchase.Participants).FirstOrDefaultAsync(g => g.Id == request.GroupId, cancellationToken: cancellationToken) ?? throw new InvalidQueryException("No existe el grupo");
+            Group @group = await _context.Groups.FindAsync(request.GroupId) ?? throw new InvalidQueryException("No existe el grupo");
             Currency currency = GetCurrencyIfValid(request.Currency);
             
-            return await Task.WhenAll(
-                group
+            return group
                     .GenerateSplitCostReport(currency)
                     .Dictionary
-                    .Select(MapDebtorDebtee)
-            );
+                    .Select(MapDebtorDebtee);
         }
-
+        
         private static Currency GetCurrencyIfValid(string c)
         {
             bool currencyIsValid = Enum.TryParse(c, out Currency currency);
@@ -46,24 +44,14 @@ namespace QuickSplit.Application.Groups.Queries
             return currency;
         }
         
-        private async Task<DebtorDebteeModel> MapDebtorDebtee(KeyValuePair<(User, User), double> pair)
+        private DebtorDebteeModel MapDebtorDebtee(KeyValuePair<(User, User), double> pair)
         {
-            Task<UserModel> debtor = MapUser(pair.Key.Item1);
-            Task<UserModel> debtee = MapUser(pair.Key.Item2);
-
             return new DebtorDebteeModel()
             {
                 Amount = pair.Value,
-                Debtor = await debtor,
-                Debtee = await debtee
+                Debtor = new UserModel(pair.Key.Item1),
+                Debtee = new UserModel(pair.Key.Item2)
             };
-        }
-
-        private async Task<UserModel> MapUser(User user)
-        {
-            string image = await _imageRepository.GetImageBase64(user.Id);
-
-            return new UserModel(user, image);
         }
     }
 

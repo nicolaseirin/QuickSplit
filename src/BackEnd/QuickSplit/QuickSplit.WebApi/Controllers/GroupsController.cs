@@ -10,6 +10,7 @@ using QuickSplit.Application.Purchases.Commands;
 using QuickSplit.Application.Users.Models;
 using Microsoft.AspNetCore.Authorization;
 using QuickSplit.Application.Users.Queries;
+using GetGroupsQuery = QuickSplit.Application.Groups.Queries.GetGroupsQuery;
 
 namespace QuickSplit.WebApi.Controllers
 {
@@ -27,7 +28,7 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(group);
         }
 
-        [HttpGet()]
+        [HttpGet]
         public async Task<ActionResult<GroupModel>> GetAll()
         {
             IEnumerable<GroupModel> group = await Mediator.Send(new GetGroupsQuery());

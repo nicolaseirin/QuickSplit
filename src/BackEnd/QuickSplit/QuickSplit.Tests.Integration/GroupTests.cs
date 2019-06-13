@@ -17,6 +17,7 @@ using QuickSplit.Application.Users.Queries;
 using QuickSplit.Tests.Integration.Internal;
 using Xunit;
 using Xunit.Priority;
+using GetGroupsQuery = QuickSplit.Application.Groups.Queries.GetGroupsQuery;
 
 namespace QuickSplit.Tests.Integration
 {

@@ -45,6 +45,7 @@ public class FriendsFragment extends Fragment {
     private String token;
     private String userId;
     private List<User> users;
+
     private RecyclerView mRecyclerViewFriends;
     private DeleteFriendsAdapter mRecycleViewDeleteFriendsAdapter;
     private AddFriendsAdapter mRecyclerViewFriendsAdapter;

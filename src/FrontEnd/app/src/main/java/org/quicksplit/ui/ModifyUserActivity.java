@@ -2,15 +2,26 @@ package org.quicksplit.ui;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +30,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
@@ -26,7 +39,11 @@ import org.quicksplit.Utils;
 import org.quicksplit.models.User;
 import org.quicksplit.service.UserClient;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -37,10 +54,18 @@ import retrofit2.Response;
 
 public class ModifyUserActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static int RESULT_LOAD_IMAGE = 1;
+    private static final int PICK_IMAGE_CAMERA = 1;
+    private static final int PICK_IMAGE_GALLERY = 2;
+
+    private Bitmap bitmap;
+    private String avatarImagePath;
+    private String currentImagePath;
 
     private User user;
     private File file;
+    private Uri imageUri;
+
+    private Toolbar mToolbar;
 
     private TextView mBigNameLastname;
     private TextView mBigEmail;
@@ -63,6 +88,12 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_user);
+
+        mToolbar = findViewById(R.id.toolbar_top);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mBigNameLastname = findViewById(R.id.txt_bigNameLastname);
         mBigEmail = findViewById(R.id.txt_bigEmail);
@@ -95,12 +126,33 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         mLayoutChangeAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                selectAvatarImage();
             }
         });
 
         mImageAvatar = findViewById(R.id.img_avatar);
         getUserData();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.picture, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.done:
+                updateUserData();
+                return true;
+            case R.id.picture:
+                selectAvatarImage();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void getUserData() {
@@ -133,10 +185,16 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void loadUserData() {
-        mBigNameLastname.setText(user.getName() + " " + user.getLastName());
+        mBigNameLastname.setText(user.toString());
         mBigEmail.setText(user.getMail());
 
-        mImageAvatar.setImageBitmap(Utils.stringToBitMap(user.getAvatar()));
+        imageUri = Uri.parse(ServiceGenerator.getBaseUrl() + user.getAvatar());
+        Picasso.get()
+                .load(imageUri)
+                .resize(100, 100)
+                .centerCrop()
+                .into(mImageAvatar);
+
         mTextName.setText(user.getName());
         mTextLastName.setText(user.getLastName());
         mTextEmail.setText(user.getMail());
@@ -160,6 +218,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(ModifyUserActivity.this, "Datos modificados correctamente.", Toast.LENGTH_SHORT).show();
+                    finish();
                 } else {
                     Toast.makeText(ModifyUserActivity.this, "Error al intentar modificar datos.", Toast.LENGTH_SHORT).show();
                 }
@@ -177,30 +236,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         updateUserData();
     }
 
-    private void openGallery() {
-        ActivityCompat.requestPermissions(ModifyUserActivity.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                1);
-    }
-
-    @Override
-    protected void onActivityResult(int recuestCode, int resultCode, Intent data) {
-        super.onActivityResult(recuestCode, resultCode, data);
-
-        if (recuestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            String[] filePath = {MediaStore.Images.Media.DATA};
-            Cursor c = getContentResolver().query(selectedImage, filePath,
-                    null, null, null);
-            c.moveToFirst();
-            int columnIndex = c.getColumnIndex(filePath[0]);
-            String FilePathStr = c.getString(columnIndex);
-            c.close();
-
-            uploadToServer(FilePathStr);
-        }
-    }
-
     private void uploadToServer(String filePath) {
 
         TokenManager tokenManager = new TokenManager(this);
@@ -209,14 +244,15 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
 
         file = new File(filePath);
 
-        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/" + filePath.substring(filePath.lastIndexOf(".") + 1)), file);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("image", file.getName(), fileReqBody);
+        RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/" + filePath.substring(filePath.lastIndexOf(".") + 1)), file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("image", file.getName(), fileRequestBody);
 
         Call call = client.setUserAvatar(tokenManager.getUserIdFromToken(), part);
         call.enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {
                 if (response.isSuccessful()) {
+                    Picasso.get().invalidate(imageUri);
                     Toast.makeText(ModifyUserActivity.this, "La imagen se actualizó correctamente.", Toast.LENGTH_SHORT).show();
                 } else {
                     System.out.println("Error al actualizar la imagen.");
@@ -230,21 +266,137 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    private void selectAvatarImage() {
 
-                    Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(i, RESULT_LOAD_IMAGE);
-                } else {
-                    Toast.makeText(ModifyUserActivity.this, "Permission denied to read your External storage.", Toast.LENGTH_SHORT).show();
+        final CharSequence[] options = {"Tomar Foto", "Elegir foto de Galería", "Cancelar"};
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ModifyUserActivity.this);
+        builder.setTitle("Seleccione una Opción");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Tomar Foto")) {
+
+                    PackageManager packageManager = getPackageManager();
+                    int checkPermission = packageManager.checkPermission(Manifest.permission.CAMERA, getPackageName());
+
+                    if (checkPermission == PackageManager.PERMISSION_GRANTED) {
+                        dialog.dismiss();
+                        dispatchTakePictureIntent();
+                    } else {
+                        ActivityCompat.requestPermissions(ModifyUserActivity.this,
+                                new String[]{Manifest.permission.CAMERA},
+                                PICK_IMAGE_CAMERA);
+                    }
+                } else if (options[item].equals("Elegir foto de Galería")) {
+
+                    PackageManager packageManager = getPackageManager();
+                    int checkPermission = packageManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getPackageName());
+
+                    if (checkPermission == PackageManager.PERMISSION_GRANTED) {
+                        dialog.dismiss();
+                        Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
+                    } else {
+                        ActivityCompat.requestPermissions(ModifyUserActivity.this,
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                PICK_IMAGE_GALLERY);
+                    }
+                } else if (options[item].equals("Cancelar")) {
+                    dialog.dismiss();
                 }
-                return;
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PICK_IMAGE_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    if (currentImagePath.length() > 0) {
+                        uploadToServer(currentImagePath);
+                        bitmap = BitmapFactory.decodeFile(currentImagePath);
+                        mImageAvatar.setImageBitmap(bitmap);
+                    }
+                } else {
+                    currentImagePath = "";
+                    Toast.makeText(ModifyUserActivity.this, "Error al tomar imagen.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case PICK_IMAGE_GALLERY:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        Uri selectedImage = data.getData();
+                        getImageFromGallery(selectedImage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    currentImagePath = "";
+                    Toast.makeText(ModifyUserActivity.this, "Error al seleccionar imagen", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
+    private void dispatchTakePictureIntent() {
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(ModifyUserActivity.this, "org.quicksplit.android.fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA);
             }
         }
+    }
+
+    private File createImageFile() throws IOException {
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+
+        currentImagePath = image.getPath();
+        return image;
+    }
+
+    private void getImageFromGallery(Uri selectedImage) throws IOException {
+
+        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+
+        avatarImagePath = getRealPathFromURI(selectedImage);
+        mImageAvatar.setImageBitmap(bitmap);
+        uploadToServer(avatarImagePath);
+    }
+
+    public String getRealPathFromURI(Uri contentUri) {
+
+        String[] filePath = {MediaStore.Images.Media.DATA};
+        Cursor c = getContentResolver().query(contentUri, filePath,
+                null, null, null);
+        c.moveToFirst();
+        int columnIndex = c.getColumnIndex(filePath[0]);
+        String FilePathStr = c.getString(columnIndex);
+        c.close();
+
+        return FilePathStr;
     }
 }

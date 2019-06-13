@@ -7,19 +7,19 @@
     tools:context=".ui.SettingsFragment">
 
     <android.support.design.widget.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:title="@string/title_settings"
+        app:titleTextColor="@android:color/white">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_top"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:title="@string/title_settings"
-            app:titleTextColor="@android:color/white">
+    </android.support.v7.widget.Toolbar>
 
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>
+</android.support.design.widget.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -38,15 +38,9 @@ namespace QuickSplit.Application.Groups.Queries
                 .Select(membership => membership.User)
                 .ToList();
 
-            return await Task.WhenAll(users.Where(user => user != null).Select(MapToModel));
+            return users.Where(user => user != null).Select(u => new UserModel(u));
         }
         
-        private async Task<UserModel> MapToModel(User user)
-        {
-            string avatar = await _imageRepository.GetImageBase64(user.Id);
-
-            return new UserModel(user, avatar);
-        }
     }
 
     public class GetMembersQuery : IRequest<IEnumerable<UserModel>>

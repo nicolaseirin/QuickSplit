@@ -51,7 +51,15 @@ namespace QuickSplit.Persistence
         public void AddImageFromStream(int id, Stream image)
         {
             string avatarPath = GetImagePath(id);
-            SaveJpeg(avatarPath, Image.FromStream(image), ImageQualityRatio);
+            
+            try
+            {
+                SaveJpeg(avatarPath, Image.FromStream(image), ImageQualityRatio);
+            }
+            catch (ArgumentException ex)
+            {
+                throw new InvalidCommandException("Imagen invalida");
+            }
         }
 
         public void AddImageFromBase64(int id, string image)

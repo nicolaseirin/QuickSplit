@@ -61,42 +61,64 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/lblError_txtName"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:errorEnabled="true">
+                    android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/txtName"
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/img_avatar"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginTop="40dp"
+                        android:src="@mipmap/ic_photo" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:hint="@string/txt_name"
-                        android:inputType="textPersonName"
-                        app:layout_constraintBottom_toTopOf="@+id/txtLastName" />
+                        android:layout_marginLeft="10dp"
+                        android:orientation="vertical">
 
-                </android.support.design.widget.TextInputLayout>
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/lblError_txtName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            app:errorEnabled="true">
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/lblError_txtLastName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:errorEnabled="true">
+                            <EditText
+                                android:id="@+id/txtName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:hint="@string/txt_name"
+                                android:inputType="textPersonName"
+                                app:layout_constraintBottom_toTopOf="@+id/txtLastName" />
 
-                    <EditText
-                        android:id="@+id/txtLastName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:hint="@string/txt_lastName"
-                        android:inputType="textPersonName"
-                        app:layout_constraintBottom_toTopOf="@+id/txtEmail"
-                        app:layout_constraintTop_toBottomOf="@+id/txtName" />
+                        </android.support.design.widget.TextInputLayout>
 
-                </android.support.design.widget.TextInputLayout>
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/lblError_txtLastName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            app:errorEnabled="true">
+
+                            <EditText
+                                android:id="@+id/txtLastName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:hint="@string/txt_lastName"
+                                android:inputType="textPersonName"
+                                app:layout_constraintBottom_toTopOf="@+id/txtEmail"
+                                app:layout_constraintTop_toBottomOf="@+id/txtName" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/lblError_txtEmail"

@@ -1,11 +1,17 @@
 package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,6 +39,9 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     private List<User> friends;
     private List<String> friendsSelected;
     private Button mButtonCreateGroup;
+
+    private Toolbar mToolbar;
+
     private TextView mLabelErrorFriendsSelected;
     private TextInputLayout mLabelErrorGroupName;
     private EditText mEditTextGroupName;
@@ -44,6 +53,13 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
+
+        mToolbar = findViewById(R.id.toolbar_top);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
 
         friendsSelected = new ArrayList<String>();
 
@@ -57,7 +73,22 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         mButtonCreateGroup = findViewById(R.id.btn_createGroup);
         mButtonCreateGroup.setOnClickListener(this);
 
+
         getFriends();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        if (item.getItemId() == R.id.done) {
+            createGroup();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void getFriends() {
@@ -134,9 +165,12 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
             public void onResponse(Call<Group> call, Response<Group> response) {
                 if (response.isSuccessful()) {
                     loading.dismiss();
+                    setResult(RESULT_OK);
+                    finish();
                 } else {
                     loading.dismiss();
                     Toast.makeText(CreateGroupActivity.this, "Error al crear grupo.", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_CANCELED);
                 }
             }
 
@@ -144,6 +178,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
             public void onFailure(Call<Group> call, Throwable t) {
                 loading.dismiss();
                 Toast.makeText(CreateGroupActivity.this, "Error en la comunicación al crear grupo.", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_CANCELED);
             }
         });
     }
@@ -168,6 +203,13 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
 
     private boolean validFileds() {
         return !friendsSelected.isEmpty() && !mEditTextGroupName.getText().toString().trim().equals("");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.confirmation, menu);
+        return true;
     }
 
     @Override
