@@ -1,5 +1,6 @@
 package org.quicksplit.service;
 
+import org.quicksplit.cache.Cacheable;
 import org.quicksplit.models.Group;
 import org.quicksplit.models.Login;
 import org.quicksplit.models.Purchase;
@@ -60,6 +61,7 @@ public interface UserClient {
     @POST("users/{id}/avatars")
     Call<ResponseBody> setUserAvatar(@Path("id") String id, @Part MultipartBody.Part filePart);
 
+    @Cacheable
     @GET("users/{id}/groups")
     Call<List<Group>> getUserGroups(@Path("id") String id);
 

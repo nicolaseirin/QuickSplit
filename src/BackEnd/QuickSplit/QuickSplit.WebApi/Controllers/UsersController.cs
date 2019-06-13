@@ -102,7 +102,6 @@ namespace QuickSplit.WebApi.Controllers
             return Ok();
         }
 
-        [Authorize]
         [HttpGet("{id}/avatars")]
         public async Task<ActionResult> GetImage(int id)
         {
@@ -147,5 +146,15 @@ namespace QuickSplit.WebApi.Controllers
             return Ok(purchases);
         }
         
+        [HttpGet("{id}/groups")]
+        public async Task<ActionResult<IEnumerable<PurchaseModel>>> GetGroups(int id)
+        {
+            IEnumerable<GroupModel> purchases = await Mediator.Send(new GetGroupsQuery()
+            {
+                UserId = id
+            });
+
+            return Ok(purchases);
+        }
     }
 }

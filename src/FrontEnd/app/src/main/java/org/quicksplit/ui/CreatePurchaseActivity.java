@@ -165,15 +165,6 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-
-        if (item.getItemId() == R.id.done) {
-            createPurchase();
-        }
-
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
@@ -375,7 +366,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
             RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/" + currentImagePath.substring(currentImagePath.lastIndexOf(".") + 1)), destination);
             MultipartBody.Part part = MultipartBody.Part.createFormData("image", destination.getName(), fileRequestBody);
 
-            Call call = client.addPurchaseImage(tokenManager.getUserIdFromToken(), part);
+            Call call = client.addPurchaseImage(purchase.getId(), part);
             call.enqueue(new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
