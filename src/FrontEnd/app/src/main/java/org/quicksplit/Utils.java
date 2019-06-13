@@ -3,14 +3,11 @@ package org.quicksplit;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.util.Base64;
 
 import org.quicksplit.cache.Cacheable;
 
@@ -19,17 +16,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 public class Utils {
-
-    public static Bitmap stringToBitMap(String image) {
-        try {
-            byte[] encodeByte = Base64.decode(image, Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch (Exception e) {
-            e.getMessage();
-            return null;
-        }
-    }
 
     public static Class typeToClass(Type type) {
         try {

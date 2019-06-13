@@ -1,5 +1,6 @@
 package org.quicksplit.adapters;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.quicksplit.R;
+import org.quicksplit.ServiceGenerator;
 import org.quicksplit.Utils;
 import org.quicksplit.models.DebtorDebtee;
 
@@ -38,11 +42,22 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     public void onBindViewHolder(@NonNull ReportViewHolder groupViewHolder, int i) {
         final DebtorDebtee currentItem = reports.get(i);
 
-        groupViewHolder.mImageViewDebtor.setImageBitmap(Utils.stringToBitMap(currentItem.getDebtor().getAvatar()));
-        groupViewHolder.mImageViewDebtee.setImageBitmap(Utils.stringToBitMap(currentItem.getDebtee().getAvatar()));
+        Uri imageUriDebtor = Uri.parse(ServiceGenerator.getBaseUrl() + currentItem.getDebtor().getAvatar());
+        Picasso.get()
+                .load(imageUriDebtor)
+                .resize(100, 100)
+                .centerCrop()
+                .into(groupViewHolder.mImageViewDebtor);
 
-        groupViewHolder.mTextViewDebtorName.setText(currentItem.getDebtor().getName() + " " + currentItem.getDebtor().getLastName());
-        groupViewHolder.mTextViewDebteeName.setText(currentItem.getDebtee().getName() + " " + currentItem.getDebtee().getLastName());
+        Uri imageUriDebtee = Uri.parse(ServiceGenerator.getBaseUrl() + currentItem.getDebtee().getAvatar());
+        Picasso.get()
+                .load(imageUriDebtee)
+                .resize(100, 100)
+                .centerCrop()
+                .into(groupViewHolder.mImageViewDebtee);
+
+        groupViewHolder.mTextViewDebtorName.setText(currentItem.getDebtor().toString());
+        groupViewHolder.mTextViewDebteeName.setText(currentItem.getDebtee().toString());
         groupViewHolder.mTextViewAmountValue.setText(currentItem.getAmount());
     }
 

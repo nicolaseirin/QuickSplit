@@ -23,6 +23,7 @@ import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.AddFriendsAdapter;
 import org.quicksplit.adapters.DeleteFriendsAdapter;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.ModifyPurchase;
 import org.quicksplit.models.Purchase;
 import org.quicksplit.models.User;
 import org.quicksplit.service.CurrencyClient;
@@ -304,7 +305,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         if (!validFields())
             return;
 
-        Purchase purchase = new Purchase();
+        ModifyPurchase purchase = new ModifyPurchase();
 
         purchase.setName(mEditTextPurchaseName.getText().toString());
         purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());

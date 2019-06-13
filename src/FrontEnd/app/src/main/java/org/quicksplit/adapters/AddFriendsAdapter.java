@@ -43,9 +43,6 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.Fr
     public void onBindViewHolder(@NonNull FriendsViewHolder friendsViewHolder, int i) {
         User currentItem = users.get(i);
 
-        String avatar = currentItem.getAvatar();
-        //friendsViewHolder.mImageView.setImageBitmap(Utils.stringToBitMap(avatar));
-
         Uri imageUri = Uri.parse(ServiceGenerator.getBaseUrl() + "users/" + currentItem.getId() + "/avatars");
         Picasso.get()
                 .load(imageUri)
