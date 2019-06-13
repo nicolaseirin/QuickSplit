@@ -99,7 +99,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements  View.O
         mButtonCreatePurchase = findViewById(R.id.btn_createPurchase);
         mButtonCreatePurchase.setOnClickListener(this);
 
-        mButtonAddMap = findViewById(R.id.btn_addMap);
+        mButtonAddMap = findViewById(R.id.btn_location);
         mButtonAddMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
