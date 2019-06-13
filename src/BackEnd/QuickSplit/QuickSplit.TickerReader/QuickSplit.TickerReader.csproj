@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\QuickSplit.Application\QuickSplit.Application.csproj" />
+      <ProjectReference Include="..\QuickSplit.Domain\QuickSplit.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Bytescout.BarCode.Reader" Version="10.5.0.1909" />
+    </ItemGroup>
+
+</Project>
