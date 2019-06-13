@@ -98,7 +98,9 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
 
     private void getGroups() {
         TokenManager tokenManager = new TokenManager(getContext());
-        UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
+        ServiceGenerator sg = new ServiceGenerator();
+        //UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
+        UserClient client = sg.createServiceNs(UserClient.class, tokenManager.getToken());
         Call<List<Group>> call = client.getUserGroups(tokenManager.getUserIdFromToken());
 
         final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
