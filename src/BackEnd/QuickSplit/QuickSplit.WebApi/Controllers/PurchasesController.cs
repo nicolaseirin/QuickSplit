@@ -72,6 +72,7 @@ namespace QuickSplit.WebApi.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<IEnumerable<PurchaseModel>>> ModifyPurchase(int id, [FromBody] ModifyPurchaseCommand command)
         {
+            if (command == null) return BadRequest("Datos invalidos");
             command.PurchaseId = id;
             PurchaseModel purchase = await Mediator.Send(command);
 

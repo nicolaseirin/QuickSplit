@@ -89,9 +89,9 @@ namespace QuickSplit.Application.Purchases.Commands
         
         public string Name { get; set; }
 
-        public IEnumerable<int> Participants { get; set; }
+        public ICollection<int> Participants { get; set; }
 
-        public uint? Cost { get; set; }
+        public double? Cost { get; set; }
 
         public string Currency { get; set; }
     }

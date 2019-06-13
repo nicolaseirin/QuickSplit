@@ -23,7 +23,7 @@ namespace QuickSplit.Application.Purchases.Commands
 
         public async Task<Unit> Handle(AddPurchaseImageCommand request, CancellationToken cancellationToken)
         {
-            Group @group = await _context.Groups.FindAsync(request.PurchaseId) ?? throw new InvalidCommandException("No existe el grupo");
+            Purchase purchase = await _context.Purchases.FindAsync(request.PurchaseId) ?? throw new InvalidCommandException("No existe la compra");
             
             _imageRepository.AddImageFromStream(request.PurchaseId, request.Image);
             
