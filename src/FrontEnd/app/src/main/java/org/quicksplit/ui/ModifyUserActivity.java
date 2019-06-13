@@ -57,8 +57,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
 
     private Bitmap bitmap;
     private String avatarImagePath;
-    private File mImageFileAvatar;
-
     private String currentImagePath;
 
     private User user;

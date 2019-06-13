@@ -7,18 +7,19 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -46,7 +47,6 @@ import org.quicksplit.service.UserClient;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -61,13 +61,13 @@ import retrofit2.Response;
 
 public class CreatePurchaseActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static int PICK_IMAGE_CAMERA = 1;
-    private static int PICK_IMAGE_GALLERY = 2;
-    private ImageView mImageViewPurchase;
+    private static final int PICK_IMAGE_CAMERA = 1;
+    private static final int PICK_IMAGE_GALLERY = 2;
+
+    private ImageView mImagePurchase;
     private Bitmap bitmap;
     private File destination = null;
-    private InputStream inputStreamImg;
-    private String purchaseImagePath = null;
+    private String currentImagePath = null;
 
 
     private List<Group> groups;
@@ -112,7 +112,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        mImageViewPurchase = findViewById(R.id.img_purchase);
+        mImagePurchase = findViewById(R.id.img_purchase);
 
         mTextInputLayoutGroupMembers = findViewById(R.id.lblError_groupMembers);
         mRecyclerViewGroupMembers = findViewById(R.id.purchisersReciclerView);
@@ -365,15 +365,15 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
 
     private void uploadImageToServer(Purchase purchase) {
 
-        if (purchaseImagePath != null) {
+        if (currentImagePath != null) {
             TokenManager tokenManager = new TokenManager(this);
 
             PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
 
-            destination = new File(purchaseImagePath);
+            destination = new File(currentImagePath);
 
-            RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/" + purchaseImagePath.substring(purchaseImagePath.lastIndexOf(".") + 1)), destination);
-            MultipartBody.Part part = MultipartBody.Part.createFormData("image", destination.getName(), fileReqBody);
+            RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/" + currentImagePath.substring(currentImagePath.lastIndexOf(".") + 1)), destination);
+            MultipartBody.Part part = MultipartBody.Part.createFormData("image", destination.getName(), fileRequestBody);
 
             Call call = client.addPurchaseImage(tokenManager.getUserIdFromToken(), part);
             call.enqueue(new Callback() {
@@ -418,71 +418,68 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     }
 
     private void selectPurchaseImage() {
+        final CharSequence[] options = {"Tomar Foto", "Elegir foto de Galería", "Cancelar"};
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(CreatePurchaseActivity.this);
+        builder.setTitle("Seleccione una Opción");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Tomar Foto")) {
 
-        ActivityCompat.requestPermissions(CreatePurchaseActivity.this,
-                new String[]{Manifest.permission.CAMERA},
-                PICK_IMAGE_CAMERA);
+                    PackageManager packageManager = getPackageManager();
+                    int checkPermission = packageManager.checkPermission(Manifest.permission.CAMERA, getPackageName());
 
-        ActivityCompat.requestPermissions(CreatePurchaseActivity.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                PICK_IMAGE_GALLERY);
-
-        try {
-            PackageManager pm = getPackageManager();
-            int hasPerm = pm.checkPermission(Manifest.permission.CAMERA, getPackageName());
-            if (hasPerm == PackageManager.PERMISSION_GRANTED) {
-                final CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(CreatePurchaseActivity.this);
-                builder.setTitle("Select Option");
-                builder.setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        if (options[item].equals("Take Photo")) {
-                            dialog.dismiss();
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, PICK_IMAGE_CAMERA);
-                        } else if (options[item].equals("Choose From Gallery")) {
-                            dialog.dismiss();
-                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
-                        } else if (options[item].equals("Cancel")) {
-                            dialog.dismiss();
-                        }
+                    if (checkPermission == PackageManager.PERMISSION_GRANTED) {
+                        dialog.dismiss();
+                        dispatchTakePictureIntent();
+                    } else {
+                        ActivityCompat.requestPermissions(CreatePurchaseActivity.this,
+                                new String[]{Manifest.permission.CAMERA},
+                                PICK_IMAGE_CAMERA);
                     }
-                });
-                builder.show();
-            } else
-                Toast.makeText(this, "Camera Permission error", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(this, "Camera Permission error", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+                } else if (options[item].equals("Elegir foto de Galería")) {
+
+                    PackageManager packageManager = getPackageManager();
+                    int checkPermission = packageManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getPackageName());
+
+                    if (checkPermission == PackageManager.PERMISSION_GRANTED) {
+                        dialog.dismiss();
+                        Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
+                    } else {
+                        ActivityCompat.requestPermissions(CreatePurchaseActivity.this,
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                PICK_IMAGE_GALLERY);
+                    }
+                } else if (options[item].equals("Cancelar")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void dispatchTakePictureIntent() {
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(CreatePurchaseActivity.this, "org.quicksplit.android.fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, PICK_IMAGE_CAMERA);
+            }
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        inputStreamImg = null;
-        if (requestCode == PICK_IMAGE_CAMERA && resultCode == RESULT_OK && data.hasExtra("data")) {
-            try {
-                getImageFromCamera(data);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (requestCode == PICK_IMAGE_GALLERY && resultCode == RESULT_OK && data.hasExtra("data")) {
-            Uri selectedImage = data.getData();
-            try {
-                getImageFromGallery(selectedImage);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void getImageFromCamera(Intent data) throws IOException {
-
-        bitmap = (Bitmap) data.getExtras().get("data");
-        mImageViewPurchase.setImageBitmap(bitmap);
+    private File createImageFile() throws IOException {
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -493,7 +490,39 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
                 storageDir
         );
 
-        purchaseImagePath = image.getAbsolutePath();
+        currentImagePath = image.getPath();
+        return image;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PICK_IMAGE_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    if (currentImagePath.length() > 0) {
+                        bitmap = BitmapFactory.decodeFile(currentImagePath);
+                        mImagePurchase.setImageBitmap(bitmap);
+                    }
+                } else {
+                    currentImagePath = "";
+                    Toast.makeText(CreatePurchaseActivity.this, "Error al tomar imagen.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case PICK_IMAGE_GALLERY:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        Uri selectedImage = data.getData();
+                        getImageFromGallery(selectedImage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    currentImagePath = "";
+                    Toast.makeText(CreatePurchaseActivity.this, "Error al seleccionar imagen", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 
     private void getImageFromGallery(Uri selectedImage) throws IOException {
@@ -501,11 +530,9 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-        Log.e("Activity", "Pick from Gallery::>>> ");
 
-        purchaseImagePath = getRealPathFromURI(selectedImage);
-        destination = new File(purchaseImagePath);
-        mImageViewPurchase.setImageBitmap(bitmap);
+        currentImagePath = getRealPathFromURI(selectedImage);
+        mImagePurchase.setImageBitmap(bitmap);
     }
 
     public String getRealPathFromURI(Uri contentUri) {

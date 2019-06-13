@@ -39,23 +39,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mLabelErrorUserName = (TextInputLayout) findViewById(R.id.lblError_txtUserName);
-        mTextUserName = (EditText) findViewById(R.id.txtUserName);
+        mLabelErrorUserName = findViewById(R.id.lblError_txtUserName);
+        mTextUserName = findViewById(R.id.txtUserName);
 
-        mLabelErrorPassword = (TextInputLayout) findViewById(R.id.lblError_txtPassword);
-        mTextPassword = (EditText) findViewById(R.id.txtPassword);
+        mLabelErrorPassword = findViewById(R.id.lblError_txtPassword);
+        mTextPassword = findViewById(R.id.txtPassword);
 
-        mTextViewRegister = (TextView) this.findViewById(R.id.txtView_register);
+        mTextViewRegister = this.findViewById(R.id.txtView_register);
         mTextViewRegister.setOnClickListener(this);
 
-        mButtonLogin = (Button) this.findViewById(R.id.btn_login);
+        mButtonLogin = this.findViewById(R.id.btn_login);
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 login();
             }
         });
 
-        mLabelErrorMessage = (TextView) this.findViewById(R.id.lbl_errorMessage);
+        mLabelErrorMessage = this.findViewById(R.id.lbl_errorMessage);
     }
 
     private void login() {
