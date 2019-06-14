@@ -11,9 +11,18 @@ import android.provider.MediaStore;
 
 import org.quicksplit.cache.Cacheable;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.URL;
+import java.util.Currency;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class Utils {
 
@@ -83,7 +92,7 @@ public class Utils {
                 }
 
                 final String selection = "_id=?";
-                final String[] selectionArgs = new String[] {
+                final String[] selectionArgs = new String[]{
                         split[1]
                 };
 
@@ -162,4 +171,47 @@ public class Utils {
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
+
+
+    public static class QrTicketReader {
+        final static String regex = "<span[^>]+id=\"span_vMONTO\">(.*?)<\\/span>";
+        final static Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        final static String CURRENCY = "Uyu";
+
+        public static CostWithCurrency getCostWithCurrency(URL url) {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder().url(url).build();
+            String result;
+            try (Response response = client.newCall(request).execute()) {
+                 result = response.body().string();
+            } catch (IOException ex) {
+                return null;
+            }
+
+            final Matcher matcher = pattern.matcher(result);
+            if (!matcher.find())
+                return null;
+
+            String rawCost = matcher.group(1).trim().replace(',','.');
+            double cost;
+            try {
+                cost = Double.parseDouble(rawCost);
+            }
+            catch (NumberFormatException ex){
+                return null;
+            }
+
+            return new CostWithCurrency(cost, CURRENCY);
+        }
+    }
+}
+
+class CostWithCurrency {
+    public CostWithCurrency(double cost, String currency) {
+        this.cost = cost;
+        this.currency = currency;
+    }
+
+    public double cost;
+    public String currency;
 }
