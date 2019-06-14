@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
@@ -179,6 +180,9 @@ public class Utils {
         final static String CURRENCY = "Uyu";
 
         public static CostWithCurrency getCostWithCurrency(URL url) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder().url(url).build();
             String result;

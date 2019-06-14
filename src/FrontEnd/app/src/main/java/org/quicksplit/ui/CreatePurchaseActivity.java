@@ -551,11 +551,12 @@ public class CreatePurchaseActivity extends AppCompatActivity {
                     try {
                         URL dgiUrl = new URL(dgiLink);
                         CostWithCurrency costWithCurrency = Utils.QrTicketReader.getCostWithCurrency(dgiUrl);
-                        mEditTextCost.setText(costWithCurrency.currency);
+                        mEditTextCost.setText(costWithCurrency.cost + "");
+                        int currencySpinnerPosition = currenciesArrayAdapter.getPosition(costWithCurrency.currency);
+                        mSpinnerCurrency.setSelection(currencySpinnerPosition);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
-
                 }
                 break;
         }
