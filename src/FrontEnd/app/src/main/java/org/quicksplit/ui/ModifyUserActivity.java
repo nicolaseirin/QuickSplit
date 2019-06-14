@@ -81,6 +81,9 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private ImageView mImageAvatar;
     private Button mButtonSave;
     private LinearLayout mLayoutChangeAvatar;
+    private Button mButtonRefresh;
+
+    private int idMenuResource = R.menu.settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +91,10 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         getUserData();
     }
 
-    private void buildContentView() {
+    private void buildModifyUserContentView() {
         setContentView(R.layout.activity_modify_user);
+
+        idMenuResource = R.menu.picture;
 
         mToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(mToolbar);
@@ -136,10 +141,30 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         loadUserData();
     }
 
+    private void buildErrorContentView() {
+        setContentView(R.layout.activity_error);
+        idMenuResource = R.menu.refresh;
+
+        mToolbar = findViewById(R.id.toolbar_top);
+        mToolbar.setTitle("Modificar Usuario");
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mButtonRefresh = findViewById(R.id.btn_refresh);
+        mButtonRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getUserData();
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.picture, menu);
+        menuInflater.inflate(idMenuResource, menu);
         return true;
     }
 
@@ -151,6 +176,9 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                 return true;
             case R.id.picture:
                 selectAvatarImage();
+                return true;
+            case R.id.refresh:
+                getUserData();
                 return true;
         }
 
@@ -170,7 +198,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()) {
                     user = response.body();
-                    buildContentView();
+                    buildModifyUserContentView();
                     loading.dismiss();
                 } else {
                     Toast.makeText(ModifyUserActivity.this, "Error al solicitar la edición de datos.", Toast.LENGTH_SHORT).show();
@@ -180,7 +208,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(ModifyUserActivity.this, "Error al solicitar la edición de datos.", Toast.LENGTH_SHORT).show();
+                buildErrorContentView();
                 loading.dismiss();
             }
         });
@@ -193,7 +221,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         imageUri = Uri.parse(ServiceGenerator.getBaseUrl() + user.getAvatar());
         Picasso.get()
                 .load(imageUri)
-                .resize(100, 100)
+                .resize(200, 200)
                 .centerCrop()
                 .into(mImageAvatar);
 
@@ -203,6 +231,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void updateUserData() {
+
+        //TODO: VERIFICAR LOS CAMPOS ANTES DE MODIFICAR Y ENVIAR
 
         TokenManager tokenManager = new TokenManager(this);
 
