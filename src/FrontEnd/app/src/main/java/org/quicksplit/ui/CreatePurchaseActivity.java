@@ -387,7 +387,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
             RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/" + currentImagePath.substring(currentImagePath.lastIndexOf(".") + 1)), destination);
             MultipartBody.Part part = MultipartBody.Part.createFormData("image", destination.getName(), fileRequestBody);
 
-            Call call = client.addPurchaseImage(purchase.getId(), part);
+            Call call = client.setPurchaseImage(purchase.getId(), part);
             call.enqueue(new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {

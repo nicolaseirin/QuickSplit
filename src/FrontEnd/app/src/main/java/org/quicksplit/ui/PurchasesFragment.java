@@ -148,7 +148,7 @@ public class PurchasesFragment extends Fragment {
             public void onModifyClick(Purchase purchase) {
                 Intent intent = new Intent(getContext(), ModifyPurchaseActivity.class);
                 intent.putExtra("EXTRA_PURCHASE_ID", purchase.getId());
-                startActivity(intent);
+                startActivityForResult(intent, MODIFY_PURCHASE_REQUEST);
             }
         });
     }

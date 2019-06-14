@@ -39,5 +39,5 @@ public interface PurchaseClient {
 
     @Multipart
     @POST("purchases/{id}/image")
-    Call<ResponseBody> addPurchaseImage(@Path("id") String id, @Part MultipartBody.Part filePart);
+    Call<ResponseBody> setPurchaseImage(@Path("id") String id, @Part MultipartBody.Part filePart);
 }

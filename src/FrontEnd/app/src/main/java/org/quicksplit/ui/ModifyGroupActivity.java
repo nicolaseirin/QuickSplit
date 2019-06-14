@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -76,11 +78,24 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.done:
+                modifyGroup();
+                return true;
         }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.confirmation, menu);
+        return true;
     }
 
     private void loadGroupData() {
@@ -218,10 +233,10 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        updateGroup();
+        modifyGroup();
     }
 
-    private void updateGroup() {
+    private void modifyGroup() {
         String groupId = getIntent().getStringExtra("EXTRA_GROUP_ID");
         TokenManager tokenManager = new TokenManager(this);
 
