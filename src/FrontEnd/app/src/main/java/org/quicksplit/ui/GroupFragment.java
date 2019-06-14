@@ -2,17 +2,18 @@ package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import org.quicksplit.R;
@@ -21,7 +22,6 @@ import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.GroupAdapter;
 import org.quicksplit.models.Group;
 import org.quicksplit.models.LeaveGroup;
-import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 import org.quicksplit.service.UserClient;
 
@@ -103,7 +103,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         UserClient client = sg.createServiceNs(UserClient.class, tokenManager.getToken());
         Call<List<Group>> call = client.getUserGroups(tokenManager.getUserIdFromToken());
 
-        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), getContext().getString(R.string.fetching_data), getContext().getString(R.string.please_wait), false, false);
 
         call.enqueue(new Callback<List<Group>>() {
             @Override
@@ -135,8 +135,8 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
 
         mRecyclerViewGroupsAdapter.setOnItemClickListener(new GroupAdapter.OnItemClickListener() {
             @Override
-            public void onViewReportClick(Group group) {
-                getReport(group);
+            public void onReportClick(Group group) {
+                getReportGroup(group);
             }
 
             @Override
@@ -146,17 +146,17 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onLeaveClick(Group group) {
-                leaveGroup(group);
+                tryLeaveGroup(group);
             }
 
             @Override
             public void onDeleteClick(Group group) {
-                deleteGroup(group);
+                tryDeleteGroup(group);
             }
         });
     }
 
-    private void getReport(Group group) {
+    private void getReportGroup(Group group) {
         Intent intent = new Intent(getContext(), ReportActivity.class);
         intent.putExtra("EXTRA_GROUP_ID", group.getId());
         startActivity(intent);
@@ -168,12 +168,33 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         startActivityForResult(intent, MODIFY_GROUP_REQUEST);
     }
 
+    private void tryLeaveGroup(final Group group) {
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        leaveGroup(group);
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("¿Quiere abandonar el grupo?").setPositiveButton("Sí", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+    }
+
     private void leaveGroup(Group group) {
         TokenManager tokenManager = new TokenManager(getContext());
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
 
-        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), getContext().getString(R.string.fetching_data), getContext().getString(R.string.please_wait), false, false);
 
         LeaveGroup leaveGroup = new LeaveGroup();
         leaveGroup.setUserId(Integer.parseInt(tokenManager.getUserIdFromToken()));
@@ -200,12 +221,33 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    private void tryDeleteGroup(final Group group) {
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        deleteGroup(group);
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("¿Quiere borrar el grupo?").setPositiveButton("Sí", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+    }
+
     private void deleteGroup(Group group) {
         TokenManager tokenManager = new TokenManager(getContext());
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
 
-        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), getContext().getString(R.string.fetching_data), getContext().getString(R.string.please_wait), false, false);
 
         Call<Void> call = client.deleteGroup(group.getId());
         call.enqueue(new Callback<Void>() {
@@ -213,6 +255,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     loading.dismiss();
+                    getGroups();
                 } else {
                     loading.dismiss();
                     Toast.makeText(getActivity(), "Error al borrar grupo.", Toast.LENGTH_SHORT).show();
