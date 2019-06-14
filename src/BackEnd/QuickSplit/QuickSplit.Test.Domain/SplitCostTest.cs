@@ -82,7 +82,7 @@ namespace QuickSplit.Test.Domain
             };
             _group.Purchases.Add(purchase);
 
-            SplitCostReport report = _group.GenerateSplitCostReport();
+            SplitCostReport report = _group.GenerateSplitCostReport(Currency.Usd);
             
             Assert.True(report.Dictionary.All(pair => pair.Key.Item2.Equals(_danny) && Math.Abs(pair.Value - 25) < 0.01d));
         }
@@ -123,7 +123,7 @@ namespace QuickSplit.Test.Domain
             };
             _group.Purchases.Add(purchase2);
 
-            SplitCostReport report = _group.GenerateSplitCostReport();
+            SplitCostReport report = _group.GenerateSplitCostReport(Currency.Usd);
             
             Assert.True(report.Dictionary.All(pair => pair.Key.Item2.Equals(_danny) && Math.Abs(pair.Value - 50) < 0.01d));
         }
@@ -183,7 +183,7 @@ namespace QuickSplit.Test.Domain
             };
             _group.Purchases.Add(purchase3);
 
-            SplitCostReport report = _group.GenerateSplitCostReport();
+            SplitCostReport report = _group.GenerateSplitCostReport(Currency.Usd);
             
             Assert.Equal(25d, report[(_jon, _danny)]);
             Assert.Equal(50d, report[(_ghost, _danny)]);
@@ -225,11 +225,11 @@ namespace QuickSplit.Test.Domain
             };
             _group.Purchases.Add(purchase2);
 
-            SplitCostReport report = _group.GenerateSplitCostReport();
+            SplitCostReport report = _group.GenerateSplitCostReport(Currency.Uyu);
             
-            Assert.Equal(75d, report[(_jon, _danny)]);
-            Assert.Equal(25d, report[(_ghost, _danny)]);
-            Assert.Equal(25d, report[(_tyrion, _danny)]);
+            Assert.Equal(75d * 30, report[(_jon, _danny)]);
+            Assert.Equal(25d * 30, report[(_ghost, _danny)]);
+            Assert.Equal(25d * 30, report[(_tyrion, _danny)]);
             Assert.DoesNotContain(report.Dictionary, pair => pair.Key.Item1.Equals(_danny));
         }
     }

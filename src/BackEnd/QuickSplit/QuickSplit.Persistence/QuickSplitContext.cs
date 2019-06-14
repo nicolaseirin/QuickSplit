@@ -19,7 +19,7 @@ namespace QuickSplit.Persistence
         public DbSet<Friendship> Friendships { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Membership> Memberships { get; set; }
-        
+
         public DbSet<Participant> Participants { get; set; }
         public DbSet<Purchase> Purchases { get; set; }
 
@@ -38,7 +38,7 @@ namespace QuickSplit.Persistence
             ConfigureUser(modelBuilder.Entity<User>());
 
             ConfigureFriendship(modelBuilder.Entity<Friendship>());
-            
+
             ConfigureGroup(modelBuilder);
         }
 
@@ -47,6 +47,10 @@ namespace QuickSplit.Persistence
             modelBuilder.Entity<Group>()
                 .Property(group => @group.Id)
                 .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Group>()
+                .HasOne(g => g.Admin)
+                .WithMany();
 
             modelBuilder.Entity<Group>()
                 .HasMany(g => g.Purchases)
@@ -59,15 +63,17 @@ namespace QuickSplit.Persistence
             modelBuilder.Entity<Membership>()
                 .HasKey(membership => new {membership.UserId, membership.GroupId});
 
+            modelBuilder.Entity<Membership>()
+                .HasOne(m => m.Group);
+
             modelBuilder.Entity<Participant>()
                 .HasKey(participant => new {participant.UserId, participant.PurchaseId});
-
         }
 
         private void ConfigureFriendship(EntityTypeBuilder<Friendship> builder)
         {
             builder.HasKey(f => new {f.Friend1Id, f.Friend2Id});
-            
+
             builder
                 .HasOne(u => u.Friend1)
                 .WithMany(user => user.FriendsOf)
@@ -88,18 +94,26 @@ namespace QuickSplit.Persistence
                 .ValueGeneratedOnAdd();
 
             builder
+                .HasMany<Group>()
+                .WithOne(group => group.Admin);
+                //.OnDelete(DeleteBehavior.Cascade);
+
+            builder
                 .HasMany(user => user.Friends)
                 .WithOne(friendship => friendship.Friend2);
-                //.OnDelete(DeleteBehavior.ClientSetNull);
-            
+            //.OnDelete(DeleteBehavior.ClientSetNull);
+
             builder
                 .HasMany(user => user.FriendsOf)
                 .WithOne(friendship => friendship.Friend1);
-                //.OnDelete(DeleteBehavior.ClientSetNull);
-                builder
-                    .HasMany<Participant>()
-                    .WithOne(participant => participant.User);
+            //.OnDelete(DeleteBehavior.ClientSetNull);
+            builder
+                .HasMany<Participant>()
+                .WithOne(participant => participant.User);
 
+            builder
+                .HasMany<Membership>()
+                .WithOne(membership => membership.User);
         }
     }
 }

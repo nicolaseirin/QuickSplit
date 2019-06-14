@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -40,6 +41,7 @@ namespace QuickSplit.Application.Users.Queries
                 .ToListAsync(cancellationToken: cancellationToken);
 
             return participants
+                .Where(participant => participant.Purchase.Group != null)
                 .Select(participant => new PurchaseModel(participant.Purchase))
                 .ToList();
         }

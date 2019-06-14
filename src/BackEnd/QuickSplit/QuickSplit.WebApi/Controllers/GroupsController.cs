@@ -9,6 +9,8 @@ using QuickSplit.Application.Groups.Queries;
 using QuickSplit.Application.Purchases.Commands;
 using QuickSplit.Application.Users.Models;
 using Microsoft.AspNetCore.Authorization;
+using QuickSplit.Application.Users.Queries;
+using GetGroupsQuery = QuickSplit.Application.Groups.Queries.GetGroupsQuery;
 
 namespace QuickSplit.WebApi.Controllers
 {
@@ -43,7 +45,7 @@ namespace QuickSplit.WebApi.Controllers
 
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<ActionResult<GroupModel>> Put(int id, [FromBody] UpdateGroupCommand command)
+        public async Task<ActionResult<GroupModel>> Put(int id, [FromBody] ModifyGroupCommand command)
         {
             command.Id = id;
             GroupModel updated = await Mediator.Send(command);
@@ -68,18 +70,6 @@ namespace QuickSplit.WebApi.Controllers
         {
             await Mediator.Send(command);
             return Ok();
-        }
-
-
-        [HttpGet("{id}/memberships")]
-        public async Task<ActionResult<ICollection<GroupModel>>> GetAll(int id)
-        {
-            IEnumerable<GroupModel> groups = await Mediator.Send(new GetGroupsQuery()
-            {
-                Id = id
-            });
-
-            return Ok(groups);
         }
 
 

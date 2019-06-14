@@ -36,7 +36,7 @@ namespace QuickSplit.Test.Application
         public async void UpdateValidGroupTest()
         {
 
-            var command = new UpdateGroupCommand()
+            var command = new ModifyGroupCommand()
             {
                 Id = 1,
                 Name = "The pedrera",

@@ -26,6 +26,7 @@ namespace QuickSplit.Application.Groups.Models
         {
             Id = group.Id;
             Name = group.Name;
+            var a = group.Admin;
             Admin = group.Admin.Id;
             Memberships = new List<int>();
             SetMemberships(group.Memberships);
