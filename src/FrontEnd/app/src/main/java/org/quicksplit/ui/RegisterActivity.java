@@ -145,13 +145,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
 
             private void showErrorMessage(Response<User> response) {
-                try {
-                    String errorMessage = response.errorBody().string();
-                    mLabelErrorMessage.setVisibility(View.VISIBLE);
-                    mLabelErrorMessage.setText(errorMessage);
-                } catch (Exception e) {
 
+                String errorMessage = null;
+                try {
+                    errorMessage = response.errorBody().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                mLabelErrorMessage.setVisibility(View.VISIBLE);
+                mLabelErrorMessage.setText(errorMessage);
             }
 
             @Override

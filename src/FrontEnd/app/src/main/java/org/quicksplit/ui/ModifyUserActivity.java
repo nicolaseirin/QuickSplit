@@ -232,7 +232,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
 
     private void updateUserData() {
 
-        //TODO: VERIFICAR LOS CAMPOS ANTES DE MODIFICAR Y ENVIAR
+        if (!validateFieldsAndShowErrors())
+            return;
 
         TokenManager tokenManager = new TokenManager(this);
 
@@ -252,7 +253,14 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(ModifyUserActivity.this, "Datos modificados correctamente.", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    Toast.makeText(ModifyUserActivity.this, "Error al intentar modificar datos.", Toast.LENGTH_SHORT).show();
+                    String errorMessage = null;
+                    try {
+                        errorMessage = response.errorBody().string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    mLabelErrorMessage.setVisibility(View.VISIBLE);
+                    mLabelErrorMessage.setText(errorMessage);
                 }
             }
 
@@ -261,6 +269,59 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                 Toast.makeText(ModifyUserActivity.this, "Error al modificar datos del usuario.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private boolean validateFieldsAndShowErrors() {
+
+        boolean isValid = false;
+
+        String name = mTextName.getText().toString();
+        String lastName = mTextLastName.getText().toString();
+        String email = mTextEmail.getText().toString();
+        String password = mTextPassword.getText().toString();
+        String repeatPassword = mTextRepeatPassword.getText().toString();
+
+        if (name.isEmpty()) {
+            mLabelErrorName.setError("El nombre es requerido.");
+            isValid = false;
+        } else {
+            mLabelErrorName.setError("");
+            isValid = true;
+        }
+
+        if (lastName.isEmpty()) {
+            mLabelErrorLastName.setError("El apellido es requerido.");
+            isValid = false;
+        } else {
+            mLabelErrorLastName.setError("");
+            isValid &= true;
+        }
+
+        if (email.isEmpty()) {
+            mLabelErrorEmail.setError("El email es requerido.");
+            isValid = false;
+        } else {
+            mLabelErrorEmail.setError("");
+            isValid &= true;
+        }
+
+        if (password.isEmpty()) {
+            mLabelErrorPassword.setError("La contraseña es requerida.");
+            isValid = false;
+        } else {
+            mLabelErrorPassword.setError("");
+            isValid &= true;
+        }
+
+        if (!password.equals(repeatPassword)) {
+            mLabelErrorRepeatPassword.setError("Las contraseñas no coinciden.");
+            isValid = false;
+        } else {
+            mLabelErrorRepeatPassword.setError("");
+            isValid &= true;
+        }
+
+        return isValid;
     }
 
     @Override
