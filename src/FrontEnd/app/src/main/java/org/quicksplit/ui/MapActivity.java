@@ -73,9 +73,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 Intent intent = new Intent(MapActivity.this, CreatePurchaseActivity.class );
                 Bundle myBundle = new Bundle();
-                myBundle.putDouble("latitude", selectedLocation.getLatitude());
-                myBundle.putDouble("longitude", selectedLocation.getLongitude());
-                intent.putExtras(myBundle);
+                if(selectedLocation != null ){
+                    myBundle.putDouble("latitude", selectedLocation.getLatitude());
+                    myBundle.putDouble("longitude", selectedLocation.getLongitude());
+                    intent.putExtras(myBundle);
+                }
+                else{
+                    Toast.makeText(MapActivity.this, "NO SE QUE ERROR.", Toast.LENGTH_SHORT).show();
+
+                }
                 startActivity(intent);
             }
         });
@@ -123,6 +129,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Log.d(TAG, "geoLocate: found a location: " + address.toString());
 
             Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT);
+            selectedLocation.setLatitude(address.getLatitude());
+            selectedLocation.setLongitude(address.getLongitude());
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM,
                     address.getAddressLine(0));
 
@@ -158,22 +166,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
-                        if (task.isSuccessful()){
+                        Location currentLocation = (Location) task.getResult();
+
+                        System.out.println(currentLocation);
+                        if (currentLocation != null){
                             Log.d(TAG, "onComplete: found location!");
-                            Location currentLocation = (Location) task.getResult();
                             selectedLocation = currentLocation;
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM,
                                     "MyLocation");
                         }else{
                             Log.d(TAG, "onComplete: current location is null");
-                            Toast.makeText(MapActivity.this, "unable to get current location", Toast.LENGTH_SHORT);
+                            Toast.makeText(MapActivity.this, "Error al obtener ubicación actual.", Toast.LENGTH_SHORT).show();
+
                         }
                     }
                 });
             }
         }catch(SecurityException e){
             Log.d(TAG, "getDeviceLocation: SecurityException " + e.getMessage());
+            Toast.makeText(MapActivity.this, "Error OSOOSOOSOSOSSOal obtener ubicación actual.", Toast.LENGTH_SHORT).show();
+
         }
     }
 
