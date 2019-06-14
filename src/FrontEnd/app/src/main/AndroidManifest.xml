@@ -51,6 +51,11 @@
             android:parentActivityName=".ui.MainActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.ScannerActivity"
+            android:parentActivityName=".ui.CreatePurchaseActivity"
+            android:screenOrientation="portrait" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCv61x2spNrmVw3m3Gg4R31NuYr8-UWiHY" />
