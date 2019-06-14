@@ -36,15 +36,6 @@ public class ReportActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_report);
-
-        mToolbar = findViewById(R.id.toolbar_top);
-        setSupportActionBar(mToolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-        mRecyclerViewReports = findViewById(R.id.reportsRecyclerView);
         getReports();
     }
 
@@ -55,6 +46,30 @@ public class ReportActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void buildReportContentView() {
+        setContentView(R.layout.activity_report);
+
+        mToolbar = findViewById(R.id.toolbar_top);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mRecyclerViewReports = findViewById(R.id.reportsRecyclerView);
+    }
+
+    private void buildNonReportContentView() {
+        setContentView(R.layout.activity_non_report);
+
+        mToolbar = findViewById(R.id.toolbar_top);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mRecyclerViewReports = findViewById(R.id.reportsRecyclerView);
     }
 
     private void getReports() {
@@ -71,7 +86,12 @@ public class ReportActivity extends AppCompatActivity {
             public void onResponse(Call<List<DebtorDebtee>> call, Response<List<DebtorDebtee>> response) {
                 if (response.isSuccessful()) {
                     reports = response.body();
-                    buildRecyclerViewReport();
+                    if (reports.size() == 0) {
+                        buildNonReportContentView();
+                    } else {
+                        buildReportContentView();
+                        buildRecyclerViewReport();
+                    }
                     loading.dismiss();
                 } else {
                     loading.dismiss();

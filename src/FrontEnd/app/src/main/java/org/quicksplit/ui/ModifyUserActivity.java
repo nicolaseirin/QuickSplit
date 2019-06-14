@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,7 +34,6 @@ import com.squareup.picasso.Picasso;
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
-import org.quicksplit.Utils;
 import org.quicksplit.models.User;
 import org.quicksplit.service.UserClient;
 
@@ -87,6 +85,10 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getUserData();
+    }
+
+    private void buildContentView() {
         setContentView(R.layout.activity_modify_user);
 
         mToolbar = findViewById(R.id.toolbar_top);
@@ -131,7 +133,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         });
 
         mImageAvatar = findViewById(R.id.img_avatar);
-        getUserData();
+        loadUserData();
     }
 
     @Override
@@ -168,7 +170,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()) {
                     user = response.body();
-                    loadUserData();
+                    buildContentView();
                     loading.dismiss();
                 } else {
                     Toast.makeText(ModifyUserActivity.this, "Error al solicitar la edición de datos.", Toast.LENGTH_SHORT).show();

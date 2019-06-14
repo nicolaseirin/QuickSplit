@@ -390,7 +390,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         imageUri = Uri.parse(ServiceGenerator.getBaseUrl() + "purchases/" + purchase.getId() + "/image");
         Picasso.get()
                 .load(imageUri)
-                .resize(100, 100)
+                .resize(300, 300)
                 .centerCrop()
                 .into(mImagePurchase);
     }
