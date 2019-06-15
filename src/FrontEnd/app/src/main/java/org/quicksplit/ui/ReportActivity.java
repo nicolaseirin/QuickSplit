@@ -38,6 +38,8 @@ public class ReportActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mRecyclerViewManager;
     private Button mButtonRefresh;
 
+    private int idMenuResource = R.menu.navigation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +48,7 @@ public class ReportActivity extends AppCompatActivity {
 
     private void buildReportContentView() {
         setContentView(R.layout.activity_report);
+        idMenuResource = R.menu.navigation;
 
         mToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(mToolbar);
@@ -58,6 +61,7 @@ public class ReportActivity extends AppCompatActivity {
 
     private void buildNonReportContentView() {
         setContentView(R.layout.activity_non_report);
+        idMenuResource = R.menu.navigation;
 
         mToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(mToolbar);
@@ -68,6 +72,7 @@ public class ReportActivity extends AppCompatActivity {
 
     private void buildErrorReportContentView() {
         setContentView(R.layout.activity_error);
+        idMenuResource = R.menu.refresh;
 
         mToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(mToolbar);
@@ -88,7 +93,7 @@ public class ReportActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.refresh, menu);
+        menuInflater.inflate(idMenuResource, menu);
         return true;
     }
 

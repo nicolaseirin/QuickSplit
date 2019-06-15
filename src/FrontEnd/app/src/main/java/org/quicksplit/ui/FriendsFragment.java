@@ -12,6 +12,7 @@ import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.quicksplit.R;
@@ -41,6 +42,9 @@ public class FriendsFragment extends Fragment {
 
     private static final String FRAGMENT_ID = "fragment_id";
     private String fragmentId;
+
+    private LinearLayout mLinearLayoutEmpty;
+    private LinearLayout mLinearLayoutNoResult;
 
     private String token;
     private String userId;
@@ -92,6 +96,13 @@ public class FriendsFragment extends Fragment {
                 public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                     if (response.isSuccessful()) {
                         users = response.body();
+                        if (users.size() == 0) {
+                            mLinearLayoutEmpty.setVisibility(View.GONE);
+                            mLinearLayoutNoResult.setVisibility(View.VISIBLE);
+                        } else {
+                            mLinearLayoutEmpty.setVisibility(View.GONE);
+                            mLinearLayoutNoResult.setVisibility(View.GONE);
+                        }
                         buildRecyclerViewAddFriendsAdapter();
                         loading.dismiss();
                     } else {
@@ -129,6 +140,9 @@ public class FriendsFragment extends Fragment {
 
         SearchView search = view.findViewById(R.id.search_bar);
         search.setOnQueryTextListener(mOnQueryTextListener);
+
+        mLinearLayoutEmpty = view.findViewById(R.id.lly_emptyFriends);
+        mLinearLayoutNoResult = view.findViewById(R.id.lly_noSearchResults);
 
         getTokenUserId();
         getFriends();
@@ -169,6 +183,14 @@ public class FriendsFragment extends Fragment {
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
                     users = response.body();
+                    if (users.size() == 0) {
+                        mLinearLayoutEmpty.setVisibility(View.VISIBLE);
+                        mLinearLayoutNoResult.setVisibility(View.GONE);
+                    } else {
+                        mLinearLayoutEmpty.setVisibility(View.GONE);
+                        mLinearLayoutNoResult.setVisibility(View.GONE);
+                    }
+
                     buildRecyclerViewDeleteFriendsAdapter();
                     loading.dismiss();
                 } else {
