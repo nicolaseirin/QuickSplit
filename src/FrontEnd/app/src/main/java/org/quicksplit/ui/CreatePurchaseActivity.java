@@ -29,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -70,6 +71,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
     private static final int SCANN_QR_CAMERA = 3;
 
     private ImageView mImagePurchase;
+    private LinearLayout mLinearLayoutPurchaseImage;
     private Bitmap bitmap;
     private File destination = null;
     private String currentImagePath = null;
@@ -102,7 +104,6 @@ public class CreatePurchaseActivity extends AppCompatActivity {
     private GroupFriendsAdapter mRecycleViewGroupFriendsAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
 
-    private Button mButtonUploadImage;
     private Button mButtonCreatePurchase;
     private Button mButtonAddMap;
     private Button mButtonScanCost;
@@ -120,6 +121,13 @@ public class CreatePurchaseActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         mImagePurchase = findViewById(R.id.img_purchase);
+        mLinearLayoutPurchaseImage = findViewById(R.id.lly_imgPurchase);
+        mLinearLayoutPurchaseImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectPurchaseImage();
+            }
+        });
 
         mTextInputLayoutGroupMembers = findViewById(R.id.lblError_groupMembers);
         mRecyclerViewGroupMembers = findViewById(R.id.purchisersReciclerView);
@@ -155,14 +163,6 @@ public class CreatePurchaseActivity extends AppCompatActivity {
 
         mTextInputLayoutTxtCost = findViewById(R.id.lblError_txtCost);
         mEditTextCost = findViewById(R.id.txt_cost);
-
-        mButtonUploadImage = findViewById(R.id.btn_uploadImage);
-        mButtonUploadImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectPurchaseImage();
-            }
-        });
 
         mButtonCreatePurchase = findViewById(R.id.btn_createPurchase);
         mButtonCreatePurchase.setOnClickListener(new View.OnClickListener() {
@@ -406,6 +406,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
                 public void onResponse(Call call, Response response) {
                     if (response.isSuccessful()) {
                         loading.dismiss();
+                        destination.delete();
                         setResult(RESULT_OK);
                         finish();
                     } else {

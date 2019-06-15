@@ -300,6 +300,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
             public void onResponse(Call call, Response response) {
                 if (response.isSuccessful()) {
                     Picasso.get().invalidate(imageUri);
+                    file.delete();
                     Toast.makeText(ModifyPurchaseActivity.this, "La imagen se actualizó correctamente.", Toast.LENGTH_SHORT).show();
                 } else {
                     System.out.println("Error al actualizar la imagen.");

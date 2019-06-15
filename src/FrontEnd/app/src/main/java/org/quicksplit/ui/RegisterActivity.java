@@ -264,7 +264,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (currentImagePath != null) {
             TokenManager tokenManager = new TokenManager(this);
 
-            File destination = new File(currentImagePath);
+            final File destination = new File(currentImagePath);
 
             RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/" + currentImagePath.substring(currentImagePath.lastIndexOf(".") + 1)), destination);
             MultipartBody.Part part = MultipartBody.Part.createFormData("image", destination.getName(), fileRequestBody);
@@ -276,6 +276,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 @Override
                 public void onResponse(Call call, Response response) {
                     if (response.isSuccessful()) {
+                        destination.delete();
                         redirect();
                     } else {
                         System.out.println("Error al actualizar la imagen.");
