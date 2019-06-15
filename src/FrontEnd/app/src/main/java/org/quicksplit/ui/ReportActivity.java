@@ -7,7 +7,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import org.quicksplit.R;
@@ -32,20 +36,12 @@ public class ReportActivity extends AppCompatActivity {
     private RecyclerView mRecyclerViewReports;
     private ReportAdapter mRecyclerViewReportAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
+    private Button mButtonRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getReports();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void buildReportContentView() {
@@ -68,8 +64,46 @@ public class ReportActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+    }
 
-        mRecyclerViewReports = findViewById(R.id.reportsRecyclerView);
+    private void buildErrorReportContentView() {
+        setContentView(R.layout.activity_error);
+
+        mToolbar = findViewById(R.id.toolbar_top);
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("División de Gastos");
+
+        mButtonRefresh = findViewById(R.id.btn_refresh);
+        mButtonRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getReports();
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.refresh, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.refresh:
+                getReports();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void getReports() {
@@ -102,7 +136,7 @@ public class ReportActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<DebtorDebtee>> call, Throwable t) {
                 loading.dismiss();
-                Toast.makeText(ReportActivity.this, "Error en la comunicación al obtener grupos.", Toast.LENGTH_SHORT).show();
+                buildErrorReportContentView();
             }
         });
     }

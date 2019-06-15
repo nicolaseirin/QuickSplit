@@ -96,6 +96,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
 
     private RecyclerView.LayoutManager mRecyclerViewManager;
     private Button mButtonModifyPurchase;
+    private Button mButtonUploadImage;
 
     private TextInputLayout mTextInputLayoutGroupMembers;
     private RecyclerView mRecyclerViewMembers;
@@ -135,6 +136,14 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
 
         mButtonModifyPurchase = findViewById(R.id.btn_modifyPurchase);
         mButtonModifyPurchase.setOnClickListener(this);
+
+        mButtonUploadImage = findViewById(R.id.btn_uploadImage);
+        mButtonUploadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectPurchaseImage();
+            }
+        });
 
         mTextInputLayoutGroupMembers = findViewById(R.id.lblError_groupMembers);
         loadPurchaseData();
