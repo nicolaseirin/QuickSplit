@@ -56,7 +56,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private static final int PICK_IMAGE_GALLERY = 2;
 
     private Bitmap bitmap;
-    private String avatarImagePath;
     private String currentImagePath;
 
     private User user;
@@ -73,7 +72,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private EditText mTextLastName;
     private TextInputLayout mLabelErrorEmail;
     private EditText mTextEmail;
-    private TextInputLayout mLabelErrorPassword;
+
     private EditText mTextPassword;
     private TextInputLayout mLabelErrorRepeatPassword;
     private EditText mTextRepeatPassword;
@@ -114,7 +113,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         mLabelErrorEmail = findViewById(R.id.lblError_txtEmail);
         mTextEmail = findViewById(R.id.txtEmail);
 
-        mLabelErrorPassword = findViewById(R.id.lblError_txtPassword);
         mTextPassword = findViewById(R.id.txtPassword);
 
         mLabelErrorRepeatPassword = findViewById(R.id.lblError_txtRepeatPassword);
@@ -250,8 +248,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(ModifyUserActivity.this, "Datos modificados correctamente.", Toast.LENGTH_SHORT).show();
-                    finish();
+                    uploadToServer(currentImagePath);
                 } else {
                     String errorMessage = null;
                     try {
@@ -305,14 +302,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             isValid &= true;
         }
 
-        if (password.isEmpty()) {
-            mLabelErrorPassword.setError("La contraseña es requerida.");
-            isValid = false;
-        } else {
-            mLabelErrorPassword.setError("");
-            isValid &= true;
-        }
-
         if (!password.equals(repeatPassword)) {
             mLabelErrorRepeatPassword.setError("Las contraseñas no coinciden.");
             isValid = false;
@@ -331,6 +320,12 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
 
     private void uploadToServer(String filePath) {
 
+        if (filePath == null) {
+            Toast.makeText(ModifyUserActivity.this, "Datos modificados correctamente.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         TokenManager tokenManager = new TokenManager(this);
 
         UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
@@ -347,7 +342,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                 if (response.isSuccessful()) {
                     Picasso.get().invalidate(imageUri);
                     file.delete();
-                    Toast.makeText(ModifyUserActivity.this, "La imagen se actualizó correctamente.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ModifyUserActivity.this, "Datos modificados correctamente.", Toast.LENGTH_SHORT).show();
+                    finish();
                 } else {
                     System.out.println("Error al actualizar la imagen.");
                 }
@@ -410,7 +406,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             case PICK_IMAGE_CAMERA:
                 if (resultCode == RESULT_OK) {
                     if (currentImagePath.length() > 0) {
-                        uploadToServer(currentImagePath);
                         bitmap = BitmapFactory.decodeFile(currentImagePath);
                         mImageAvatar.setImageBitmap(bitmap);
                     }
@@ -476,9 +471,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
 
-        avatarImagePath = getRealPathFromURI(selectedImage);
+        currentImagePath = getRealPathFromURI(selectedImage);
         mImageAvatar.setImageBitmap(bitmap);
-        uploadToServer(avatarImagePath);
     }
 
     public String getRealPathFromURI(Uri contentUri) {
