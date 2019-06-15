@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Internal;
+using QuickSplit.Application.Users.Models;
 using QuickSplit.Domain;
 
 namespace QuickSplit.Application.Groups.Models
@@ -20,7 +21,7 @@ namespace QuickSplit.Application.Groups.Models
             Cost = purchase.Cost;
             Currency = purchase.Currency.ToString();
             Group = purchase.Group.Id;
-            Participants = purchase.Participants.Select(participant => participant.UserId);
+            Participants = purchase.Participants.Select(participant => new UserModel(participant.User));
             Purchaser = purchase.Purchaser.Id;
         }
         
@@ -32,7 +33,7 @@ namespace QuickSplit.Application.Groups.Models
 
         public int Group { get; set; }
 
-        public IEnumerable<int> Participants { get; set; } = new List<int>();
+        public IEnumerable<UserModel> Participants { get; set; } = new List<UserModel>();
 
         public double Cost { get; set; }
 
