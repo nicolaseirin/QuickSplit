@@ -30,7 +30,8 @@ namespace QuickSplit.Application.Purchases.Commands
                                     .Include(purchase1 => purchase1.Participants)
                                     .FirstOrDefaultAsync(purchase1 => purchase1.Id == request.PurchaseId, cancellationToken: cancellationToken)
                                 ?? throw new InvalidCommandException("Compra no existe");
-
+            
+            UpdateNameIfNeeded(request, purchase);
             UpdateCostIfNeeded(request, purchase);
             UpdateCurrencyIfNeeded(request, purchase);
             await UpdateParticipantsIfNeeded(request, purchase);

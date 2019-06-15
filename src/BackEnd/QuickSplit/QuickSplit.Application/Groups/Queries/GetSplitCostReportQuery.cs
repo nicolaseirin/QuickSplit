@@ -48,7 +48,7 @@ namespace QuickSplit.Application.Groups.Queries
         {
             return new DebtorDebteeModel()
             {
-                Amount = pair.Value,
+                Amount = Math.Round(pair.Value, 2) ,
                 Debtor = new UserModel(pair.Key.Item1),
                 Debtee = new UserModel(pair.Key.Item2)
             };
