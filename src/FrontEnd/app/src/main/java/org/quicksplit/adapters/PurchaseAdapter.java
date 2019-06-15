@@ -66,7 +66,7 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
                 .into(groupViewHolder.mImagePurchase);
 
         groupViewHolder.mTextViewPurchaseName.setText(currentItem.getName());
-        groupViewHolder.mTextViewCurrency.setText(currentItem.getCurrency());
+        groupViewHolder.mTextViewCurrency.setText(currentItem.getCurrency() + " " + currentItem.getCost());
 
         //For sigle item call the users
         TokenManager tokenManager = new TokenManager(context);

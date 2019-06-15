@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.quicksplit.R;
@@ -49,6 +50,8 @@ public class GroupsFragment extends Fragment implements View.OnClickListener {
 
     static final int ADD_GROUP_REQUEST = 0;
     static final int MODIFY_GROUP_REQUEST = 1;
+
+    private LinearLayout mLinearLayoutEmptyGroups;
 
     private List<Group> groups;
     private RecyclerView mRecyclerViewGroups;
@@ -87,6 +90,8 @@ public class GroupsFragment extends Fragment implements View.OnClickListener {
         mButtonCreateGroup = view.findViewById(R.id.btn_createGroup);
         mButtonCreateGroup.setOnClickListener(this);
 
+        mLinearLayoutEmptyGroups = view.findViewById(R.id.lly_emptyGroups);
+
         getGroups();
 
         return view;
@@ -106,6 +111,12 @@ public class GroupsFragment extends Fragment implements View.OnClickListener {
             public void onResponse(Call<List<Group>> call, Response<List<Group>> response) {
                 if (response.isSuccessful()) {
                     groups = response.body();
+                    if (groups.size() == 0) {
+                        mLinearLayoutEmptyGroups.setVisibility(View.VISIBLE);
+                    } else {
+                        mLinearLayoutEmptyGroups.setVisibility(View.GONE);
+                    }
+
                     buildRecyclerViewGroups();
                     loading.dismiss();
                 } else {

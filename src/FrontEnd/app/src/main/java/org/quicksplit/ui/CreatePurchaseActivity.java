@@ -407,8 +407,6 @@ public class CreatePurchaseActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         loading.dismiss();
                         destination.delete();
-                        setResult(RESULT_OK);
-                        finish();
                     } else {
                         loading.dismiss();
                         System.out.println("Error al actualizar la imagen.");
@@ -422,6 +420,9 @@ public class CreatePurchaseActivity extends AppCompatActivity {
                 }
             });
         }
+
+        setResult(RESULT_OK);
+        finish();
     }
 
     private void showFormErrors() {
