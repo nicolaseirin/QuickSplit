@@ -51,6 +51,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private static final int PICK_IMAGE_CAMERA = 1;
     private static final int PICK_IMAGE_GALLERY = 2;
 
+    private ProgressDialog loading;
+
     private String currentImagePath;
     private Bitmap bitmap;
 
@@ -69,6 +71,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private TextView mLabelErrorMessage;
     private Button mButtonregister;
     private TextView mTextViewLogin;
+
+    public RegisterActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +108,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mButtonregister = findViewById(R.id.btn_register);
         mButtonregister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                loading = ProgressDialog.show(RegisterActivity.this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
                 tryToRegisterUser();
             }
         });
@@ -112,6 +118,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void tryToRegisterUser() {
+
         User user = new User();
 
         user.setName(mTextName.getText().toString());
@@ -119,18 +126,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         user.setMail(mTextEmail.getText().toString());
         user.setPassword(mTextPassword.getText().toString());
 
-        if (!validateFieldsAndShowErrors())
+        if (!validateFieldsAndShowErrors()) {
+            loading.dismiss();
             return;
+        }
 
         registerUser(user);
     }
 
+
     private void registerUser(User user) {
         UserClient client = ServiceGenerator.createService(UserClient.class);
         Call<User> call = client.createAccount(user);
-
-        final ProgressDialog loading = ProgressDialog.show(this, "Recuperando datos", "Espere...", false, false);
-
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -226,8 +233,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         UserClient client = ServiceGenerator.createService(UserClient.class);
         Call<Token> call = client.login(login);
-
-        final ProgressDialog loading = ProgressDialog.show(this, "Recuperando datos", "Espere...", false, false);
 
         call.enqueue(new Callback<Token>() {
 
