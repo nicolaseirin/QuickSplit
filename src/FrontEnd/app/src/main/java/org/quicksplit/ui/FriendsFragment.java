@@ -2,11 +2,10 @@ package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -15,11 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.auth0.android.jwt.Claim;
-import com.auth0.android.jwt.JWT;
-
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
+import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.AddFriendsAdapter;
 import org.quicksplit.adapters.DeleteFriendsAdapter;
 import org.quicksplit.models.User;
@@ -42,6 +39,9 @@ import retrofit2.Response;
  */
 public class FriendsFragment extends Fragment {
 
+    private static final String FRAGMENT_ID = "fragment_id";
+    private String fragmentId;
+
     private String token;
     private String userId;
     private List<User> users;
@@ -51,22 +51,15 @@ public class FriendsFragment extends Fragment {
     private AddFriendsAdapter mRecyclerViewFriendsAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
     public FriendsFragment() {
     }
 
-    public static FriendsFragment newInstance(String param1, String param2) {
+    public static FriendsFragment newInstance(String fragmentId) {
         FriendsFragment fragment = new FriendsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(FRAGMENT_ID, fragmentId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,18 +68,14 @@ public class FriendsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            fragmentId = getArguments().getString(FRAGMENT_ID);
         }
     }
 
     private void getTokenUserId() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        token = preferences.getString("token", null);
-
-        JWT parsedJWT = new JWT(token);
-        Claim subscriptionMetaData = parsedJWT.getClaim("Id");
-        userId = subscriptionMetaData.asString();
+        TokenManager tokenManager = new TokenManager(getContext());
+        token = tokenManager.getToken();
+        userId = tokenManager.getUserIdFromToken();
     }
 
     private SearchView.OnQueryTextListener mOnQueryTextListener = new SearchView.OnQueryTextListener() {
@@ -95,7 +84,7 @@ public class FriendsFragment extends Fragment {
             UserClient client = ServiceGenerator.createService(UserClient.class, token);
             Call<List<User>> call = client.friendsLookup(userId, s);
 
-            final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+            final ProgressDialog loading = ProgressDialog.show(getActivity(), getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
             call.enqueue(new Callback<List<User>>() {
 
@@ -125,7 +114,7 @@ public class FriendsFragment extends Fragment {
         public boolean onQueryTextChange(String s) {
             System.out.println("Typing");
             if (s.equals("")) {
-                getUserListItems();
+                getFriends();
             }
             return false;
         }
@@ -142,7 +131,7 @@ public class FriendsFragment extends Fragment {
         search.setOnQueryTextListener(mOnQueryTextListener);
 
         getTokenUserId();
-        getUserListItems();
+        getFriends();
 
         return view;
     }
@@ -168,11 +157,11 @@ public class FriendsFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private void getUserListItems() {
+    private void getFriends() {
         UserClient client = ServiceGenerator.createService(UserClient.class, token);
         Call<List<User>> call = client.getFriends(userId);
 
-        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
         call.enqueue(new Callback<List<User>>() {
 
@@ -191,9 +180,21 @@ public class FriendsFragment extends Fragment {
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
                 loading.dismiss();
-                Toast.makeText(getActivity(), "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
+                loadFragment(new ErrorFragment());
             }
         });
+    }
+
+    private void loadFragment(Fragment fragment) {
+
+        Bundle data = new Bundle();
+        data.putString("fragment_id", fragmentId + "");
+        fragment.setArguments(data);
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private void buildRecyclerViewAddFriendsAdapter() {
@@ -210,14 +211,14 @@ public class FriendsFragment extends Fragment {
                 UserClient client = ServiceGenerator.createService(UserClient.class, token);
                 Call<Void> call = client.addFriend(userId, user.getId());
 
-                final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+                final ProgressDialog loading = ProgressDialog.show(getActivity(), getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
                 call.enqueue(new Callback<Void>() {
 
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
-                            getUserListItems();
+                            getFriends();
                             loading.dismiss();
                         } else {
                             loading.dismiss();
@@ -249,14 +250,14 @@ public class FriendsFragment extends Fragment {
                 UserClient client = ServiceGenerator.createService(UserClient.class, token);
                 Call<Void> call = client.deleteFriend(userId, user.getId());
 
-                final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+                final ProgressDialog loading = ProgressDialog.show(getActivity(), getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
                 call.enqueue(new Callback<Void>() {
 
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
-                            getUserListItems();
+                            getFriends();
                             loading.dismiss();
                         } else {
                             loading.dismiss();

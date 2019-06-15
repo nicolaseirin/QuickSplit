@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         actionBar = MainActivity.this.getSupportActionBar();
 
-        loadFragment(new PurchasesFragment());
+        loadFragment(new PurchasesFragment(), R.id.navigation_purchases);
 
         BottomNavigationView navigation = findViewById(R.id.navigation_botton);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -58,32 +58,49 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment;
-            switch (item.getItemId()) {
-                case R.id.navigation_purchases:
-                    mToolbar.setTitle(R.string.title_purchases);
-                    actionBar.show();
-                    fragment = new PurchasesFragment();
-                    loadFragment(fragment);
-                    return true;
-                case R.id.navigation_friends:
-                    mToolbar.setTitle(R.string.title_friends);
-                    actionBar.hide();
-                    fragment = new FriendsFragment();
-                    loadFragment(fragment);
-                    return true;
-                case R.id.navigation_groups:
-                    actionBar.show();
-                    mToolbar.setTitle(R.string.title_groups);
-                    fragment = new GroupFragment();
-                    loadFragment(fragment);
-                    return true;
-            }
-
-            return false;
+            return createFragmetView(item.getItemId());
         }
     };
 
-    private void loadFragment(Fragment fragment) {
+    public void refreshFragment(String fragmentId) {
+        if (fragmentId != null) {
+            int intFramentId = Integer.parseInt(fragmentId);
+            createFragmetView(intFramentId);
+        }
+    }
+
+    private boolean createFragmetView(int fragmentId) {
+        Fragment fragment;
+        switch (fragmentId) {
+            case R.id.navigation_purchases:
+                mToolbar.setTitle(R.string.title_purchases);
+                actionBar.show();
+                fragment = new PurchasesFragment();
+                loadFragment(fragment, R.id.navigation_purchases);
+                return true;
+            case R.id.navigation_friends:
+                mToolbar.setTitle(R.string.title_friends);
+                actionBar.hide();
+                fragment = new FriendsFragment();
+                loadFragment(fragment, R.id.navigation_friends);
+                return true;
+            case R.id.navigation_groups:
+                actionBar.show();
+                mToolbar.setTitle(R.string.title_groups);
+                fragment = new GroupsFragment();
+                loadFragment(fragment, R.id.navigation_groups);
+                return true;
+        }
+
+        return false;
+    }
+
+    private void loadFragment(Fragment fragment, int fragmentId) {
+
+        Bundle data = new Bundle();
+        data.putString("fragment_id", fragmentId + "");
+        fragment.setArguments(data);
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_container, fragment);
         transaction.addToBackStack(null);

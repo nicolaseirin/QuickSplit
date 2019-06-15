@@ -198,6 +198,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                setResult(RESULT_CANCELED);
                 onBackPressed();
                 break;
             case R.id.done:
@@ -362,7 +363,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
         PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
         Call<Purchase> call = client.createPurchase(purchase);
 
-        final ProgressDialog loading = ProgressDialog.show(this, this.getString(R.string.fetching_data), this.getString(R.string.please_wait), false, false);
+        final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
         call.enqueue(new Callback<Purchase>() {
 
@@ -394,6 +395,8 @@ public class CreatePurchaseActivity extends AppCompatActivity {
 
             destination = new File(currentImagePath);
 
+            final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
+
             RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/" + currentImagePath.substring(currentImagePath.lastIndexOf(".") + 1)), destination);
             MultipartBody.Part part = MultipartBody.Part.createFormData("image", destination.getName(), fileRequestBody);
 
@@ -402,14 +405,18 @@ public class CreatePurchaseActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call call, Response response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(CreatePurchaseActivity.this, "La imagen se actualizó correctamente.", Toast.LENGTH_SHORT).show();
+                        loading.dismiss();
+                        setResult(RESULT_OK);
+                        finish();
                     } else {
+                        loading.dismiss();
                         System.out.println("Error al actualizar la imagen.");
                     }
                 }
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
+                    loading.dismiss();
                     Toast.makeText(CreatePurchaseActivity.this, "Error en la conexión al actualizar la imagen.", Toast.LENGTH_SHORT).show();
                 }
             });

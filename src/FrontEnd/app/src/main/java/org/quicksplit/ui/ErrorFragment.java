@@ -21,11 +21,9 @@ import org.quicksplit.R;
  */
 public class ErrorFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String FRAGMENT_ID = "fragment_id";
 
-    private String mParam1;
-    private String mParam2;
+    private String fragmetId;
 
     private OnFragmentInteractionListener mListener;
 
@@ -34,11 +32,10 @@ public class ErrorFragment extends Fragment {
     public ErrorFragment() {
     }
 
-    public static ErrorFragment newInstance(String param1, String param2) {
+    public static ErrorFragment newInstance(String fragmentId) {
         ErrorFragment fragment = new ErrorFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(FRAGMENT_ID, fragmentId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,9 +43,9 @@ public class ErrorFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            fragmetId = getArguments().getString(FRAGMENT_ID);
         }
     }
 
@@ -61,7 +58,8 @@ public class ErrorFragment extends Fragment {
         mButtonRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: NOTIFY THE LAST FRAGMENT TO UPDATE
+                MainActivity parent = (MainActivity) getActivity();
+                parent.refreshFragment(fragmetId);
             }
         });
 

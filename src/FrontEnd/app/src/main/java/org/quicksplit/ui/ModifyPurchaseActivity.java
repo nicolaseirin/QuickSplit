@@ -544,7 +544,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
         Call<Purchase> call = client.modifyPurchase(getIntent().getStringExtra("EXTRA_PURCHASE_ID"), purchase);
 
-        final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
         call.enqueue(new Callback<Purchase>() {
 
