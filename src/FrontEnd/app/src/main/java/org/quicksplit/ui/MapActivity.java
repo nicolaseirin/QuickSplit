@@ -57,7 +57,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Button mButtonConfirm;
-    private Location selectedLocation;
+    private Location mSelectedLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +66,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mSearchText = (EditText) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_gps);
         getLocationPermission();
+        mSelectedLocation = new Location("");
+        mSelectedLocation.setLongitude(0);
+        mSelectedLocation.setLatitude(0);
 
         mButtonConfirm = findViewById(R.id.btn_confirm);
         mButtonConfirm.setOnClickListener(new View.OnClickListener() {
@@ -73,16 +76,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 Intent intent = new Intent(MapActivity.this, CreatePurchaseActivity.class );
                 Bundle myBundle = new Bundle();
-                if(selectedLocation != null ){
-                    myBundle.putDouble("latitude", selectedLocation.getLatitude());
-                    myBundle.putDouble("longitude", selectedLocation.getLongitude());
+                if(mSelectedLocation.getLatitude() != 0 ){
+                    myBundle.putDouble("latitude", mSelectedLocation.getLatitude());
+                    myBundle.putDouble("longitude", mSelectedLocation.getLongitude());
                     intent.putExtras(myBundle);
+                    startActivity(intent);
                 }
                 else{
-                    Toast.makeText(MapActivity.this, "NO SE QUE ERROR.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapActivity.this, "Error: Debe seleccionar una ubicación.", Toast.LENGTH_SHORT).show();
 
                 }
-                startActivity(intent);
             }
         });
     }
@@ -129,8 +132,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Log.d(TAG, "geoLocate: found a location: " + address.toString());
 
             Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT);
-            selectedLocation.setLatitude(address.getLatitude());
-            selectedLocation.setLongitude(address.getLongitude());
+            mSelectedLocation.setLatitude(address.getLatitude());
+            mSelectedLocation.setLongitude(address.getLongitude());
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM,
                     address.getAddressLine(0));
 
@@ -171,7 +174,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         System.out.println(currentLocation);
                         if (currentLocation != null){
                             Log.d(TAG, "onComplete: found location!");
-                            selectedLocation = currentLocation;
+                            mSelectedLocation = currentLocation;
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM,
                                     "MyLocation");
