@@ -107,11 +107,19 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
 
     private ArrayAdapter<String> currenciesArrayAdapter;
 
+    private Button mButtonRefresh;
+    private int idMenuResource = R.menu.refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadPurchaseData();
+    }
+
+    private void buildModifyPurchaseContentView() {
         setContentView(R.layout.activity_modify_purchase);
+
+        idMenuResource = R.menu.picture;
 
         mToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(mToolbar);
@@ -146,13 +154,32 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         });
 
         mTextInputLayoutGroupMembers = findViewById(R.id.lblError_groupMembers);
-        loadPurchaseData();
+    }
+
+    private void buildErrorContentView() {
+        setContentView(R.layout.activity_error);
+        idMenuResource = R.menu.refresh;
+
+        mToolbar = findViewById(R.id.toolbar_top);
+        mToolbar.setTitle("Modificar Compra");
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mButtonRefresh = findViewById(R.id.btn_refresh);
+        mButtonRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadPurchaseData();
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.picture, menu);
+        menuInflater.inflate(idMenuResource, menu);
         return true;
     }
 
@@ -167,6 +194,9 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
                 return true;
             case R.id.picture:
                 selectPurchaseImage();
+                return true;
+            case R.id.refresh:
+                loadPurchaseData();
                 return true;
         }
 
@@ -349,20 +379,26 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
         Call<Purchase> call = client.getPurchases(purchaseId);
 
+        final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
+
         call.enqueue(new Callback<Purchase>() {
             @Override
             public void onResponse(Call<Purchase> call, Response<Purchase> response) {
                 if (response.isSuccessful()) {
                     purchase = response.body();
+                    buildModifyPurchaseContentView();
                     getPurchaseValues();
+                    loading.dismiss();
                 } else {
+                    loading.dismiss();
                     Toast.makeText(ModifyPurchaseActivity.this, "Error al obtener compras.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Purchase> call, Throwable t) {
-                Toast.makeText(ModifyPurchaseActivity.this, "Error en la comunicación al obtener compras.", Toast.LENGTH_SHORT).show();
+                loading.dismiss();
+                buildErrorContentView();
             }
         });
     }
@@ -388,7 +424,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
 
             @Override
             public void onFailure(Call<Group> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
+                buildErrorContentView();
             }
         });
     }
@@ -457,7 +493,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
+                buildErrorContentView();
             }
         });
     }
@@ -482,7 +518,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-                Toast.makeText(ModifyPurchaseActivity.this, "Error en la comunicación al obtener los participantes de la compra.", Toast.LENGTH_SHORT).show();
+                buildErrorContentView();
             }
         });
     }

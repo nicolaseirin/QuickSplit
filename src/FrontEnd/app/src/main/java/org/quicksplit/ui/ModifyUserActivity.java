@@ -81,9 +81,9 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private ImageView mImageAvatar;
     private Button mButtonSave;
     private LinearLayout mLayoutChangeAvatar;
-    private Button mButtonRefresh;
 
-    private int idMenuResource = R.menu.settings;
+    private Button mButtonRefresh;
+    private int idMenuResource = R.menu.refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
