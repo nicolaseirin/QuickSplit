@@ -24,7 +24,7 @@ public interface GroupClient {
     Call<GroupModelIn> getGroup(@Path("id") String id);
 
     @POST("groups")
-    Call<Group> createGroup(@Body Group group);
+    Call<GroupModelIn> createGroup(@Body Group group);
 
     @PUT("groups/{id}")
     Call<GroupModelIn> modifyGroup(@Path("id") String id, @Body Group group);

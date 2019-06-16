@@ -30,7 +30,7 @@ public interface PurchaseClient {
     Call<List<User>> getParticipants(@Path("id") String id);
 
     @POST("purchases")
-    Call<Purchase> createPurchase(@Body Purchase purchase);
+    Call<PurchaseModelIn> createPurchase(@Body Purchase purchase);
 
     @GET("purchases/{id}/image")
     Call<ResponseBody> getPurchaseImage(@Path("id") String id);

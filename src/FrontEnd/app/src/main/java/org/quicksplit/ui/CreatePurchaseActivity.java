@@ -42,6 +42,7 @@ import org.quicksplit.adapters.GroupFriendsAdapter;
 import org.quicksplit.models.Group;
 import org.quicksplit.models.GroupModelIn;
 import org.quicksplit.models.Purchase;
+import org.quicksplit.models.PurchaseModelIn;
 import org.quicksplit.models.User;
 import org.quicksplit.service.CurrencyClient;
 import org.quicksplit.service.GroupClient;
@@ -137,7 +138,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
         mSpinnerGroups.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                getMembers((Group) mSpinnerGroups.getSelectedItem());
+                getMembers((GroupModelIn) mSpinnerGroups.getSelectedItem());
             }
 
             @Override
@@ -282,13 +283,17 @@ public class CreatePurchaseActivity extends AppCompatActivity {
         mSpinnerGroups.setAdapter(groupArrayAdapter);
     }
 
-    private void getMembers(Group group) {
+    private void getMembers(GroupModelIn group) {
+        members = group.getMemberships();
+        participants = new ArrayList<>(members);
+        buildRecyclerViewCreateGroupFriendsAdapter();
+        /*
         TokenManager tokenManager = new TokenManager(this);
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
         Call<List<User>> call = client.getGroupMembers(group.getId());
 
-        final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
         call.enqueue(new Callback<List<User>>() {
 
@@ -310,7 +315,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
                 loading.dismiss();
                 Toast.makeText(CreatePurchaseActivity.this, "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
 
     private void buildRecyclerViewCreateGroupFriendsAdapter() {
@@ -348,14 +353,14 @@ public class CreatePurchaseActivity extends AppCompatActivity {
         purchase.setCost(mEditTextCost.getText().toString());
         purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
 
-        purchase.setGroup(((Group) mSpinnerGroups.getSelectedItem()).getId());
+        purchase.setGroup(((GroupModelIn) mSpinnerGroups.getSelectedItem()).getId());
 
         if (myBundle != null) {
             purchase.setLatitude(myBundle.getDouble("latitude"));
             purchase.setLongitude(myBundle.getDouble("longitude"));
         }
         purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
-        purchase.setGroup(((Group) mSpinnerGroups.getSelectedItem()).getId());
+        purchase.setGroup(((GroupModelIn) mSpinnerGroups.getSelectedItem()).getId());
 
 
         List<String> participantsString = new ArrayList<String>();
@@ -366,14 +371,14 @@ public class CreatePurchaseActivity extends AppCompatActivity {
         purchase.setPurchaser(tokenManager.getUserIdFromToken());
 
         PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
-        Call<Purchase> call = client.createPurchase(purchase);
+        Call<PurchaseModelIn> call = client.createPurchase(purchase);
 
         final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
-        call.enqueue(new Callback<Purchase>() {
+        call.enqueue(new Callback<PurchaseModelIn>() {
 
             @Override
-            public void onResponse(Call<Purchase> call, Response<Purchase> response) {
+            public void onResponse(Call<PurchaseModelIn> call, Response<PurchaseModelIn> response) {
                 if (response.isSuccessful()) {
                     uploadImageToServer(response.body());
                     loading.dismiss();
@@ -384,14 +389,14 @@ public class CreatePurchaseActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Purchase> call, Throwable t) {
+            public void onFailure(Call<PurchaseModelIn> call, Throwable t) {
                 loading.dismiss();
                 Toast.makeText(CreatePurchaseActivity.this, "Error en la comunicación al crear la compra.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void uploadImageToServer(Purchase purchase) {
+    private void uploadImageToServer(PurchaseModelIn purchase) {
 
         if (currentImagePath != null) {
             TokenManager tokenManager = new TokenManager(this);
