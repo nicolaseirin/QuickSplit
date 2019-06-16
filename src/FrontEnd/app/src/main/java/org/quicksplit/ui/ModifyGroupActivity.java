@@ -23,6 +23,7 @@ import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.AddFriendsAdapter;
 import org.quicksplit.adapters.DeleteFriendsAdapter;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.GroupModelIn;
 import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 import org.quicksplit.service.UserClient;
@@ -39,7 +40,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
     private List<User> members;
     private List<User> friends;
 
-    private Group group;
+    private GroupModelIn group;
 
     private Toolbar mToolbar;
 
@@ -140,11 +141,11 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         TokenManager tokenManager = new TokenManager(this);
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<Group> call = client.getGroup(groupId);
+        Call<GroupModelIn> call = client.getGroup(groupId);
 
-        call.enqueue(new Callback<Group>() {
+        call.enqueue(new Callback<GroupModelIn>() {
             @Override
-            public void onResponse(Call<Group> call, Response<Group> response) {
+            public void onResponse(Call<GroupModelIn> call, Response<GroupModelIn> response) {
                 if (response.isSuccessful()) {
                     group = response.body();
                     buildModifyGroupContentView();
@@ -154,7 +155,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<Group> call, Throwable t) {
+            public void onFailure(Call<GroupModelIn> call, Throwable t) {
                 buildErrorContentView();
             }
         });
@@ -165,35 +166,10 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         getGroupMembers(group);
     }
 
-    private void getGroupMembers(Group group) {
-        TokenManager tokenManager = new TokenManager(this);
-
-        GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<List<User>> call = client.getGroupMembers(group.getId());
-
-        final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
-
-        call.enqueue(new Callback<List<User>>() {
-
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful()) {
-                    members = response.body();
-                    getFriends();
-                    buildRecyclerViewDeleteFriendsAdapter();
-                    loading.dismiss();
-                } else {
-                    loading.dismiss();
-                    Toast.makeText(ModifyGroupActivity.this, "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                loading.dismiss();
-                buildErrorContentView();
-            }
-        });
+    private void getGroupMembers(GroupModelIn group) {
+        members = group.getMemberships();
+        getFriends();
+        buildRecyclerViewDeleteFriendsAdapter();
     }
 
     private void buildRecyclerViewAddFriendsAdapter() {
@@ -240,7 +216,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
         Call<List<User>> call = client.getFriends(tokenManager.getUserIdFromToken());
 
-        final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
         call.enqueue(new Callback<List<User>>() {
 

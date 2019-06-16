@@ -40,8 +40,10 @@ import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.AddFriendsAdapter;
 import org.quicksplit.adapters.DeleteFriendsAdapter;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.GroupModelIn;
 import org.quicksplit.models.ModifyPurchase;
 import org.quicksplit.models.Purchase;
+import org.quicksplit.models.PurchaseModelIn;
 import org.quicksplit.models.User;
 import org.quicksplit.service.CurrencyClient;
 import org.quicksplit.service.GroupClient;
@@ -73,8 +75,8 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
     private Bitmap bitmap;
     private Uri imageUri;
 
-    private Purchase purchase;
-    private Group group;
+    private PurchaseModelIn purchase;
+    private GroupModelIn group;
 
     private ImageView mImagePurchase;
 
@@ -377,13 +379,13 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         TokenManager tokenManager = new TokenManager(this);
 
         PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
-        Call<Purchase> call = client.getPurchases(purchaseId);
+        Call<PurchaseModelIn> call = client.getPurchases(purchaseId);
 
         final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
-        call.enqueue(new Callback<Purchase>() {
+        call.enqueue(new Callback<PurchaseModelIn>() {
             @Override
-            public void onResponse(Call<Purchase> call, Response<Purchase> response) {
+            public void onResponse(Call<PurchaseModelIn> call, Response<PurchaseModelIn> response) {
                 if (response.isSuccessful()) {
                     purchase = response.body();
                     buildModifyPurchaseContentView();
@@ -396,7 +398,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
             }
 
             @Override
-            public void onFailure(Call<Purchase> call, Throwable t) {
+            public void onFailure(Call<PurchaseModelIn> call, Throwable t) {
                 loading.dismiss();
                 buildErrorContentView();
             }
@@ -408,10 +410,10 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         TokenManager tokenManager = new TokenManager(this);
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
 
-        Call<Group> call = client.getGroup(purchase.getGroup());
-        call.enqueue(new Callback<Group>() {
+        Call<GroupModelIn> call = client.getGroup(purchase.getGroup());
+        call.enqueue(new Callback<GroupModelIn>() {
             @Override
-            public void onResponse(Call<Group> call, Response<Group> response) {
+            public void onResponse(Call<GroupModelIn> call, Response<GroupModelIn> response) {
                 if (response.isSuccessful()) {
                     group = response.body();
                     setPurchaseValues();
@@ -423,7 +425,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
             }
 
             @Override
-            public void onFailure(Call<Group> call, Throwable t) {
+            public void onFailure(Call<GroupModelIn> call, Throwable t) {
                 buildErrorContentView();
             }
         });
@@ -475,52 +477,13 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
     }
 
     private void getGroupMembers() {
-
-        TokenManager tokenManager = new TokenManager(this);
-        GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-
-        Call<List<User>> call = client.getGroupMembers(purchase.getGroup());
-        call.enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful()) {
-                    members = response.body();
-                    getParticipants();
-                } else {
-                    System.out.println("Error: " + response.errorBody());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                buildErrorContentView();
-            }
-        });
+        members = group.getMemberships();
+        getParticipants();
     }
 
     private void getParticipants() {
-        String purchaseId = getIntent().getStringExtra("EXTRA_PURCHASE_ID");
-        TokenManager tokenManager = new TokenManager(this);
-
-        PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
-        Call<List<User>> call = client.getParticipants(purchaseId);
-
-        call.enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful()) {
-                    participants = response.body();
-                    buildRecyclerViewAddMembersAdapter();
-                } else {
-                    Toast.makeText(ModifyPurchaseActivity.this, "Error al obtener los participantes de la compra.", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                buildErrorContentView();
-            }
-        });
+        participants = purchase.getParticipants();
+        buildRecyclerViewAddMembersAdapter();
     }
 
     private void buildRecyclerViewAddMembersAdapter() {

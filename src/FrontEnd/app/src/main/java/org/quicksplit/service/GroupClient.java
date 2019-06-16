@@ -2,6 +2,7 @@ package org.quicksplit.service;
 
 import org.quicksplit.models.DebtorDebtee;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.GroupModelIn;
 import org.quicksplit.models.LeaveGroup;
 import org.quicksplit.models.Purchase;
 import org.quicksplit.models.User;
@@ -20,7 +21,7 @@ import retrofit2.http.Query;
 public interface GroupClient {
 
     @GET("groups/{id}")
-    Call<Group> getGroup(@Path("id") String id);
+    Call<GroupModelIn> getGroup(@Path("id") String id);
 
     @POST("groups")
     Call<Group> createGroup(@Body Group group);

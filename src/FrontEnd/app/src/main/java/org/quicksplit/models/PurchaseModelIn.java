@@ -70,7 +70,6 @@ public class PurchaseModelIn {
         this.currency = currency;
     }
 
-
     public Double getLatitude() {
         return latitude;
     }
