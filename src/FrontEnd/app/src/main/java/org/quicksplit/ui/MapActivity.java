@@ -57,7 +57,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Button mButtonConfirm;
-    private Location selectedLocation;
+    private Location mSelectedLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +66,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mSearchText = (EditText) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_gps);
         getLocationPermission();
+        mSelectedLocation = new Location("");
+        mSelectedLocation.setLongitude(0);
+        mSelectedLocation.setLatitude(0);
 
         mButtonConfirm = findViewById(R.id.btn_confirm);
         mButtonConfirm.setOnClickListener(new View.OnClickListener() {
@@ -73,10 +76,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 Intent intent = new Intent(MapActivity.this, CreatePurchaseActivity.class );
                 Bundle myBundle = new Bundle();
-                myBundle.putDouble("latitude", selectedLocation.getLatitude());
-                myBundle.putDouble("longitude", selectedLocation.getLongitude());
-                intent.putExtras(myBundle);
-                startActivity(intent);
+                if(mSelectedLocation.getLatitude() != 0 ){
+                    myBundle.putDouble("latitude", mSelectedLocation.getLatitude());
+                    myBundle.putDouble("longitude", mSelectedLocation.getLongitude());
+                    intent.putExtras(myBundle);
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(MapActivity.this, "Error: Debe seleccionar una ubicación.", Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
     }
@@ -123,6 +132,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Log.d(TAG, "geoLocate: found a location: " + address.toString());
 
             Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT);
+            mSelectedLocation.setLatitude(address.getLatitude());
+            mSelectedLocation.setLongitude(address.getLongitude());
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM,
                     address.getAddressLine(0));
 
@@ -158,22 +169,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
-                        if (task.isSuccessful()){
+                        Location currentLocation = (Location) task.getResult();
+
+                        System.out.println(currentLocation);
+                        if (currentLocation != null){
                             Log.d(TAG, "onComplete: found location!");
-                            Location currentLocation = (Location) task.getResult();
-                            selectedLocation = currentLocation;
+                            mSelectedLocation = currentLocation;
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM,
                                     "MyLocation");
                         }else{
                             Log.d(TAG, "onComplete: current location is null");
-                            Toast.makeText(MapActivity.this, "unable to get current location", Toast.LENGTH_SHORT);
+                            Toast.makeText(MapActivity.this, "Error al obtener ubicación actual.", Toast.LENGTH_SHORT).show();
+
                         }
                     }
                 });
             }
         }catch(SecurityException e){
             Log.d(TAG, "getDeviceLocation: SecurityException " + e.getMessage());
+            Toast.makeText(MapActivity.this, "Error OSOOSOOSOSOSSOal obtener ubicación actual.", Toast.LENGTH_SHORT).show();
+
         }
     }
 

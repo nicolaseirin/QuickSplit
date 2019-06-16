@@ -106,11 +106,12 @@ namespace QuickSplit.WebApi.Controllers
         }
 
         [HttpGet("{id}/reports")]
-        public async Task<ActionResult<IEnumerable<DebtorDebteeModel>>> GetSplitReport(int id)
+        public async Task<ActionResult<IEnumerable<DebtorDebteeModel>>> GetSplitReport(int id, [FromQuery] string currency)
         {
             IEnumerable<DebtorDebteeModel> debts = await Mediator.Send(new GetSplitCostReportQuery()
             {
-                GroupId = id
+                GroupId = id,
+                Currency = currency
             });
             return Ok(debts);
         }

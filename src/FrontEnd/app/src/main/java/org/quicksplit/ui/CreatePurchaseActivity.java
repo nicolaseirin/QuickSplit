@@ -348,10 +348,14 @@ public class CreatePurchaseActivity extends AppCompatActivity {
         purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
 
         purchase.setGroup(((Group) mSpinnerGroups.getSelectedItem()).getId());
+
         if (myBundle != null) {
             purchase.setLatitude(myBundle.getDouble("latitude"));
             purchase.setLongitude(myBundle.getDouble("longitude"));
         }
+        purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
+        purchase.setGroup(((Group) mSpinnerGroups.getSelectedItem()).getId());
+
 
         List<String> participantsString = new ArrayList<String>();
         for (int i = 0; i < participants.size(); i++)
