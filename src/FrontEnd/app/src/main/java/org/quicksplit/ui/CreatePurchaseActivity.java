@@ -169,7 +169,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         mButtonAddMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CreatePurchaseActivity.this, MapActivity.class );
+                Intent intent = new Intent(CreatePurchaseActivity.this, MapActivity.class);
                 startActivity(intent);
             }
         });
@@ -336,11 +336,15 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         purchase.setCost(mEditTextCost.getText().toString());
         purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
 
-        purchase.setGroup(((Group)mSpinnerGroups.getSelectedItem()).getId());
-        if(myBundle != null){
+        purchase.setGroup(((Group) mSpinnerGroups.getSelectedItem()).getId());
+
+        if (myBundle != null) {
             purchase.setLatitude(myBundle.getDouble("latitude"));
             purchase.setLongitude(myBundle.getDouble("longitude"));
         }
+        purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
+        purchase.setGroup(((Group) mSpinnerGroups.getSelectedItem()).getId());
+
 
         List<String> participantsString = new ArrayList<String>();
         for (int i = 0; i < participants.size(); i++)
