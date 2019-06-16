@@ -22,6 +22,7 @@ import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.GroupAdapter;
 import org.quicksplit.adapters.PurchaseAdapter;
 import org.quicksplit.models.Purchase;
+import org.quicksplit.models.PurchaseModelIn;
 import org.quicksplit.models.User;
 import org.quicksplit.service.PurchaseClient;
 import org.quicksplit.service.UserClient;
@@ -53,7 +54,7 @@ public class PurchasesFragment extends Fragment {
 
     private LinearLayout mLinearLayoutNoPurchases;
 
-    private List<Purchase> purchases;
+    private List<PurchaseModelIn> purchases;
     private RecyclerView mRecyclerViewPurchases;
     private PurchaseAdapter mRecyclerViewPurchasesAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
@@ -108,10 +109,10 @@ public class PurchasesFragment extends Fragment {
 
         final ProgressDialog loading = ProgressDialog.show(getActivity(), getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
-        Call<List<Purchase>> call = client.getUserPurchases(tokenManager.getUserIdFromToken());
-        call.enqueue(new Callback<List<Purchase>>() {
+        Call<List<PurchaseModelIn>> call = client.getUserPurchases(tokenManager.getUserIdFromToken());
+        call.enqueue(new Callback<List<PurchaseModelIn>>() {
             @Override
-            public void onResponse(Call<List<Purchase>> call, Response<List<Purchase>> response) {
+            public void onResponse(Call<List<PurchaseModelIn>> call, Response<List<PurchaseModelIn>> response) {
                 if (response.isSuccessful()) {
                     purchases = response.body();
                     if (purchases.size() == 0) {
@@ -128,7 +129,7 @@ public class PurchasesFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<Purchase>> call, Throwable t) {
+            public void onFailure(Call<List<PurchaseModelIn>> call, Throwable t) {
                 loading.dismiss();
                 loadFragment(new ErrorFragment());
             }
@@ -155,7 +156,7 @@ public class PurchasesFragment extends Fragment {
         mRecyclerViewPurchases.setAdapter(mRecyclerViewPurchasesAdapter);
         mRecyclerViewPurchasesAdapter.setOnItemClickListener(new PurchaseAdapter.OnItemClickListener() {
             @Override
-            public void onModifyClick(Purchase purchase) {
+            public void onModifyClick(PurchaseModelIn purchase) {
                 Intent intent = new Intent(getContext(), ModifyPurchaseActivity.class);
                 intent.putExtra("EXTRA_PURCHASE_ID", purchase.getId());
                 startActivityForResult(intent, MODIFY_PURCHASE_REQUEST);

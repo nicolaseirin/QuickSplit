@@ -23,6 +23,7 @@ import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.GroupAdapter;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.GroupModelIn;
 import org.quicksplit.models.LeaveGroup;
 import org.quicksplit.service.GroupClient;
 import org.quicksplit.service.UserClient;
@@ -53,7 +54,7 @@ public class GroupsFragment extends Fragment implements View.OnClickListener {
 
     private LinearLayout mLinearLayoutEmptyGroups;
 
-    private List<Group> groups;
+    private List<GroupModelIn> groups;
     private RecyclerView mRecyclerViewGroups;
     private GroupAdapter mRecyclerViewGroupsAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
@@ -102,13 +103,13 @@ public class GroupsFragment extends Fragment implements View.OnClickListener {
         ServiceGenerator sg = new ServiceGenerator();
         //UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
         UserClient client = sg.createServiceNs(UserClient.class, tokenManager.getToken());
-        Call<List<Group>> call = client.getUserGroups(tokenManager.getUserIdFromToken());
+        Call<List<GroupModelIn>> call = client.getUserGroups(tokenManager.getUserIdFromToken());
 
         final ProgressDialog loading = ProgressDialog.show(getActivity(), getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
-        call.enqueue(new Callback<List<Group>>() {
+        call.enqueue(new Callback<List<GroupModelIn>>() {
             @Override
-            public void onResponse(Call<List<Group>> call, Response<List<Group>> response) {
+            public void onResponse(Call<List<GroupModelIn>> call, Response<List<GroupModelIn>> response) {
                 if (response.isSuccessful()) {
                     groups = response.body();
                     if (groups.size() == 0) {
@@ -126,7 +127,7 @@ public class GroupsFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onFailure(Call<List<Group>> call, Throwable t) {
+            public void onFailure(Call<List<GroupModelIn>> call, Throwable t) {
                 loading.dismiss();
                 loadFragment(new ErrorFragment());
             }
@@ -154,40 +155,40 @@ public class GroupsFragment extends Fragment implements View.OnClickListener {
 
         mRecyclerViewGroupsAdapter.setOnItemClickListener(new GroupAdapter.OnItemClickListener() {
             @Override
-            public void onReportClick(Group group) {
+            public void onReportClick(GroupModelIn group) {
                 getReportGroup(group);
             }
 
             @Override
-            public void onModifyClick(Group group) {
+            public void onModifyClick(GroupModelIn group) {
                 modifyGroup(group);
             }
 
             @Override
-            public void onLeaveClick(Group group) {
+            public void onLeaveClick(GroupModelIn group) {
                 tryLeaveGroup(group);
             }
 
             @Override
-            public void onDeleteClick(Group group) {
+            public void onDeleteClick(GroupModelIn group) {
                 tryDeleteGroup(group);
             }
         });
     }
 
-    private void getReportGroup(Group group) {
+    private void getReportGroup(GroupModelIn group) {
         Intent intent = new Intent(getContext(), ReportActivity.class);
         intent.putExtra("EXTRA_GROUP_ID", group.getId());
         startActivity(intent);
     }
 
-    private void modifyGroup(Group group) {
+    private void modifyGroup(GroupModelIn group) {
         Intent intent = new Intent(getContext(), ModifyGroupActivity.class);
         intent.putExtra("EXTRA_GROUP_ID", group.getId());
         startActivityForResult(intent, MODIFY_GROUP_REQUEST);
     }
 
-    private void tryLeaveGroup(final Group group) {
+    private void tryLeaveGroup(final GroupModelIn group) {
 
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -208,7 +209,7 @@ public class GroupsFragment extends Fragment implements View.OnClickListener {
                 .setNegativeButton("No", dialogClickListener).show();
     }
 
-    private void leaveGroup(Group group) {
+    private void leaveGroup(GroupModelIn group) {
         TokenManager tokenManager = new TokenManager(getContext());
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
@@ -240,7 +241,7 @@ public class GroupsFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void tryDeleteGroup(final Group group) {
+    private void tryDeleteGroup(final GroupModelIn group) {
 
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -261,7 +262,7 @@ public class GroupsFragment extends Fragment implements View.OnClickListener {
                 .setNegativeButton("No", dialogClickListener).show();
     }
 
-    private void deleteGroup(Group group) {
+    private void deleteGroup(GroupModelIn group) {
         TokenManager tokenManager = new TokenManager(getContext());
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());

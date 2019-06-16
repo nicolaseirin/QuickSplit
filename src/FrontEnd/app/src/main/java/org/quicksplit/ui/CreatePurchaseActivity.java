@@ -40,6 +40,7 @@ import org.quicksplit.TokenManager;
 import org.quicksplit.Utils;
 import org.quicksplit.adapters.GroupFriendsAdapter;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.GroupModelIn;
 import org.quicksplit.models.Purchase;
 import org.quicksplit.models.User;
 import org.quicksplit.service.CurrencyClient;
@@ -76,8 +77,8 @@ public class CreatePurchaseActivity extends AppCompatActivity {
     private File destination = null;
     private String currentImagePath = null;
 
-    private List<Group> groups;
-    private ArrayAdapter<Group> groupArrayAdapter;
+    private List<GroupModelIn> groups;
+    private ArrayAdapter<GroupModelIn> groupArrayAdapter;
     private ArrayAdapter<String> currenciesArrayAdapter;
 
     private List<String> currencies;
@@ -214,13 +215,13 @@ public class CreatePurchaseActivity extends AppCompatActivity {
     private void getData() {
         TokenManager tokenManager = new TokenManager(this);
         UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
-        Call<List<Group>> call = client.getUserGroups(tokenManager.getUserIdFromToken());
+        Call<List<GroupModelIn>> call = client.getUserGroups(tokenManager.getUserIdFromToken());
 
         final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
 
-        call.enqueue(new Callback<List<Group>>() {
+        call.enqueue(new Callback<List<GroupModelIn>>() {
             @Override
-            public void onResponse(Call<List<Group>> call, Response<List<Group>> response) {
+            public void onResponse(Call<List<GroupModelIn>> call, Response<List<GroupModelIn>> response) {
                 if (response.isSuccessful()) {
                     groups = response.body();
                     buildGroupsAdapter();
@@ -232,7 +233,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Group>> call, Throwable t) {
+            public void onFailure(Call<List<GroupModelIn>> call, Throwable t) {
                 loading.dismiss();
                 Toast.makeText(CreatePurchaseActivity.this, "Error en la comunicación al obtener grupos.", Toast.LENGTH_SHORT).show();
             }
@@ -276,7 +277,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
     }
 
     private void buildGroupsAdapter() {
-        groupArrayAdapter = new ArrayAdapter<Group>(this, android.R.layout.simple_spinner_item, groups);
+        groupArrayAdapter = new ArrayAdapter<GroupModelIn>(this, android.R.layout.simple_spinner_item, groups);
         groupArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerGroups.setAdapter(groupArrayAdapter);
     }
