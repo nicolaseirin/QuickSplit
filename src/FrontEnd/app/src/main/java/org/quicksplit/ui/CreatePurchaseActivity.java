@@ -405,10 +405,10 @@ public class CreatePurchaseActivity extends AppCompatActivity {
 
             destination = new File(currentImagePath);
 
-            final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
-
             RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/" + currentImagePath.substring(currentImagePath.lastIndexOf(".") + 1)), destination);
             MultipartBody.Part part = MultipartBody.Part.createFormData("image", destination.getName(), fileRequestBody);
+
+            final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
             Call call = client.setPurchaseImage(purchase.getId(), part);
             call.enqueue(new Callback() {
@@ -417,6 +417,8 @@ public class CreatePurchaseActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         loading.dismiss();
                         destination.delete();
+                        setResult(RESULT_OK);
+                        finish();
                     } else {
                         loading.dismiss();
                         System.out.println("Error al actualizar la imagen.");
@@ -429,10 +431,10 @@ public class CreatePurchaseActivity extends AppCompatActivity {
                     Toast.makeText(CreatePurchaseActivity.this, "Error en la conexión al actualizar la imagen.", Toast.LENGTH_SHORT).show();
                 }
             });
+        } else {
+            setResult(RESULT_OK);
+            finish();
         }
-
-        setResult(RESULT_OK);
-        finish();
     }
 
     private void showFormErrors() {
