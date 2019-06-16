@@ -111,7 +111,7 @@ namespace QuickSplit.WebApi.Controllers
             IEnumerable<DebtorDebteeModel> debts = await Mediator.Send(new GetSplitCostReportQuery()
             {
                 GroupId = id,
-                Currency = currency
+                Currency = currency ?? "Usd"
             });
             return Ok(debts);
         }
