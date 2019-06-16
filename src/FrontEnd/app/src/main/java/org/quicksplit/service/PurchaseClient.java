@@ -36,7 +36,7 @@ public interface PurchaseClient {
     Call<ResponseBody> getPurchaseImage(@Path("id") String id);
 
     @PUT("purchases/{id}")
-    Call<Purchase> modifyPurchase(@Path("id") String id, @Body ModifyPurchase purchase);
+    Call<PurchaseModelIn> modifyPurchase(@Path("id") String id, @Body ModifyPurchase purchase);
 
     @Multipart
     @POST("purchases/{id}/image")

@@ -260,10 +260,10 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         group.setMemberships(memberships);
 
         GroupClient groupClient = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<Group> call = groupClient.modifyGroup(groupId, group);
-        call.enqueue(new Callback<Group>() {
+        Call<GroupModelIn> call = groupClient.modifyGroup(groupId, group);
+        call.enqueue(new Callback<GroupModelIn>() {
             @Override
-            public void onResponse(Call<Group> call, Response<Group> response) {
+            public void onResponse(Call<GroupModelIn> call, Response<GroupModelIn> response) {
                 if (response.isSuccessful()) {
                     setResult(RESULT_OK);
                     finish();
@@ -274,7 +274,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<Group> call, Throwable t) {
+            public void onFailure(Call<GroupModelIn> call, Throwable t) {
                 Toast.makeText(ModifyGroupActivity.this, "Error en la comunicación al modificar grupo.", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_CANCELED);
             }

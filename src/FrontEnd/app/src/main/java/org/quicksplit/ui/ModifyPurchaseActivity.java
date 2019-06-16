@@ -551,14 +551,14 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         TokenManager tokenManager = new TokenManager(this);
 
         PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
-        Call<Purchase> call = client.modifyPurchase(getIntent().getStringExtra("EXTRA_PURCHASE_ID"), purchase);
+        Call<PurchaseModelIn> call = client.modifyPurchase(getIntent().getStringExtra("EXTRA_PURCHASE_ID"), purchase);
 
         final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
-        call.enqueue(new Callback<Purchase>() {
+        call.enqueue(new Callback<PurchaseModelIn>() {
 
             @Override
-            public void onResponse(Call<Purchase> call, Response<Purchase> response) {
+            public void onResponse(Call<PurchaseModelIn> call, Response<PurchaseModelIn> response) {
                 if (response.isSuccessful()) {
                     loading.dismiss();
                     setResult(RESULT_OK);
@@ -571,7 +571,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
             }
 
             @Override
-            public void onFailure(Call<Purchase> call, Throwable t) {
+            public void onFailure(Call<PurchaseModelIn> call, Throwable t) {
                 loading.dismiss();
                 Toast.makeText(ModifyPurchaseActivity.this, "Error en la comunicación al modificar la compra.", Toast.LENGTH_SHORT).show();
             }
