@@ -2,17 +2,20 @@ package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.quicksplit.R;
@@ -21,7 +24,6 @@ import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.GroupAdapter;
 import org.quicksplit.models.Group;
 import org.quicksplit.models.LeaveGroup;
-import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 import org.quicksplit.service.UserClient;
 
@@ -36,39 +38,37 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link GroupFragment.OnFragmentInteractionListener} interface
+ * {@link GroupsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link GroupFragment#newInstance} factory method to
+ * Use the {@link GroupsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GroupFragment extends Fragment implements View.OnClickListener {
+public class GroupsFragment extends Fragment implements View.OnClickListener {
+
+    private static final String FRAGMENT_ID = "fragment_id";
+    private String fragmentId;
 
     static final int ADD_GROUP_REQUEST = 0;
     static final int MODIFY_GROUP_REQUEST = 1;
+
+    private LinearLayout mLinearLayoutEmptyGroups;
 
     private List<Group> groups;
     private RecyclerView mRecyclerViewGroups;
     private GroupAdapter mRecyclerViewGroupsAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
     private FloatingActionButton mButtonCreateGroup;
 
     private OnFragmentInteractionListener mListener;
 
-    public GroupFragment() {
+    public GroupsFragment() {
     }
 
-    public static GroupFragment newInstance(String param1, String param2) {
-        GroupFragment fragment = new GroupFragment();
+    public static GroupsFragment newInstance(String fragmentId) {
+        GroupsFragment fragment = new GroupsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(FRAGMENT_ID, fragmentId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,8 +77,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            fragmentId = getArguments().getString(FRAGMENT_ID);
         }
     }
 
@@ -90,6 +89,8 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
 
         mButtonCreateGroup = view.findViewById(R.id.btn_createGroup);
         mButtonCreateGroup.setOnClickListener(this);
+
+        mLinearLayoutEmptyGroups = view.findViewById(R.id.lly_emptyGroups);
 
         getGroups();
 
@@ -103,13 +104,19 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         UserClient client = sg.createServiceNs(UserClient.class, tokenManager.getToken());
         Call<List<Group>> call = client.getUserGroups(tokenManager.getUserIdFromToken());
 
-        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
         call.enqueue(new Callback<List<Group>>() {
             @Override
             public void onResponse(Call<List<Group>> call, Response<List<Group>> response) {
                 if (response.isSuccessful()) {
                     groups = response.body();
+                    if (groups.size() == 0) {
+                        mLinearLayoutEmptyGroups.setVisibility(View.VISIBLE);
+                    } else {
+                        mLinearLayoutEmptyGroups.setVisibility(View.GONE);
+                    }
+
                     buildRecyclerViewGroups();
                     loading.dismiss();
                 } else {
@@ -121,9 +128,21 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onFailure(Call<List<Group>> call, Throwable t) {
                 loading.dismiss();
-                Toast.makeText(getActivity(), "Error en la comunicación al obtener grupos.", Toast.LENGTH_SHORT).show();
+                loadFragment(new ErrorFragment());
             }
         });
+    }
+
+    private void loadFragment(Fragment fragment) {
+
+        Bundle data = new Bundle();
+        data.putString("fragment_id", fragmentId + "");
+        fragment.setArguments(data);
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private void buildRecyclerViewGroups() {
@@ -135,8 +154,8 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
 
         mRecyclerViewGroupsAdapter.setOnItemClickListener(new GroupAdapter.OnItemClickListener() {
             @Override
-            public void onViewReportClick(Group group) {
-                getReport(group);
+            public void onReportClick(Group group) {
+                getReportGroup(group);
             }
 
             @Override
@@ -146,17 +165,17 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onLeaveClick(Group group) {
-                leaveGroup(group);
+                tryLeaveGroup(group);
             }
 
             @Override
             public void onDeleteClick(Group group) {
-                deleteGroup(group);
+                tryDeleteGroup(group);
             }
         });
     }
 
-    private void getReport(Group group) {
+    private void getReportGroup(Group group) {
         Intent intent = new Intent(getContext(), ReportActivity.class);
         intent.putExtra("EXTRA_GROUP_ID", group.getId());
         startActivity(intent);
@@ -168,12 +187,33 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         startActivityForResult(intent, MODIFY_GROUP_REQUEST);
     }
 
+    private void tryLeaveGroup(final Group group) {
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        leaveGroup(group);
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("¿Quiere abandonar el grupo?").setPositiveButton("Sí", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+    }
+
     private void leaveGroup(Group group) {
         TokenManager tokenManager = new TokenManager(getContext());
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
 
-        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
         LeaveGroup leaveGroup = new LeaveGroup();
         leaveGroup.setUserId(Integer.parseInt(tokenManager.getUserIdFromToken()));
@@ -200,12 +240,33 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    private void tryDeleteGroup(final Group group) {
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        deleteGroup(group);
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("¿Quiere borrar el grupo?").setPositiveButton("Sí", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+    }
+
     private void deleteGroup(Group group) {
         TokenManager tokenManager = new TokenManager(getContext());
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
 
-        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
         Call<Void> call = client.deleteGroup(group.getId());
         call.enqueue(new Callback<Void>() {
@@ -213,6 +274,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     loading.dismiss();
+                    getGroups();
                 } else {
                     loading.dismiss();
                     Toast.makeText(getActivity(), "Error al borrar grupo.", Toast.LENGTH_SHORT).show();

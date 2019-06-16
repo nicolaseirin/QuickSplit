@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,7 +34,6 @@ import com.squareup.picasso.Picasso;
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
-import org.quicksplit.Utils;
 import org.quicksplit.models.User;
 import org.quicksplit.service.UserClient;
 
@@ -58,7 +56,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private static final int PICK_IMAGE_GALLERY = 2;
 
     private Bitmap bitmap;
-    private String avatarImagePath;
     private String currentImagePath;
 
     private User user;
@@ -75,7 +72,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private EditText mTextLastName;
     private TextInputLayout mLabelErrorEmail;
     private EditText mTextEmail;
-    private TextInputLayout mLabelErrorPassword;
+
     private EditText mTextPassword;
     private TextInputLayout mLabelErrorRepeatPassword;
     private EditText mTextRepeatPassword;
@@ -84,10 +81,19 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     private Button mButtonSave;
     private LinearLayout mLayoutChangeAvatar;
 
+    private Button mButtonRefresh;
+    private int idMenuResource = R.menu.refresh;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getUserData();
+    }
+
+    private void buildModifyUserContentView() {
         setContentView(R.layout.activity_modify_user);
+
+        idMenuResource = R.menu.picture;
 
         mToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(mToolbar);
@@ -107,7 +113,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         mLabelErrorEmail = findViewById(R.id.lblError_txtEmail);
         mTextEmail = findViewById(R.id.txtEmail);
 
-        mLabelErrorPassword = findViewById(R.id.lblError_txtPassword);
         mTextPassword = findViewById(R.id.txtPassword);
 
         mLabelErrorRepeatPassword = findViewById(R.id.lblError_txtRepeatPassword);
@@ -131,13 +136,33 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         });
 
         mImageAvatar = findViewById(R.id.img_avatar);
-        getUserData();
+        loadUserData();
+    }
+
+    private void buildErrorContentView() {
+        setContentView(R.layout.activity_error);
+        idMenuResource = R.menu.refresh;
+
+        mToolbar = findViewById(R.id.toolbar_top);
+        mToolbar.setTitle("Modificar Usuario");
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mButtonRefresh = findViewById(R.id.btn_refresh);
+        mButtonRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getUserData();
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.picture, menu);
+        menuInflater.inflate(idMenuResource, menu);
         return true;
     }
 
@@ -149,6 +174,9 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                 return true;
             case R.id.picture:
                 selectAvatarImage();
+                return true;
+            case R.id.refresh:
+                getUserData();
                 return true;
         }
 
@@ -168,7 +196,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()) {
                     user = response.body();
-                    loadUserData();
+                    buildModifyUserContentView();
                     loading.dismiss();
                 } else {
                     Toast.makeText(ModifyUserActivity.this, "Error al solicitar la edición de datos.", Toast.LENGTH_SHORT).show();
@@ -178,7 +206,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(ModifyUserActivity.this, "Error al solicitar la edición de datos.", Toast.LENGTH_SHORT).show();
+                buildErrorContentView();
                 loading.dismiss();
             }
         });
@@ -191,7 +219,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         imageUri = Uri.parse(ServiceGenerator.getBaseUrl() + user.getAvatar());
         Picasso.get()
                 .load(imageUri)
-                .resize(100, 100)
+                .resize(200, 200)
                 .centerCrop()
                 .into(mImageAvatar);
 
@@ -201,6 +229,9 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void updateUserData() {
+
+        if (!validateFieldsAndShowErrors())
+            return;
 
         TokenManager tokenManager = new TokenManager(this);
 
@@ -217,10 +248,16 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(ModifyUserActivity.this, "Datos modificados correctamente.", Toast.LENGTH_SHORT).show();
-                    finish();
+                    uploadToServer(currentImagePath);
                 } else {
-                    Toast.makeText(ModifyUserActivity.this, "Error al intentar modificar datos.", Toast.LENGTH_SHORT).show();
+                    String errorMessage = null;
+                    try {
+                        errorMessage = response.errorBody().string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    mLabelErrorMessage.setVisibility(View.VISIBLE);
+                    mLabelErrorMessage.setText(errorMessage);
                 }
             }
 
@@ -231,12 +268,63 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
+    private boolean validateFieldsAndShowErrors() {
+
+        boolean isValid = false;
+
+        String name = mTextName.getText().toString();
+        String lastName = mTextLastName.getText().toString();
+        String email = mTextEmail.getText().toString();
+        String password = mTextPassword.getText().toString();
+        String repeatPassword = mTextRepeatPassword.getText().toString();
+
+        if (name.isEmpty()) {
+            mLabelErrorName.setError("El nombre es requerido.");
+            isValid = false;
+        } else {
+            mLabelErrorName.setError("");
+            isValid = true;
+        }
+
+        if (lastName.isEmpty()) {
+            mLabelErrorLastName.setError("El apellido es requerido.");
+            isValid = false;
+        } else {
+            mLabelErrorLastName.setError("");
+            isValid &= true;
+        }
+
+        if (email.isEmpty()) {
+            mLabelErrorEmail.setError("El email es requerido.");
+            isValid = false;
+        } else {
+            mLabelErrorEmail.setError("");
+            isValid &= true;
+        }
+
+        if (!password.equals(repeatPassword)) {
+            mLabelErrorRepeatPassword.setError("Las contraseñas no coinciden.");
+            isValid = false;
+        } else {
+            mLabelErrorRepeatPassword.setError("");
+            isValid &= true;
+        }
+
+        return isValid;
+    }
+
     @Override
     public void onClick(View v) {
         updateUserData();
     }
 
     private void uploadToServer(String filePath) {
+
+        if (filePath == null) {
+            Toast.makeText(ModifyUserActivity.this, "Datos modificados correctamente.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         TokenManager tokenManager = new TokenManager(this);
 
@@ -253,7 +341,9 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             public void onResponse(Call call, Response response) {
                 if (response.isSuccessful()) {
                     Picasso.get().invalidate(imageUri);
-                    Toast.makeText(ModifyUserActivity.this, "La imagen se actualizó correctamente.", Toast.LENGTH_SHORT).show();
+                    file.delete();
+                    Toast.makeText(ModifyUserActivity.this, "Datos modificados correctamente.", Toast.LENGTH_SHORT).show();
+                    finish();
                 } else {
                     System.out.println("Error al actualizar la imagen.");
                 }
@@ -316,7 +406,6 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             case PICK_IMAGE_CAMERA:
                 if (resultCode == RESULT_OK) {
                     if (currentImagePath.length() > 0) {
-                        uploadToServer(currentImagePath);
                         bitmap = BitmapFactory.decodeFile(currentImagePath);
                         mImageAvatar.setImageBitmap(bitmap);
                     }
@@ -382,9 +471,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
 
-        avatarImagePath = getRealPathFromURI(selectedImage);
+        currentImagePath = getRealPathFromURI(selectedImage);
         mImageAvatar.setImageBitmap(bitmap);
-        uploadToServer(avatarImagePath);
     }
 
     public String getRealPathFromURI(Uri contentUri) {

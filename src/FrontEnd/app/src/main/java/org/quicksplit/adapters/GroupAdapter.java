@@ -32,7 +32,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
     public interface OnItemClickListener {
 
-        void onViewReportClick(Group group);
+        void onReportClick(Group group);
 
         void onModifyClick(Group group);
 
@@ -119,7 +119,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                     if (listener != null) {
                         int i = getAdapterPosition();
                         if (i != RecyclerView.NO_POSITION) {
-                            listener.onViewReportClick(groups.get(i));
+                            listener.onReportClick(groups.get(i));
                         }
                     }
                 }

@@ -52,8 +52,8 @@
 
             <ImageView
                 android:id="@+id/img_report"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="12dp"
@@ -61,29 +61,29 @@
 
             <ImageView
                 android:id="@+id/img_modify"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginRight="12dp"
-                android:src="@drawable/ic_edit_green" />
+                android:layout_marginRight="15dp"
+                android:src="@drawable/ic_edit_gray" />
 
             <ImageView
                 android:id="@+id/img_exit"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginRight="12dp"
-                android:src="@drawable/ic_exit_to_app_green" />
+                android:layout_marginRight="15dp"
+                android:src="@drawable/ic_exit_gray" />
 
             <ImageView
                 android:id="@+id/img_delete"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginRight="12dp"
+                android:layout_marginRight="15dp"
                 android:src="@drawable/ic_delete_red" />
 
         </LinearLayout>

@@ -29,12 +29,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.quicksplit.CostWithCurrency;
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
+import org.quicksplit.Utils;
 import org.quicksplit.adapters.GroupFriendsAdapter;
 import org.quicksplit.models.Group;
 import org.quicksplit.models.Purchase;
@@ -47,6 +50,8 @@ import org.quicksplit.service.UserClient;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,19 +64,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CreatePurchaseActivity extends AppCompatActivity implements View.OnClickListener {
+public class CreatePurchaseActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_CAMERA = 1;
     private static final int PICK_IMAGE_GALLERY = 2;
+    private static final int SCANN_QR_CAMERA = 3;
 
     private ImageView mImagePurchase;
+    private LinearLayout mLinearLayoutPurchaseImage;
     private Bitmap bitmap;
     private File destination = null;
     private String currentImagePath = null;
-
-
-    private static final String TAG = "CreatePurchaseActivity";
-    private static final int ERROR_DIALOG_REQUEST = 9001;
 
     private List<Group> groups;
     private ArrayAdapter<Group> groupArrayAdapter;
@@ -80,7 +83,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     private List<String> currencies;
 
     private List<User> members;
-    private List<User> participants;
+    private List<User> participants = new ArrayList<>();
 
     private Toolbar mToolbar;
 
@@ -101,9 +104,9 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     private GroupFriendsAdapter mRecycleViewGroupFriendsAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
 
-    private Button mButtonUploadImage;
     private Button mButtonCreatePurchase;
     private Button mButtonAddMap;
+    private Button mButtonScanCost;
     private Bundle myBundle;
 
     @Override
@@ -118,6 +121,13 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         mImagePurchase = findViewById(R.id.img_purchase);
+        mLinearLayoutPurchaseImage = findViewById(R.id.lly_imgPurchase);
+        mLinearLayoutPurchaseImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectPurchaseImage();
+            }
+        });
 
         mTextInputLayoutGroupMembers = findViewById(R.id.lblError_groupMembers);
         mRecyclerViewGroupMembers = findViewById(R.id.purchisersReciclerView);
@@ -154,16 +164,13 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         mTextInputLayoutTxtCost = findViewById(R.id.lblError_txtCost);
         mEditTextCost = findViewById(R.id.txt_cost);
 
-        mButtonUploadImage = findViewById(R.id.btn_uploadImage);
-        mButtonUploadImage.setOnClickListener(new View.OnClickListener() {
+        mButtonCreatePurchase = findViewById(R.id.btn_createPurchase);
+        mButtonCreatePurchase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectPurchaseImage();
+                createPurchase();
             }
         });
-
-        mButtonCreatePurchase = findViewById(R.id.btn_createPurchase);
-        mButtonCreatePurchase.setOnClickListener(this);
 
         mButtonAddMap = findViewById(R.id.btn_location);
         mButtonAddMap.setOnClickListener(new View.OnClickListener() {
@@ -174,15 +181,24 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
             }
         });
 
+        mButtonScanCost = findViewById(R.id.btn_scanCost);
+        mButtonScanCost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent scannerActivity = new Intent(CreatePurchaseActivity.this, ScannerActivity.class);
+                startActivityForResult(scannerActivity, SCANN_QR_CAMERA);
+            }
+        });
+
         myBundle = this.getIntent().getExtras();
         getData();
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                setResult(RESULT_CANCELED);
                 onBackPressed();
                 break;
             case R.id.done:
@@ -316,11 +332,6 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         });
     }
 
-    @Override
-    public void onClick(View v) {
-        createPurchase();
-    }
-
     private void createPurchase() {
 
         showFormErrors();
@@ -356,7 +367,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
         Call<Purchase> call = client.createPurchase(purchase);
 
-        final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
         call.enqueue(new Callback<Purchase>() {
 
@@ -388,26 +399,34 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
 
             destination = new File(currentImagePath);
 
+            final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
+
             RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/" + currentImagePath.substring(currentImagePath.lastIndexOf(".") + 1)), destination);
             MultipartBody.Part part = MultipartBody.Part.createFormData("image", destination.getName(), fileRequestBody);
 
-            Call call = client.addPurchaseImage(purchase.getId(), part);
+            Call call = client.setPurchaseImage(purchase.getId(), part);
             call.enqueue(new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(CreatePurchaseActivity.this, "La imagen se actualizó correctamente.", Toast.LENGTH_SHORT).show();
+                        loading.dismiss();
+                        destination.delete();
                     } else {
+                        loading.dismiss();
                         System.out.println("Error al actualizar la imagen.");
                     }
                 }
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
+                    loading.dismiss();
                     Toast.makeText(CreatePurchaseActivity.this, "Error en la conexión al actualizar la imagen.", Toast.LENGTH_SHORT).show();
                 }
             });
         }
+
+        setResult(RESULT_OK);
+        finish();
     }
 
     private void showFormErrors() {
@@ -536,6 +555,21 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
                 } else {
                     currentImagePath = "";
                     Toast.makeText(CreatePurchaseActivity.this, "Error al seleccionar imagen", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case SCANN_QR_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    String dgiLink = data.getExtras().getString("dgi_link");
+
+                    try {
+                        URL dgiUrl = new URL(dgiLink);
+                        CostWithCurrency costWithCurrency = Utils.QrTicketReader.getCostWithCurrency(dgiUrl);
+                        mEditTextCost.setText(costWithCurrency.cost + "");
+                        int currencySpinnerPosition = currenciesArrayAdapter.getPosition(costWithCurrency.currency);
+                        mSpinnerCurrency.setSelection(currencySpinnerPosition);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
         }

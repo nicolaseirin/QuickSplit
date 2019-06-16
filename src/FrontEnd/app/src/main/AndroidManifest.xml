@@ -19,7 +19,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="org.quicksplit.android.fileprovider"
@@ -32,20 +31,32 @@
 
         <activity
             android:name=".ui.SettingsActivity"
-            android:parentActivityName=".ui.MainActivity" />
-        <activity android:name=".ui.ModifyPurchaseActivity" />
+            android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.ModifyPurchaseActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.ReportActivity"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.CreatePurchaseActivity"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.ModifyGroupActivity"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.CreateGroupActivity"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.ScannerActivity"
+            android:parentActivityName=".ui.CreatePurchaseActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -55,15 +66,19 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".ui.LoginActivity" />
+        <activity
+            android:name=".ui.LoginActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.ModifyUserActivity"
-            android:parentActivityName=".ui.SettingsActivity" />
+            android:parentActivityName=".ui.SettingsActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".ui.RegisterActivity" />
         <activity
             android:name=".ui.MainActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>

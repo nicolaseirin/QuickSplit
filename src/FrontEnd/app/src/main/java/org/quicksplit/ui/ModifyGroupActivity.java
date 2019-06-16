@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +39,8 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
     private List<User> members;
     private List<User> friends;
 
+    private Group group;
+
     private Toolbar mToolbar;
 
     private Button mButtonModifyGroup;
@@ -53,10 +57,18 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
 
     private RecyclerView.LayoutManager mRecyclerViewManager;
 
+    private Button mButtonRefresh;
+    private int idMenuResource = R.menu.refresh;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadGroupData();
+    }
+
+    private void buildModifyGroupContentView() {
         setContentView(R.layout.activity_modify_group);
+        idMenuResource = R.menu.confirmation;
 
         mToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(mToolbar);
@@ -71,16 +83,52 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         mButtonModifyGroup = findViewById(R.id.btn_editGroup);
         mButtonModifyGroup.setOnClickListener(this);
 
-        loadGroupData();
+        loadFields();
+    }
+
+    private void buildErrorContentView() {
+        setContentView(R.layout.activity_error);
+        idMenuResource = R.menu.refresh;
+
+        mToolbar = findViewById(R.id.toolbar_top);
+        mToolbar.setTitle("Modificar Compra");
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mButtonRefresh = findViewById(R.id.btn_refresh);
+        mButtonRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadGroupData();
+            }
+        });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.done:
+                modifyGroup();
+                return true;
+            case R.id.refresh:
+                loadGroupData();
+                return true;
         }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(idMenuResource, menu);
+        return true;
     }
 
     private void loadGroupData() {
@@ -98,7 +146,8 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onResponse(Call<Group> call, Response<Group> response) {
                 if (response.isSuccessful()) {
-                    loadFields(response.body());
+                    group = response.body();
+                    buildModifyGroupContentView();
                 } else {
                     System.out.println("Error: " + response.errorBody());
                 }
@@ -106,12 +155,12 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
 
             @Override
             public void onFailure(Call<Group> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
+                buildErrorContentView();
             }
         });
     }
 
-    private void loadFields(Group group) {
+    private void loadFields() {
         mEditTextGroupName.setText(group.getName());
         getGroupMembers(group);
     }
@@ -142,11 +191,10 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
                 loading.dismiss();
-                Toast.makeText(ModifyGroupActivity.this, "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
+                buildErrorContentView();
             }
         });
     }
-
 
     private void buildRecyclerViewAddFriendsAdapter() {
         friends.removeAll(members);
@@ -211,17 +259,17 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
                 loading.dismiss();
-                Toast.makeText(ModifyGroupActivity.this, "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
+                buildErrorContentView();
             }
         });
     }
 
     @Override
     public void onClick(View v) {
-        updateGroup();
+        modifyGroup();
     }
 
-    private void updateGroup() {
+    private void modifyGroup() {
         String groupId = getIntent().getStringExtra("EXTRA_GROUP_ID");
         TokenManager tokenManager = new TokenManager(this);
 

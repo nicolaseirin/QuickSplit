@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.quicksplit.R;
@@ -44,7 +45,13 @@ import static android.app.Activity.RESULT_OK;
  */
 public class PurchasesFragment extends Fragment {
 
+    private static final String FRAGMENT_ID = "fragment_id";
+    private String fragmentId;
+
     static final int MODIFY_PURCHASE_REQUEST = 0;
+    static final int CREATE_PRUCHASE_REQUEST = 1;
+
+    private LinearLayout mLinearLayoutNoPurchases;
 
     private List<Purchase> purchases;
     private RecyclerView mRecyclerViewPurchases;
@@ -53,22 +60,15 @@ public class PurchasesFragment extends Fragment {
 
     private FloatingActionButton mButtonAddPurchase;
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
     public PurchasesFragment() {
     }
 
-    public static PurchasesFragment newInstance(String param1, String param2) {
+    public static PurchasesFragment newInstance(String fragmentId) {
         PurchasesFragment fragment = new PurchasesFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(FRAGMENT_ID, fragmentId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,8 +77,7 @@ public class PurchasesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            fragmentId = getArguments().getString(FRAGMENT_ID);
         }
     }
 
@@ -91,11 +90,12 @@ public class PurchasesFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent newPurchaseActivity = new Intent(getContext(), CreatePurchaseActivity.class);
-                startActivity(newPurchaseActivity);
+                startActivityForResult(newPurchaseActivity, CREATE_PRUCHASE_REQUEST);
             }
         });
 
         mRecyclerViewPurchases = view.findViewById(R.id.purchasesReciclerView);
+        mLinearLayoutNoPurchases = view.findViewById(R.id.lly_emptyPurchases);
 
         getPurchases();
 
@@ -106,7 +106,7 @@ public class PurchasesFragment extends Fragment {
         TokenManager tokenManager = new TokenManager(getContext());
         UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
 
-        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
         Call<List<Purchase>> call = client.getUserPurchases(tokenManager.getUserIdFromToken());
         call.enqueue(new Callback<List<Purchase>>() {
@@ -114,6 +114,11 @@ public class PurchasesFragment extends Fragment {
             public void onResponse(Call<List<Purchase>> call, Response<List<Purchase>> response) {
                 if (response.isSuccessful()) {
                     purchases = response.body();
+                    if (purchases.size() == 0) {
+                        mLinearLayoutNoPurchases.setVisibility(View.VISIBLE);
+                    } else {
+                        mLinearLayoutNoPurchases.setVisibility(View.GONE);
+                    }
                     buildRecyclerViewPurchases();
                     loading.dismiss();
                 } else {
@@ -131,6 +136,11 @@ public class PurchasesFragment extends Fragment {
     }
 
     private void loadFragment(Fragment fragment) {
+
+        Bundle data = new Bundle();
+        data.putString("fragment_id", fragmentId + "");
+        fragment.setArguments(data);
+
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_container, fragment);
         transaction.addToBackStack(null);
@@ -148,7 +158,7 @@ public class PurchasesFragment extends Fragment {
             public void onModifyClick(Purchase purchase) {
                 Intent intent = new Intent(getContext(), ModifyPurchaseActivity.class);
                 intent.putExtra("EXTRA_PURCHASE_ID", purchase.getId());
-                startActivity(intent);
+                startActivityForResult(intent, MODIFY_PURCHASE_REQUEST);
             }
         });
     }
@@ -173,8 +183,7 @@ public class PurchasesFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == MODIFY_PURCHASE_REQUEST) {
+        if (requestCode == CREATE_PRUCHASE_REQUEST || requestCode == MODIFY_PURCHASE_REQUEST) {
             if (resultCode == RESULT_OK)
                 getPurchases();
         }
