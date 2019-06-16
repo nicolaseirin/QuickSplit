@@ -41,4 +41,5 @@
     <string name="google_maps_API_key">AIzaSyCv61x2spNrmVw3m3Gg4R31NuYr8-UWiHY</string>
     <string name="fetching_data">Recibiendo datos</string>
     <string name="please_wait">Por favor espere...</string>
+    <string name="connectivity_error">No podemos conectarnos. Intente verificar la red WiFi o los datos móviles.</string>
 </resources>
