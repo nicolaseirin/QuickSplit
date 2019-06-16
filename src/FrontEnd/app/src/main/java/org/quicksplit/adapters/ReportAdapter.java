@@ -20,6 +20,7 @@ import java.util.List;
 
 public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportViewHolder> {
 
+    private String currency;
     private List<DebtorDebtee> reports;
     private OnItemClickListener mListener;
 
@@ -58,7 +59,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
 
         groupViewHolder.mTextViewDebtorName.setText(currentItem.getDebtor().toString());
         groupViewHolder.mTextViewDebteeName.setText(currentItem.getDebtee().toString());
-        groupViewHolder.mTextViewAmountValue.setText(currentItem.getAmount());
+        groupViewHolder.mTextViewAmountValue.setText(currency + " " + currentItem.getAmount());
     }
 
     @Override
@@ -66,8 +67,9 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
         return reports.size();
     }
 
-    public ReportAdapter(List<DebtorDebtee> reports) {
+    public ReportAdapter(List<DebtorDebtee> reports, String currency) {
         this.reports = reports;
+        this.currency = currency;
     }
 
     public static class ReportViewHolder extends RecyclerView.ViewHolder {

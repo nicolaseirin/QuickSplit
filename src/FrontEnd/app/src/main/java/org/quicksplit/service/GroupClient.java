@@ -47,7 +47,7 @@ public interface GroupClient {
     Call<List<DebtorDebtee>> getSplitReport(@Path("id") String id);
 
     @GET("groups/{id}/reports")
-    Call<List<DebtorDebtee>> getSplitReport(@Path("id") String id, @Query("find") String currency);
+    Call<List<DebtorDebtee>> getSplitReport(@Path("id") String id, @Query("currency") String currency);
 }
 
 

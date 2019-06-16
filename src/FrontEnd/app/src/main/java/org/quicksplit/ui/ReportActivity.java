@@ -40,6 +40,7 @@ public class ReportActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
 
+    private String actualCurrency = "Usd";
     private Spinner mSpinnerCurrency;
     private ArrayAdapter<String> currenciesArrayAdapter;
     private List<String> currencies;
@@ -168,7 +169,7 @@ public class ReportActivity extends AppCompatActivity {
         });
     }
 
-    private void getReports(String currency) {
+    private void getReports(final String currency) {
         TokenManager tokenManager = new TokenManager(this);
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
 
@@ -185,6 +186,7 @@ public class ReportActivity extends AppCompatActivity {
                     if (reports.size() == 0) {
                         buildNonReportContentView();
                     } else {
+                        actualCurrency = currency;
                         buildReportContentView();
                         buildRecyclerViewReport();
                     }
@@ -259,7 +261,7 @@ public class ReportActivity extends AppCompatActivity {
     private void buildRecyclerViewReport() {
         mRecyclerViewReports.setHasFixedSize(true);
         mRecyclerViewManager = new LinearLayoutManager(this);
-        mRecyclerViewReportAdapter = new ReportAdapter(reports);
+        mRecyclerViewReportAdapter = new ReportAdapter(reports, actualCurrency);
         mRecyclerViewReports.setLayoutManager(mRecyclerViewManager);
         mRecyclerViewReports.setAdapter(mRecyclerViewReportAdapter);
     }
