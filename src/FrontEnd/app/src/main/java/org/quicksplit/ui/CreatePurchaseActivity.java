@@ -83,7 +83,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
     private List<String> currencies;
 
     private List<User> members;
-    private List<User> participants;
+    private List<User> participants = new ArrayList<>();
 
     private Toolbar mToolbar;
 
