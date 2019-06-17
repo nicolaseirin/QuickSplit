@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -127,6 +128,35 @@ namespace QuickSplit.WebApi.Controllers
             {
                 UserId = id,
                 ImageStream = image.OpenReadStream(),
+            };
+            
+            await Mediator.Send(command);
+            
+
+            return Ok();
+        }
+        
+        //[Authorize]
+        [HttpPost("{id}/avatars")]
+        public async Task<IActionResult> AddImage(int id, [FromBody] string avatarUrl)
+        {
+            var c = new HttpClient();
+            Stream i;
+            try
+            {
+                 i = await c.GetStreamAsync(avatarUrl);
+            }
+            catch(Exception e) when (e is HttpRequestException || e is ArgumentException)
+            {
+                return BadRequest("Avatar invalido");
+            }
+
+
+            var command = new AddOrUpdateAvatarCommand()
+            {
+                UserId = id,
+                ImageStream = i,
+                Compression = 100
             };
             
             await Mediator.Send(command);
