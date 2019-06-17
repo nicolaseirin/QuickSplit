@@ -51,6 +51,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private static final int PICK_IMAGE_CAMERA = 1;
     private static final int PICK_IMAGE_GALLERY = 2;
 
+    private ProgressDialog loading;
+
     private String currentImagePath;
     private Bitmap bitmap;
 
@@ -69,6 +71,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private TextView mLabelErrorMessage;
     private Button mButtonregister;
     private TextView mTextViewLogin;
+
+    public RegisterActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +108,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mButtonregister = findViewById(R.id.btn_register);
         mButtonregister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                loading = ProgressDialog.show(RegisterActivity.this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
                 tryToRegisterUser();
             }
         });
@@ -112,6 +118,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void tryToRegisterUser() {
+
         User user = new User();
 
         user.setName(mTextName.getText().toString());
@@ -119,18 +126,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         user.setMail(mTextEmail.getText().toString());
         user.setPassword(mTextPassword.getText().toString());
 
-        if (!validateFieldsAndShowErrors())
+        if (!validateFieldsAndShowErrors()) {
+            loading.dismiss();
             return;
+        }
 
         registerUser(user);
     }
 
+
     private void registerUser(User user) {
         UserClient client = ServiceGenerator.createService(UserClient.class);
         Call<User> call = client.createAccount(user);
-
-        final ProgressDialog loading = ProgressDialog.show(this, "Recuperando datos", "Espere...", false, false);
-
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -145,13 +152,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
 
             private void showErrorMessage(Response<User> response) {
-                try {
-                    String errorMessage = response.errorBody().string();
-                    mLabelErrorMessage.setVisibility(View.VISIBLE);
-                    mLabelErrorMessage.setText(errorMessage);
-                } catch (Exception e) {
 
+                String errorMessage = null;
+                try {
+                    errorMessage = response.errorBody().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                mLabelErrorMessage.setVisibility(View.VISIBLE);
+                mLabelErrorMessage.setText(errorMessage);
             }
 
             @Override
@@ -225,8 +234,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         UserClient client = ServiceGenerator.createService(UserClient.class);
         Call<Token> call = client.login(login);
 
-        final ProgressDialog loading = ProgressDialog.show(this, "Recuperando datos", "Espere...", false, false);
-
         call.enqueue(new Callback<Token>() {
 
             @Override
@@ -262,7 +269,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (currentImagePath != null) {
             TokenManager tokenManager = new TokenManager(this);
 
-            File destination = new File(currentImagePath);
+            final File destination = new File(currentImagePath);
 
             RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/" + currentImagePath.substring(currentImagePath.lastIndexOf(".") + 1)), destination);
             MultipartBody.Part part = MultipartBody.Part.createFormData("image", destination.getName(), fileRequestBody);
@@ -274,6 +281,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 @Override
                 public void onResponse(Call call, Response response) {
                     if (response.isSuccessful()) {
+                        destination.delete();
                         redirect();
                     } else {
                         System.out.println("Error al actualizar la imagen.");

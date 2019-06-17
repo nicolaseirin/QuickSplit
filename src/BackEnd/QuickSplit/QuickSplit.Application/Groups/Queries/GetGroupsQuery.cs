@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Interfaces;
+using QuickSplit.Application.Users.Models;
 using QuickSplit.Domain;
 
 namespace QuickSplit.Application.Groups.Queries
@@ -41,7 +42,7 @@ namespace QuickSplit.Application.Groups.Queries
             };
             if (group.Memberships.Count != 0)
             {
-                groupModel.Memberships = group.Memberships.Select(g => g.UserId).ToList();
+                groupModel.Memberships = group.Memberships.Select(g => new UserModel(g.User)).ToList();
             }
 
             return groupModel;

@@ -23,6 +23,7 @@ import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.GroupFriendsAdapter;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.GroupModelIn;
 import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 import org.quicksplit.service.UserClient;
@@ -97,7 +98,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
         Call<List<User>> call = client.getFriends(tokenManager.getUserIdFromToken());
 
-        final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
         call.enqueue(new Callback<List<User>>() {
 
@@ -155,14 +156,14 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         group.setMemberships(friendsSelected);
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<Group> call = client.createGroup(group);
+        Call<GroupModelIn> call = client.createGroup(group);
 
-        final ProgressDialog loading = ProgressDialog.show(CreateGroupActivity.this, "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(CreateGroupActivity.this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
-        call.enqueue(new Callback<Group>() {
+        call.enqueue(new Callback<GroupModelIn>() {
 
             @Override
-            public void onResponse(Call<Group> call, Response<Group> response) {
+            public void onResponse(Call<GroupModelIn> call, Response<GroupModelIn> response) {
                 if (response.isSuccessful()) {
                     loading.dismiss();
                     setResult(RESULT_OK);
@@ -175,7 +176,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<Group> call, Throwable t) {
+            public void onFailure(Call<GroupModelIn> call, Throwable t) {
                 loading.dismiss();
                 Toast.makeText(CreateGroupActivity.this, "Error en la comunicación al crear grupo.", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_CANCELED);

@@ -188,7 +188,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }catch(SecurityException e){
             Log.d(TAG, "getDeviceLocation: SecurityException " + e.getMessage());
-            Toast.makeText(MapActivity.this, "Error OSOOSOOSOSOSSOal obtener ubicación actual.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MapActivity.this, "Error al obtener ubicación actual.", Toast.LENGTH_SHORT).show();
 
         }
     }

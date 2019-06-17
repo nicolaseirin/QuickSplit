@@ -2,6 +2,7 @@ package org.quicksplit.service;
 
 import org.quicksplit.models.ModifyPurchase;
 import org.quicksplit.models.Purchase;
+import org.quicksplit.models.PurchaseModelIn;
 import org.quicksplit.models.User;
 
 import java.util.List;
@@ -23,21 +24,21 @@ public interface PurchaseClient {
     Call<List<Purchase>> getPurchases();
 
     @GET("purchases/{id}")
-    Call<Purchase> getPurchases(@Path("id") String id);
+    Call<PurchaseModelIn> getPurchases(@Path("id") String id);
 
     @GET("purchases/{id}/users")
     Call<List<User>> getParticipants(@Path("id") String id);
 
     @POST("purchases")
-    Call<Purchase> createPurchase(@Body Purchase purchase);
+    Call<PurchaseModelIn> createPurchase(@Body Purchase purchase);
 
     @GET("purchases/{id}/image")
     Call<ResponseBody> getPurchaseImage(@Path("id") String id);
 
     @PUT("purchases/{id}")
-    Call<Purchase> modifyPurchase(@Path("id") String id, @Body ModifyPurchase purchase);
+    Call<PurchaseModelIn> modifyPurchase(@Path("id") String id, @Body ModifyPurchase purchase);
 
     @Multipart
     @POST("purchases/{id}/image")
-    Call<ResponseBody> addPurchaseImage(@Path("id") String id, @Part MultipartBody.Part filePart);
+    Call<ResponseBody> setPurchaseImage(@Path("id") String id, @Part MultipartBody.Part filePart);
 }

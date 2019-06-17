@@ -2,6 +2,7 @@
 using QuickSplit.Domain;
 using System.Collections.Generic;
 using System.Linq;
+using QuickSplit.Application.Users.Models;
 
 namespace QuickSplit.Application.Groups.Models
 {
@@ -13,22 +14,21 @@ namespace QuickSplit.Application.Groups.Models
 
         public int Admin { get; set; }
 
-        public ICollection<int> Memberships { get; set; }
+        public ICollection<UserModel> Memberships { get; set; }
         
         public IEnumerable<int> Purchases { get; set; } 
 
         public GroupModel()
         {
-            Memberships = new List<int>(); 
+            Memberships = new List<UserModel>(); 
         }
 
         public GroupModel(Group group)
         {
             Id = group.Id;
             Name = group.Name;
-            var a = group.Admin;
             Admin = group.Admin.Id;
-            Memberships = new List<int>();
+            Memberships = new List<UserModel>();
             SetMemberships(group.Memberships);
             Purchases = group.Purchases.Select(purchase => purchase.Id);
         }
@@ -37,7 +37,7 @@ namespace QuickSplit.Application.Groups.Models
         {
             foreach (Domain.Membership m in memberships)
             {
-                Memberships.Add(m.UserId);
+                Memberships.Add(new UserModel(m.User));
             }
         }
     }

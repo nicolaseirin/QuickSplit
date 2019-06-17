@@ -14,6 +14,7 @@ import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.GroupModelIn;
 import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 
@@ -25,20 +26,19 @@ import retrofit2.Response;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHolder> {
 
-    private List<Group> groups;
-    private List<User> currentMembers;
+    private List<GroupModelIn> groups;
     private Context context;
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
 
-        void onViewReportClick(Group group);
+        void onReportClick(GroupModelIn group);
 
-        void onModifyClick(Group group);
+        void onModifyClick(GroupModelIn group);
 
-        void onDeleteClick(Group group);
+        void onDeleteClick(GroupModelIn group);
 
-        void onLeaveClick(Group group);
+        void onLeaveClick(GroupModelIn group);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -55,34 +55,13 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
     @Override
     public void onBindViewHolder(@NonNull final GroupViewHolder groupViewHolder, int i) {
-        final Group currentItem = groups.get(i);
+        final GroupModelIn currentItem = groups.get(i);
         groupViewHolder.mTextViewGroupName.setText(currentItem.getName());
 
-        //For sigle item call the users
-        TokenManager tokenManager = new TokenManager(context);
-        GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-
-        Call<List<User>> call = client.getGroupMembers(currentItem.getId());
-        call.enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful()) {
-                    currentMembers = response.body();
-                    AvatarAdapter avatarAdapter = new AvatarAdapter(currentMembers);
-                    groupViewHolder.mRecyclerView.setHasFixedSize(true);
-                    groupViewHolder.mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-                    groupViewHolder.mRecyclerView.setAdapter(avatarAdapter);
-                } else {
-                    System.out.println("Error: " + response.errorBody());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
-            }
-        });
-
+        AvatarAdapter avatarAdapter = new AvatarAdapter(currentItem.getMemberships());
+        groupViewHolder.mRecyclerView.setHasFixedSize(true);
+        groupViewHolder.mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        groupViewHolder.mRecyclerView.setAdapter(avatarAdapter);
     }
 
     @Override
@@ -90,7 +69,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
         return groups.size();
     }
 
-    public GroupAdapter(List<Group> groups, Context context) {
+    public GroupAdapter(List<GroupModelIn> groups, Context context) {
         this.groups = groups;
         this.context = context;
     }
@@ -106,7 +85,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
         public ImageView mImageDelete;
 
 
-        public GroupViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<Group> groups) {
+        public GroupViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<GroupModelIn> groups) {
             super(itemView);
 
             mRecyclerView = itemView.findViewById(R.id.rview_avatars);
@@ -119,7 +98,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                     if (listener != null) {
                         int i = getAdapterPosition();
                         if (i != RecyclerView.NO_POSITION) {
-                            listener.onViewReportClick(groups.get(i));
+                            listener.onReportClick(groups.get(i));
                         }
                     }
                 }

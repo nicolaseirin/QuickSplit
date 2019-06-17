@@ -7,6 +7,7 @@
     tools:context=".ui.ReportActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/action_bar_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -28,9 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="55dp"
-        android:layout_marginBottom="55dp"
         android:background="@android:color/white"
         android:padding="4dp"
-        android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
+        android:scrollbars="vertical" />
 
 </FrameLayout>

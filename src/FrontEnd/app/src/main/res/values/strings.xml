@@ -39,4 +39,9 @@
     <string name="modify">Modificar</string>
     <string name="cancel">Cancelar</string>
     <string name="google_maps_API_key">AIzaSyCv61x2spNrmVw3m3Gg4R31NuYr8-UWiHY</string>
+    <string name="fetching_data">Recibiendo datos</string>
+    <string name="please_wait">Por favor espere...</string>
+    <string name="connectivity_error">No podemos conectarnos. Intente verificar la red WiFi o los datos móviles.</string>
+    <string name="default_web_client_id">"153663611706-1ufcjs3vfk0030i4fj8h052oklojbc3u.apps.googleusercontent.com"</string>
+    <string name="no_register_user">¿No registrado? Registrarse</string>
 </resources>

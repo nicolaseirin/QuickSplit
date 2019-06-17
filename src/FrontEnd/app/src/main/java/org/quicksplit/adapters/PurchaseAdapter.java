@@ -17,6 +17,7 @@ import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
 import org.quicksplit.models.Purchase;
+import org.quicksplit.models.PurchaseModelIn;
 import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 import org.quicksplit.service.PurchaseClient;
@@ -31,14 +32,14 @@ import retrofit2.http.Url;
 
 public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.PurchaseViewHolder> {
 
-    private List<Purchase> purchases;
+    private List<PurchaseModelIn> purchases;
     private List<User> currentMembers;
     private Context context;
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
 
-        void onModifyClick(Purchase purchase);
+        void onModifyClick(PurchaseModelIn purchase);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -55,7 +56,7 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
 
     @Override
     public void onBindViewHolder(@NonNull final PurchaseViewHolder groupViewHolder, int i) {
-        final Purchase currentItem = purchases.get(i);
+        final PurchaseModelIn currentItem = purchases.get(i);
 
 
         Uri imageUri = Uri.parse(ServiceGenerator.getBaseUrl() + "purchases/" + currentItem.getId() + "/image");
@@ -66,32 +67,13 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
                 .into(groupViewHolder.mImagePurchase);
 
         groupViewHolder.mTextViewPurchaseName.setText(currentItem.getName());
-        groupViewHolder.mTextViewCurrency.setText(currentItem.getCurrency());
+        groupViewHolder.mTextViewCurrency.setText(currentItem.getCurrency() + " " + currentItem.getCost());
 
-        //For sigle item call the users
-        TokenManager tokenManager = new TokenManager(context);
-        PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
 
-        Call<List<User>> call = client.getParticipants(currentItem.getId());
-        call.enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful()) {
-                    currentMembers = response.body();
-                    AvatarAdapter avatarAdapter = new AvatarAdapter(currentMembers);
-                    groupViewHolder.mRecyclerView.setHasFixedSize(true);
-                    groupViewHolder.mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-                    groupViewHolder.mRecyclerView.setAdapter(avatarAdapter);
-                } else {
-                    System.out.println("Error: " + response.errorBody());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
-            }
-        });
+        AvatarAdapter avatarAdapter = new AvatarAdapter(currentItem.getParticipants());
+        groupViewHolder.mRecyclerView.setHasFixedSize(true);
+        groupViewHolder.mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        groupViewHolder.mRecyclerView.setAdapter(avatarAdapter);
     }
 
     @Override
@@ -99,7 +81,7 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
         return purchases.size();
     }
 
-    public PurchaseAdapter(List<Purchase> purchases, Context context) {
+    public PurchaseAdapter(List<PurchaseModelIn> purchases, Context context) {
         this.purchases = purchases;
         this.context = context;
     }
@@ -114,7 +96,7 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
         public TextView mTextViewPurchaseName;
         public TextView mTextViewCurrency;
 
-        public PurchaseViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<Purchase> purchases) {
+        public PurchaseViewHolder(@NonNull View itemView, final OnItemClickListener listener, final List<PurchaseModelIn> purchases) {
             super(itemView);
 
             mRecyclerView = itemView.findViewById(R.id.rview_avatars);

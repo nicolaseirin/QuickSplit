@@ -82,7 +82,7 @@ namespace QuickSplit.Test.Application
             
             Assert.Equal(command.Currency, result.Currency);
             Assert.Equal(command.Group, result.Group);
-            Assert.Equal(command.Participants.ToList(), result.Participants);
+            Assert.Equal(command.Participants.ToList(), result.Participants.Select(p => p.Id));
             Assert.Equal(command.Cost, result.Cost);
             Assert.Equal(command.Purchaser, result.Purchaser);
 

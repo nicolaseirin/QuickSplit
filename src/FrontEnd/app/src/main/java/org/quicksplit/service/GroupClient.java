@@ -2,6 +2,7 @@ package org.quicksplit.service;
 
 import org.quicksplit.models.DebtorDebtee;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.GroupModelIn;
 import org.quicksplit.models.LeaveGroup;
 import org.quicksplit.models.Purchase;
 import org.quicksplit.models.User;
@@ -15,17 +16,18 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface GroupClient {
 
     @GET("groups/{id}")
-    Call<Group> getGroup(@Path("id") String id);
+    Call<GroupModelIn> getGroup(@Path("id") String id);
 
     @POST("groups")
-    Call<Group> createGroup(@Body Group group);
+    Call<GroupModelIn> createGroup(@Body Group group);
 
     @PUT("groups/{id}")
-    Call<Group> modifyGroup(@Path("id") String id, @Body Group group);
+    Call<GroupModelIn> modifyGroup(@Path("id") String id, @Body Group group);
 
     @DELETE("groups/{id}")
     Call<Void> deleteGroup(@Path("id") String id);
@@ -44,6 +46,9 @@ public interface GroupClient {
 
     @GET("groups/{id}/reports")
     Call<List<DebtorDebtee>> getSplitReport(@Path("id") String id);
+
+    @GET("groups/{id}/reports")
+    Call<List<DebtorDebtee>> getSplitReport(@Path("id") String id, @Query("currency") String currency);
 }
 
 

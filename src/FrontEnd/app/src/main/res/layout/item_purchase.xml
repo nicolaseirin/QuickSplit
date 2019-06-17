@@ -86,7 +86,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="12dp"
-                android:src="@drawable/ic_edit_green" />
+                android:src="@drawable/ic_edit_gray" />
 
         </LinearLayout>
 

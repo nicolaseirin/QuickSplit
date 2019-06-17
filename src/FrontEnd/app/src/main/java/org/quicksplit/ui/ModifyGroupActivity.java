@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +23,7 @@ import org.quicksplit.TokenManager;
 import org.quicksplit.adapters.AddFriendsAdapter;
 import org.quicksplit.adapters.DeleteFriendsAdapter;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.GroupModelIn;
 import org.quicksplit.models.User;
 import org.quicksplit.service.GroupClient;
 import org.quicksplit.service.UserClient;
@@ -36,6 +39,8 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
 
     private List<User> members;
     private List<User> friends;
+
+    private GroupModelIn group;
 
     private Toolbar mToolbar;
 
@@ -53,10 +58,18 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
 
     private RecyclerView.LayoutManager mRecyclerViewManager;
 
+    private Button mButtonRefresh;
+    private int idMenuResource = R.menu.refresh;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadGroupData();
+    }
+
+    private void buildModifyGroupContentView() {
         setContentView(R.layout.activity_modify_group);
+        idMenuResource = R.menu.confirmation;
 
         mToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(mToolbar);
@@ -71,16 +84,52 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         mButtonModifyGroup = findViewById(R.id.btn_editGroup);
         mButtonModifyGroup.setOnClickListener(this);
 
-        loadGroupData();
+        loadFields();
+    }
+
+    private void buildErrorContentView() {
+        setContentView(R.layout.activity_error);
+        idMenuResource = R.menu.refresh;
+
+        mToolbar = findViewById(R.id.toolbar_top);
+        mToolbar.setTitle("Modificar Compra");
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mButtonRefresh = findViewById(R.id.btn_refresh);
+        mButtonRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadGroupData();
+            }
+        });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.done:
+                modifyGroup();
+                return true;
+            case R.id.refresh:
+                loadGroupData();
+                return true;
         }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(idMenuResource, menu);
+        return true;
     }
 
     private void loadGroupData() {
@@ -92,61 +141,36 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         TokenManager tokenManager = new TokenManager(this);
 
         GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<Group> call = client.getGroup(groupId);
+        Call<GroupModelIn> call = client.getGroup(groupId);
 
-        call.enqueue(new Callback<Group>() {
+        call.enqueue(new Callback<GroupModelIn>() {
             @Override
-            public void onResponse(Call<Group> call, Response<Group> response) {
+            public void onResponse(Call<GroupModelIn> call, Response<GroupModelIn> response) {
                 if (response.isSuccessful()) {
-                    loadFields(response.body());
+                    group = response.body();
+                    buildModifyGroupContentView();
                 } else {
                     System.out.println("Error: " + response.errorBody());
                 }
             }
 
             @Override
-            public void onFailure(Call<Group> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
+            public void onFailure(Call<GroupModelIn> call, Throwable t) {
+                buildErrorContentView();
             }
         });
     }
 
-    private void loadFields(Group group) {
+    private void loadFields() {
         mEditTextGroupName.setText(group.getName());
         getGroupMembers(group);
     }
 
-    private void getGroupMembers(Group group) {
-        TokenManager tokenManager = new TokenManager(this);
-
-        GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<List<User>> call = client.getGroupMembers(group.getId());
-
-        final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
-
-        call.enqueue(new Callback<List<User>>() {
-
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful()) {
-                    members = response.body();
-                    getFriends();
-                    buildRecyclerViewDeleteFriendsAdapter();
-                    loading.dismiss();
-                } else {
-                    loading.dismiss();
-                    Toast.makeText(ModifyGroupActivity.this, "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                loading.dismiss();
-                Toast.makeText(ModifyGroupActivity.this, "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void getGroupMembers(GroupModelIn group) {
+        members = group.getMemberships();
+        getFriends();
+        buildRecyclerViewDeleteFriendsAdapter();
     }
-
 
     private void buildRecyclerViewAddFriendsAdapter() {
         friends.removeAll(members);
@@ -192,7 +216,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
         Call<List<User>> call = client.getFriends(tokenManager.getUserIdFromToken());
 
-        final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
         call.enqueue(new Callback<List<User>>() {
 
@@ -211,17 +235,17 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
                 loading.dismiss();
-                Toast.makeText(ModifyGroupActivity.this, "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
+                buildErrorContentView();
             }
         });
     }
 
     @Override
     public void onClick(View v) {
-        updateGroup();
+        modifyGroup();
     }
 
-    private void updateGroup() {
+    private void modifyGroup() {
         String groupId = getIntent().getStringExtra("EXTRA_GROUP_ID");
         TokenManager tokenManager = new TokenManager(this);
 
@@ -236,10 +260,10 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
         group.setMemberships(memberships);
 
         GroupClient groupClient = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<Group> call = groupClient.modifyGroup(groupId, group);
-        call.enqueue(new Callback<Group>() {
+        Call<GroupModelIn> call = groupClient.modifyGroup(groupId, group);
+        call.enqueue(new Callback<GroupModelIn>() {
             @Override
-            public void onResponse(Call<Group> call, Response<Group> response) {
+            public void onResponse(Call<GroupModelIn> call, Response<GroupModelIn> response) {
                 if (response.isSuccessful()) {
                     setResult(RESULT_OK);
                     finish();
@@ -250,7 +274,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<Group> call, Throwable t) {
+            public void onFailure(Call<GroupModelIn> call, Throwable t) {
                 Toast.makeText(ModifyGroupActivity.this, "Error en la comunicación al modificar grupo.", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_CANCELED);
             }

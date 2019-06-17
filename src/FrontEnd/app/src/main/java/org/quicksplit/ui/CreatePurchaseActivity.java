@@ -29,15 +29,20 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.quicksplit.CostWithCurrency;
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
 import org.quicksplit.TokenManager;
+import org.quicksplit.Utils;
 import org.quicksplit.adapters.GroupFriendsAdapter;
 import org.quicksplit.models.Group;
+import org.quicksplit.models.GroupModelIn;
 import org.quicksplit.models.Purchase;
+import org.quicksplit.models.PurchaseModelIn;
 import org.quicksplit.models.User;
 import org.quicksplit.service.CurrencyClient;
 import org.quicksplit.service.GroupClient;
@@ -47,6 +52,8 @@ import org.quicksplit.service.UserClient;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,28 +66,26 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CreatePurchaseActivity extends AppCompatActivity implements View.OnClickListener {
+public class CreatePurchaseActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_CAMERA = 1;
     private static final int PICK_IMAGE_GALLERY = 2;
+    private static final int SCANN_QR_CAMERA = 3;
 
     private ImageView mImagePurchase;
+    private LinearLayout mLinearLayoutPurchaseImage;
     private Bitmap bitmap;
     private File destination = null;
     private String currentImagePath = null;
 
-
-    private static final String TAG = "CreatePurchaseActivity";
-    private static final int ERROR_DIALOG_REQUEST = 9001;
-
-    private List<Group> groups;
-    private ArrayAdapter<Group> groupArrayAdapter;
+    private List<GroupModelIn> groups;
+    private ArrayAdapter<GroupModelIn> groupArrayAdapter;
     private ArrayAdapter<String> currenciesArrayAdapter;
 
     private List<String> currencies;
 
     private List<User> members;
-    private List<User> participants;
+    private List<User> participants = new ArrayList<>();
 
     private Toolbar mToolbar;
 
@@ -101,9 +106,9 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     private GroupFriendsAdapter mRecycleViewGroupFriendsAdapter;
     private RecyclerView.LayoutManager mRecyclerViewManager;
 
-    private Button mButtonUploadImage;
     private Button mButtonCreatePurchase;
     private Button mButtonAddMap;
+    private Button mButtonScanCost;
     private Bundle myBundle;
 
     @Override
@@ -118,6 +123,13 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         mImagePurchase = findViewById(R.id.img_purchase);
+        mLinearLayoutPurchaseImage = findViewById(R.id.lly_imgPurchase);
+        mLinearLayoutPurchaseImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectPurchaseImage();
+            }
+        });
 
         mTextInputLayoutGroupMembers = findViewById(R.id.lblError_groupMembers);
         mRecyclerViewGroupMembers = findViewById(R.id.purchisersReciclerView);
@@ -126,7 +138,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         mSpinnerGroups.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                getMembers((Group) mSpinnerGroups.getSelectedItem());
+                getMembers((GroupModelIn) mSpinnerGroups.getSelectedItem());
             }
 
             @Override
@@ -154,16 +166,13 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         mTextInputLayoutTxtCost = findViewById(R.id.lblError_txtCost);
         mEditTextCost = findViewById(R.id.txt_cost);
 
-        mButtonUploadImage = findViewById(R.id.btn_uploadImage);
-        mButtonUploadImage.setOnClickListener(new View.OnClickListener() {
+        mButtonCreatePurchase = findViewById(R.id.btn_createPurchase);
+        mButtonCreatePurchase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectPurchaseImage();
+                createPurchase();
             }
         });
-
-        mButtonCreatePurchase = findViewById(R.id.btn_createPurchase);
-        mButtonCreatePurchase.setOnClickListener(this);
 
         mButtonAddMap = findViewById(R.id.btn_location);
         mButtonAddMap.setOnClickListener(new View.OnClickListener() {
@@ -174,15 +183,24 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
             }
         });
 
+        mButtonScanCost = findViewById(R.id.btn_scanCost);
+        mButtonScanCost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent scannerActivity = new Intent(CreatePurchaseActivity.this, ScannerActivity.class);
+                startActivityForResult(scannerActivity, SCANN_QR_CAMERA);
+            }
+        });
+
         myBundle = this.getIntent().getExtras();
         getData();
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                setResult(RESULT_CANCELED);
                 onBackPressed();
                 break;
             case R.id.done:
@@ -198,13 +216,13 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     private void getData() {
         TokenManager tokenManager = new TokenManager(this);
         UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
-        Call<List<Group>> call = client.getUserGroups(tokenManager.getUserIdFromToken());
+        Call<List<GroupModelIn>> call = client.getUserGroups(tokenManager.getUserIdFromToken());
 
         final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
 
-        call.enqueue(new Callback<List<Group>>() {
+        call.enqueue(new Callback<List<GroupModelIn>>() {
             @Override
-            public void onResponse(Call<List<Group>> call, Response<List<Group>> response) {
+            public void onResponse(Call<List<GroupModelIn>> call, Response<List<GroupModelIn>> response) {
                 if (response.isSuccessful()) {
                     groups = response.body();
                     buildGroupsAdapter();
@@ -216,7 +234,7 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
             }
 
             @Override
-            public void onFailure(Call<List<Group>> call, Throwable t) {
+            public void onFailure(Call<List<GroupModelIn>> call, Throwable t) {
                 loading.dismiss();
                 Toast.makeText(CreatePurchaseActivity.this, "Error en la comunicación al obtener grupos.", Toast.LENGTH_SHORT).show();
             }
@@ -260,40 +278,23 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
     }
 
     private void buildGroupsAdapter() {
-        groupArrayAdapter = new ArrayAdapter<Group>(this, android.R.layout.simple_spinner_item, groups);
+        groupArrayAdapter = new ArrayAdapter<GroupModelIn>(this, android.R.layout.simple_spinner_item, groups);
         groupArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerGroups.setAdapter(groupArrayAdapter);
     }
 
-    private void getMembers(Group group) {
+    private void getMembers(GroupModelIn group) {
         TokenManager tokenManager = new TokenManager(this);
+        String id =tokenManager.getUserIdFromToken();
 
-        GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<List<User>> call = client.getGroupMembers(group.getId());
+        User user = new User();
+        user.setId(id);
 
-        final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
+        members = group.getMemberships();
+        members.remove(user);
 
-        call.enqueue(new Callback<List<User>>() {
-
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful()) {
-                    members = response.body();
-                    participants = new ArrayList<>(members);
-                    buildRecyclerViewCreateGroupFriendsAdapter();
-                    loading.dismiss();
-                } else {
-                    loading.dismiss();
-                    Toast.makeText(CreatePurchaseActivity.this, "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                loading.dismiss();
-                Toast.makeText(CreatePurchaseActivity.this, "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
-            }
-        });
+        participants = new ArrayList<>(members);
+        buildRecyclerViewCreateGroupFriendsAdapter();
     }
 
     private void buildRecyclerViewCreateGroupFriendsAdapter() {
@@ -316,11 +317,6 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         });
     }
 
-    @Override
-    public void onClick(View v) {
-        createPurchase();
-    }
-
     private void createPurchase() {
 
         showFormErrors();
@@ -336,14 +332,14 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         purchase.setCost(mEditTextCost.getText().toString());
         purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
 
-        purchase.setGroup(((Group) mSpinnerGroups.getSelectedItem()).getId());
+        purchase.setGroup(((GroupModelIn) mSpinnerGroups.getSelectedItem()).getId());
 
         if (myBundle != null) {
             purchase.setLatitude(myBundle.getDouble("latitude"));
             purchase.setLongitude(myBundle.getDouble("longitude"));
         }
         purchase.setCurrency(mSpinnerCurrency.getSelectedItem().toString());
-        purchase.setGroup(((Group) mSpinnerGroups.getSelectedItem()).getId());
+        purchase.setGroup(((GroupModelIn) mSpinnerGroups.getSelectedItem()).getId());
 
 
         List<String> participantsString = new ArrayList<String>();
@@ -354,14 +350,14 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
         purchase.setPurchaser(tokenManager.getUserIdFromToken());
 
         PurchaseClient client = ServiceGenerator.createService(PurchaseClient.class, tokenManager.getToken());
-        Call<Purchase> call = client.createPurchase(purchase);
+        Call<PurchaseModelIn> call = client.createPurchase(purchase);
 
-        final ProgressDialog loading = ProgressDialog.show(this, "Fetching Data", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
 
-        call.enqueue(new Callback<Purchase>() {
+        call.enqueue(new Callback<PurchaseModelIn>() {
 
             @Override
-            public void onResponse(Call<Purchase> call, Response<Purchase> response) {
+            public void onResponse(Call<PurchaseModelIn> call, Response<PurchaseModelIn> response) {
                 if (response.isSuccessful()) {
                     uploadImageToServer(response.body());
                     loading.dismiss();
@@ -372,14 +368,14 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
             }
 
             @Override
-            public void onFailure(Call<Purchase> call, Throwable t) {
+            public void onFailure(Call<PurchaseModelIn> call, Throwable t) {
                 loading.dismiss();
                 Toast.makeText(CreatePurchaseActivity.this, "Error en la comunicación al crear la compra.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void uploadImageToServer(Purchase purchase) {
+    private void uploadImageToServer(PurchaseModelIn purchase) {
 
         if (currentImagePath != null) {
             TokenManager tokenManager = new TokenManager(this);
@@ -391,22 +387,32 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
             RequestBody fileRequestBody = RequestBody.create(MediaType.parse("image/" + currentImagePath.substring(currentImagePath.lastIndexOf(".") + 1)), destination);
             MultipartBody.Part part = MultipartBody.Part.createFormData("image", destination.getName(), fileRequestBody);
 
-            Call call = client.addPurchaseImage(purchase.getId(), part);
+            final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
+
+            Call call = client.setPurchaseImage(purchase.getId(), part);
             call.enqueue(new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(CreatePurchaseActivity.this, "La imagen se actualizó correctamente.", Toast.LENGTH_SHORT).show();
+                        loading.dismiss();
+                        destination.delete();
+                        setResult(RESULT_OK);
+                        finish();
                     } else {
+                        loading.dismiss();
                         System.out.println("Error al actualizar la imagen.");
                     }
                 }
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
+                    loading.dismiss();
                     Toast.makeText(CreatePurchaseActivity.this, "Error en la conexión al actualizar la imagen.", Toast.LENGTH_SHORT).show();
                 }
             });
+        } else {
+            setResult(RESULT_OK);
+            finish();
         }
     }
 
@@ -536,6 +542,21 @@ public class CreatePurchaseActivity extends AppCompatActivity implements View.On
                 } else {
                     currentImagePath = "";
                     Toast.makeText(CreatePurchaseActivity.this, "Error al seleccionar imagen", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case SCANN_QR_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    String dgiLink = data.getExtras().getString("dgi_link");
+
+                    try {
+                        URL dgiUrl = new URL(dgiLink);
+                        CostWithCurrency costWithCurrency = Utils.QrTicketReader.getCostWithCurrency(dgiUrl);
+                        mEditTextCost.setText(costWithCurrency.cost + "");
+                        int currencySpinnerPosition = currenciesArrayAdapter.getPosition(costWithCurrency.currency);
+                        mSpinnerCurrency.setSelection(currencySpinnerPosition);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
         }

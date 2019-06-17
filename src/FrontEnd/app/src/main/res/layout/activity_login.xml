@@ -19,6 +19,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:orientation="vertical">
 
             <LinearLayout
@@ -103,6 +104,13 @@
                     android:layout_marginTop="16dp"
                     android:text="@string/lbl_login" />
 
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/sign_in_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp" />
+
                 <TextView
                     android:id="@+id/txtView_register"
                     android:layout_width="match_parent"
@@ -110,12 +118,16 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     android:gravity="center"
-                    android:text="¿No registrado? Registrarse" />
+                    android:text="@string/no_register_user" />
 
                 <TextView
                     android:id="@+id/lbl_errorMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center"
+                    android:textColor="@android:color/holo_red_light"
                     android:visibility="gone" />
 
             </LinearLayout>
