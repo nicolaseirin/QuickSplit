@@ -284,38 +284,17 @@ public class CreatePurchaseActivity extends AppCompatActivity {
     }
 
     private void getMembers(GroupModelIn group) {
+        TokenManager tokenManager = new TokenManager(this);
+        String id =tokenManager.getUserIdFromToken();
+
+        User user = new User();
+        user.setId(id);
+
         members = group.getMemberships();
+        members.remove(user);
+
         participants = new ArrayList<>(members);
         buildRecyclerViewCreateGroupFriendsAdapter();
-        /*
-        TokenManager tokenManager = new TokenManager(this);
-
-        GroupClient client = ServiceGenerator.createService(GroupClient.class, tokenManager.getToken());
-        Call<List<User>> call = client.getGroupMembers(group.getId());
-
-        final ProgressDialog loading = ProgressDialog.show(this, getString(R.string.fetching_data), getString(R.string.please_wait), false, false);
-
-        call.enqueue(new Callback<List<User>>() {
-
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful()) {
-                    members = response.body();
-                    participants = new ArrayList<>(members);
-                    buildRecyclerViewCreateGroupFriendsAdapter();
-                    loading.dismiss();
-                } else {
-                    loading.dismiss();
-                    Toast.makeText(CreatePurchaseActivity.this, "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                loading.dismiss();
-                Toast.makeText(CreatePurchaseActivity.this, "Error en la comunicación al obtener usuarios", Toast.LENGTH_SHORT).show();
-            }
-        });*/
     }
 
     private void buildRecyclerViewCreateGroupFriendsAdapter() {
