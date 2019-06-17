@@ -1,6 +1,7 @@
 package org.quicksplit.ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -60,6 +61,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
 
     private RecyclerView.LayoutManager mRecyclerViewManager;
     private Button mButtonModifyPurchase;
+    private Button mButtonOpenMap;
 
     private TextInputLayout mTextInputLayoutGroupMembers;
     private RecyclerView mRecyclerViewMembers;
@@ -97,6 +99,15 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
 
         mButtonModifyPurchase = findViewById(R.id.btn_modifyPurchase);
         mButtonModifyPurchase.setOnClickListener(this);
+
+        mButtonOpenMap = findViewById(R.id.btn_openMap);
+        mButtonOpenMap.setOnClickListener(new View.OnClickListener () {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ModifyPurchaseActivity.this, MapActivity.class);
+                startActivity(intent);
+            }
+        });
 
         mTextInputLayoutGroupMembers = findViewById(R.id.lblError_groupMembers);
         loadPurchaseData();
