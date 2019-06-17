@@ -24,6 +24,8 @@ namespace QuickSplit.Application.Users.Commands
         public async Task<Unit> Handle(AddOrUpdateAvatarCommand request, CancellationToken cancellationToken)
         {
             User user = await _context.Users.FindAsync(request.UserId) ?? throw new InvalidCommandException("No existe el usuario");
+            if (request.Compression != null)
+                _imageRepository.ImageQualityRatio = request.Compression.Value;
 
             _imageRepository.AddImageFromStream(request.UserId, request.ImageStream);
 
@@ -36,5 +38,7 @@ namespace QuickSplit.Application.Users.Commands
         public Stream ImageStream { get; set; }
 
         public int UserId { get; set; }
+        
+        public int? Compression { get; set; }
     }
 }
