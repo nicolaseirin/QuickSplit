@@ -59,6 +59,9 @@ public interface UserClient {
     @GET("users/{id}/avatars")
     Call<ResponseBody> getUserAvatar(@Path("id") String id);
 
+    @POST("users/{id}/avatars")
+    Call<Void> setUserAvatar(@Path("id") String id, @Body String avatarUrl);
+
     @Multipart
     @POST("users/{id}/avatars")
     Call<ResponseBody> setUserAvatar(@Path("id") String id, @Part MultipartBody.Part filePart);

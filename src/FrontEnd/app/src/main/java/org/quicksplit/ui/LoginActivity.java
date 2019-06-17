@@ -3,6 +3,7 @@ package org.quicksplit.ui;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,10 +14,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+
 import org.quicksplit.R;
 import org.quicksplit.ServiceGenerator;
+import org.quicksplit.TokenManager;
 import org.quicksplit.models.Login;
 import org.quicksplit.models.Token;
+import org.quicksplit.models.User;
 import org.quicksplit.service.UserClient;
 
 import retrofit2.Call;
@@ -25,6 +35,7 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final int RC_SIGN_IN = 0;
     private static String token;
     private TextInputLayout mLabelErrorUserName;
     private EditText mTextUserName;
@@ -33,11 +44,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button mButtonLogin;
     private TextView mTextViewRegister;
     private TextView mLabelErrorMessage;
+    private GoogleSignInClient mGoogleSignInClient;
+
+    private String name;
+    private String lastName;
+    private String email;
+    private String password;
+    private Uri uriAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.sign_in_button:
+                        signIn();
+                        break;
+                }
+            }
+        });
 
         mLabelErrorUserName = findViewById(R.id.lblError_txtUserName);
         mTextUserName = findViewById(R.id.txtUserName);
@@ -51,19 +87,108 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mButtonLogin = this.findViewById(R.id.btn_login);
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                login();
+                tryLogin();
             }
         });
 
         mLabelErrorMessage = this.findViewById(R.id.lbl_errorMessage);
     }
 
+    private void signIn() {
+
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            name = account.getGivenName();
+            lastName = account.getFamilyName();
+            email = account.getEmail();
+            password = account.getIdToken();
+
+            uriAvatar = account.getPhotoUrl();
+
+            User user = new User();
+            user.setName(name);
+            user.setLastName(lastName);
+            user.setMail(email);
+            user.setPassword(password);
+
+            UserClient client = ServiceGenerator.createService(UserClient.class);
+            Call<User> call = client.createAccount(user);
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(LoginActivity.this, "Usuario registrado", Toast.LENGTH_SHORT).show();
+                        login();
+                    } else if (response.code() == 400) {
+                        login();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    Toast.makeText(LoginActivity.this, "Error al registrar Usuario", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (ApiException e) {
+            mLabelErrorMessage.setVisibility(View.VISIBLE);
+            mLabelErrorMessage.setText("Ocurrió un error durante el login. Por si lo necesitas el código de error es: " + e.getStatusCode());
+        }
+    }
+
+    private void setGoogleAvatarImage() {
+        TokenManager tokenManager = new TokenManager(this);
+
+        UserClient client = ServiceGenerator.createService(UserClient.class, tokenManager.getToken());
+        Call<Void> call = client.setUserAvatar(tokenManager.getUserIdFromToken(), uriAvatar.toString());
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+    }
+
+    private void tryLogin() {
+        email = mTextUserName.getText().toString();
+        password = mTextPassword.getText().toString();
+
+        login();
+    }
+
     private void login() {
 
         Login login = new Login();
 
-        login.setMail(mTextUserName.getText().toString());
-        login.setPassword(mTextPassword.getText().toString());
+        login.setMail(email);
+        login.setPassword(password);
 
         if (!validateFieldsAndShowErrors())
             return;
@@ -79,6 +204,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onResponse(Call<Token> call, Response<Token> response) {
                 if (response.isSuccessful()) {
                     storageTokenAccess(response);
+                    setGoogleAvatarImage();
                     loading.dismiss();
 
                 } else {
@@ -126,10 +252,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         boolean isValid = false;
 
-        String userName = mTextUserName.getText().toString();
-        String password = mTextPassword.getText().toString();
-
-        if (userName.isEmpty()) {
+        if (email.isEmpty()) {
             mLabelErrorUserName.setError("El correo electrónico es requerido.");
             isValid = false;
         } else {
