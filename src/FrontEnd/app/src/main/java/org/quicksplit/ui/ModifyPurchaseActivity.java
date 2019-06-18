@@ -2,9 +2,7 @@ package org.quicksplit.ui;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-<<<<<<< HEAD
 import android.content.Intent;
-=======
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
->>>>>>> Hotfix
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
@@ -102,11 +99,9 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
 
     private RecyclerView.LayoutManager mRecyclerViewManager;
     private Button mButtonModifyPurchase;
-<<<<<<< HEAD
+
     private Button mButtonOpenMap;
-=======
     private Button mButtonUploadImage;
->>>>>>> Hotfix
 
     private TextInputLayout mTextInputLayoutGroupMembers;
     private RecyclerView mRecyclerViewMembers;
@@ -155,20 +150,23 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         mButtonModifyPurchase = findViewById(R.id.btn_modifyPurchase);
         mButtonModifyPurchase.setOnClickListener(this);
 
-<<<<<<< HEAD
         mButtonOpenMap = findViewById(R.id.btn_openMap);
-        mButtonOpenMap.setOnClickListener(new View.OnClickListener () {
+        mButtonOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ModifyPurchaseActivity.this, MapActivity.class);
+                Intent intent = new Intent(ModifyPurchaseActivity.this, PurchaseMapActivity.class);
+                Bundle myBundle = new Bundle();
+                myBundle.putDouble("latitude", purchase.getLatitude());
+                myBundle.putDouble("longitude", purchase.getLongitude());
+                intent.putExtras(myBundle);
                 startActivity(intent);
-=======
-        mButtonUploadImage = findViewById(R.id.btn_uploadImage);
+            }
+        });
+                mButtonUploadImage = findViewById(R.id.btn_uploadImage);
         mButtonUploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectPurchaseImage();
->>>>>>> Hotfix
             }
         });
 
