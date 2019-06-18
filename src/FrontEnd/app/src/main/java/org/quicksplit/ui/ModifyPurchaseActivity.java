@@ -2,6 +2,7 @@ package org.quicksplit.ui;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -98,6 +99,8 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
 
     private RecyclerView.LayoutManager mRecyclerViewManager;
     private Button mButtonModifyPurchase;
+
+    private Button mButtonOpenMap;
     private Button mButtonUploadImage;
 
     private TextInputLayout mTextInputLayoutGroupMembers;
@@ -147,7 +150,19 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
         mButtonModifyPurchase = findViewById(R.id.btn_modifyPurchase);
         mButtonModifyPurchase.setOnClickListener(this);
 
-        mButtonUploadImage = findViewById(R.id.btn_uploadImage);
+        mButtonOpenMap = findViewById(R.id.btn_openMap);
+        mButtonOpenMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ModifyPurchaseActivity.this, PurchaseMapActivity.class);
+                Bundle myBundle = new Bundle();
+                myBundle.putDouble("latitude", purchase.getLatitude());
+                myBundle.putDouble("longitude", purchase.getLongitude());
+                intent.putExtras(myBundle);
+                startActivity(intent);
+            }
+        });
+                mButtonUploadImage = findViewById(R.id.btn_uploadImage);
         mButtonUploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

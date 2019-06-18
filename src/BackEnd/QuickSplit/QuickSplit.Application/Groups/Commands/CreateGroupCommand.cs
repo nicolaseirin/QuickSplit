@@ -8,7 +8,6 @@ using MediatR;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Groups.Models;
 using QuickSplit.Application.Interfaces;
-using QuickSplit.Application.Membership.Queries.GetMemberships;
 using QuickSplit.Domain;
 
 namespace QuickSplit.Application.Groups.Commands

@@ -23,6 +23,9 @@ namespace QuickSplit.Application.Groups.Models
             Group = purchase.Group.Id;
             Participants = purchase.Participants.Select(participant => new UserModel(participant.User));
             Purchaser = purchase.Purchaser.Id;
+            Longitude = purchase.Longitude;
+            Latitude = purchase.Latitude;
+            
         }
         
         public int Id { get; set; }
@@ -38,5 +41,9 @@ namespace QuickSplit.Application.Groups.Models
         public double Cost { get; set; }
 
         public string Currency { get; set; }
+
+        public double Longitude { get; set; }
+
+        public double Latitude { get; set; }
     }
 }
