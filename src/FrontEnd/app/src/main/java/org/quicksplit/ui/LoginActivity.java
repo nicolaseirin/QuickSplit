@@ -201,7 +201,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onResponse(Call<Token> call, Response<Token> response) {
                 if (response.isSuccessful()) {
                     storageTokenAccess(response);
-                    setGoogleAvatarImage();
+                    if (uriAvatar != null)
+                        setGoogleAvatarImage();
                     loading.dismiss();
 
                 } else {

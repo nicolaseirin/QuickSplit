@@ -17,7 +17,7 @@ public class ServiceGenerator implements GsonResponseListener {
 
     private static int cacheSize = 10 * 1024 * 1024; // 10 MiB
     private static File cacheDir = new File("cache", "HttpCache");
-    private static final String BASE_URL = "http://192.168.43.245:5000/api/";
+    private static final String BASE_URL = "http://192.168.43.151:5000/api/";
 
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
