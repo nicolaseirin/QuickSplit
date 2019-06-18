@@ -278,9 +278,8 @@ public class GroupsFragment extends Fragment implements View.OnClickListener {
                     getGroups();
                 } else {
                     loading.dismiss();
-                    Toast.makeText(getActivity(), "Error al borrar grupo.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.error_delete_group) + " " + response.code(), Toast.LENGTH_SHORT).show();
                 }
-
             }
 
             @Override

@@ -170,7 +170,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
                     finish();
                 } else {
                     loading.dismiss();
-                    Toast.makeText(CreateGroupActivity.this, "Error al crear grupo.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateGroupActivity.this, getString(R.string.error_add_group) + " " + response.code(), Toast.LENGTH_SHORT).show();
                     setResult(RESULT_CANCELED);
                 }
             }

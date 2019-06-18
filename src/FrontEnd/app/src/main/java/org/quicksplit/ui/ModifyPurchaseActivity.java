@@ -565,7 +565,7 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
                     finish();
                 } else {
                     loading.dismiss();
-                    Toast.makeText(ModifyPurchaseActivity.this, "Error al modificar la compra", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ModifyPurchaseActivity.this, getString(R.string.error_modify_purchase) + " " + response.code(), Toast.LENGTH_SHORT).show();
                     setResult(RESULT_CANCELED);
                 }
             }

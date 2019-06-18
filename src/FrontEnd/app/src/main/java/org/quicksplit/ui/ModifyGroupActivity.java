@@ -268,7 +268,7 @@ public class ModifyGroupActivity extends AppCompatActivity implements View.OnCli
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    Toast.makeText(ModifyGroupActivity.this, "Error al modificar grupo.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ModifyGroupActivity.this, getString(R.string.error_modify_group) + " " + response.code(), Toast.LENGTH_SHORT).show();
                     setResult(RESULT_CANCELED);
                 }
             }

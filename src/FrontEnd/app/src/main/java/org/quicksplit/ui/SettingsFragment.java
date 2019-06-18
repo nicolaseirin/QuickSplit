@@ -93,17 +93,17 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         // Inflate the layout for this fragment
-        mButtonModifyData = (Button) view.findViewById(R.id.btn_modify);
+        mButtonModifyData = view.findViewById(R.id.btn_modify);
         mButtonModifyData.setOnClickListener(this);
 
-        mButtonDeleteAccount = (Button) view.findViewById(R.id.btn_delete);
+        mButtonDeleteAccount = view.findViewById(R.id.btn_delete);
         mButtonDeleteAccount.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 tryDeleteAccount();
             }
         });
 
-        mButtonLogout = (Button) view.findViewById(R.id.btn_logout);
+        mButtonLogout = view.findViewById(R.id.btn_logout);
         mButtonLogout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 tryLogout();
@@ -189,7 +189,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     loading.dismiss();
                 } else {
                     loading.dismiss();
-                    Toast.makeText(getActivity(), "Error al solicitar el borrado de la cuenta.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.error_delete_account), Toast.LENGTH_SHORT).show();
                 }
             }
 

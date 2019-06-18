@@ -285,7 +285,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
 
     private void getMembers(GroupModelIn group) {
         TokenManager tokenManager = new TokenManager(this);
-        String id =tokenManager.getUserIdFromToken();
+        String id = tokenManager.getUserIdFromToken();
 
         User user = new User();
         user.setId(id);
@@ -363,7 +363,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
                     loading.dismiss();
                 } else {
                     loading.dismiss();
-                    Toast.makeText(CreatePurchaseActivity.this, "Error al crear la compra", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreatePurchaseActivity.this, getString(R.string.error_add_purchase) + " " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
