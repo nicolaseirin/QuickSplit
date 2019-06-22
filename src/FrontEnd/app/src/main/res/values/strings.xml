@@ -50,6 +50,6 @@
     <string name="error_modify_group">Hubo un problema al modificar el grupo. Código:</string>
     <string name="error_delete_group">Hubo un problema al borrar el grupo. Código:</string>
     <string name="error_modify_user">Hubo un problema al modificar el usuario. Código:</string>
-    <string name="error_delete_account">La cuenta no puede ser borrada si es miembro de grupos o compras.</string>
+    <string name="error_delete_account">La cuenta no puede ser borrada si es miembro de grupos o tiene división de gastos pendientes.</string>
 
 </resources>

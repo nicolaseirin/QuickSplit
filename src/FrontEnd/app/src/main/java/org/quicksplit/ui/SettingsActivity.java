@@ -150,7 +150,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     loading.dismiss();
                 } else {
                     loading.dismiss();
-                    Toast.makeText(SettingsActivity.this, "Error al solicitar el borrado de la cuenta.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, getString(R.string.error_delete_account), Toast.LENGTH_LONG).show();
                 }
             }
 
