@@ -74,13 +74,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mButtonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MapActivity.this, CreatePurchaseActivity.class );
+                Intent intent = new Intent();
                 Bundle myBundle = new Bundle();
                 if(mSelectedLocation.getLatitude() != 0 ){
                     myBundle.putDouble("latitude", mSelectedLocation.getLatitude());
                     myBundle.putDouble("longitude", mSelectedLocation.getLongitude());
                     intent.putExtras(myBundle);
-                    startActivity(intent);
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
                 else{
                     Toast.makeText(MapActivity.this, "Error: Debe seleccionar una ubicación.", Toast.LENGTH_SHORT).show();

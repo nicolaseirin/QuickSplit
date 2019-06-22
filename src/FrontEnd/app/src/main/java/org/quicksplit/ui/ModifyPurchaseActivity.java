@@ -492,7 +492,11 @@ public class ModifyPurchaseActivity extends AppCompatActivity implements View.On
     }
 
     private void getGroupMembers() {
+        TokenManager tokenManager = new TokenManager(this);
         members = group.getMemberships();
+        User user = new User();
+        user.setId(tokenManager.getUserIdFromToken());
+        members.remove(user);
         getParticipants();
     }
 

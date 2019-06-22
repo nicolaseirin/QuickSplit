@@ -1,13 +1,10 @@
 package org.quicksplit.ui;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -16,20 +13,51 @@ import com.google.android.gms.maps.model.LatLng;
 public class PurchaseMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
 
+    protected GoogleApiClient mGoogleApiClient;
     private static final float DEFAULT_ZOOM = 15f;
 
     private GoogleMap mMap;
     private Bundle myBundle;
-    private double mLongitude;
-    private double mLatitude;
+    private Double mLongitude;
+    private Double mLatitude;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        myBundle = this.getIntent().getExtras();
+        mLongitude = myBundle.getDouble("longitude");
+        mLatitude = myBundle.getDouble("latitude");
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        myBundle = this.getIntent().getExtras();
-        mLongitude = myBundle.getDouble("Longitude");
-        mLatitude = myBundle.getDouble("Latitude");
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLatitude, mLongitude), DEFAULT_ZOOM));
+        moveMap();
     }
 
+    @Override
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mMap != null) {
+            moveMap();
+        }
+    }
+
+    public void moveMap() {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLatitude, mLongitude), DEFAULT_ZOOM));
+    }
 }

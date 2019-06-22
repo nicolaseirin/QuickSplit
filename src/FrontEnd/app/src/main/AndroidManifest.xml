@@ -30,6 +30,11 @@
         </provider>
 
         <activity
+            android:name=".ui.PurchaseMapActivity"
+            android:parentActivityName=".ui.ModifyPurchaseActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ui.SettingsActivity"
             android:parentActivityName=".ui.MainActivity"
             android:screenOrientation="portrait" />
@@ -94,7 +99,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.MapActivity" />
+        <activity
+            android:name=".ui.MapActivity"
+            android:noHistory="true"
+            android:parentActivityName=".ui.CreatePurchaseActivity"
+            android:screenOrientation="portrait" />
 
         <uses-library
             android:name="org.apache.http.legacy"
