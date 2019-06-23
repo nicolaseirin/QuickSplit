@@ -39,18 +39,22 @@ namespace QuickSplit.Application.Users.Queries
                 .Include(participant => participant.Purchase)
                 .ThenInclude(purchase => purchase.Participants)
                 .ToListAsync(cancellationToken: cancellationToken);
-
-            var purchaser = _context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId) ?? throw new InvalidQueryException("Usuario invalido");
-            var p = await _context.Purchases.Where(p1 => p1.Purchaser.Id == request.UserId).ToListAsync();
             
-            var ad = p.Select(p1 => new PurchaseModel(p1));    
-
-            var r = participants
+            var purchases = participants
                 .Where(participant => participant.Purchase.Group != null)
                 .Select(participant => new PurchaseModel(participant.Purchase))
                 .ToList();
-
-                return r.Concat(ad);
+            
+            purchases.AddRange(await _context
+                .Purchases
+                .Include(p => p.Group)
+                .Include(p => p.Participants)
+                .Where(p => p.Purchaser.Id == user.Id)
+                .Where(p => purchases.All(p1 => p1.Id != p.Id))
+                .Select(p => new PurchaseModel(p))
+                .ToListAsync(cancellationToken: cancellationToken));
+            
+            return purchases;
         }
     }
 

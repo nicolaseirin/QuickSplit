@@ -14,8 +14,7 @@ namespace QuickSplit.Application.Groups.Models
         public PurchaseModel() {}
         public PurchaseModel(Purchase purchase)
         {
-            if (purchase.Purchaser == null || purchase.Group == null || purchase.Participants == null || purchase.Participants.Any(participant => participant == null))
-                Console.WriteLine("e");
+
             Id = purchase.Id;
             Name = purchase.Name;
             Cost = purchase.Cost;

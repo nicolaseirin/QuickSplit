@@ -29,7 +29,7 @@ namespace QuickSplit.Domain
 
         protected bool Equals(Friendship other)
         {
-            return Equals(Friend1, other.Friend1) && Equals(Friend2, other.Friend2);
+            return Equals(Friend1Id, other.Friend1Id) && Equals(Friend2Id, other.Friend2Id);
         }
 
         public override bool Equals(object obj)

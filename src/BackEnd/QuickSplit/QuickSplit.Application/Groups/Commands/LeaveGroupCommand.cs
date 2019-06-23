@@ -42,6 +42,13 @@ namespace QuickSplit.Application.Groups.Commands
             group.Memberships.Remove(membership);
             _context.Memberships.Remove(membership);
 
+            var toDelete = _context.Participants.Where(p => p.Purchase.Group.Id == group.Id && p.UserId == user.Id);
+            _context.Participants.RemoveRange(toDelete);
+
+            var cantLeave = _context.Purchases.Any(p => p.Purchaser.Id == user.Id && p.Group.Id == group.Id);
+            if (cantLeave)
+                throw new InvalidCommandException("No te podes ir del grupo si compraste algo");
+
             await _context.SaveChangesAsync();
 
             return Unit.Value;
