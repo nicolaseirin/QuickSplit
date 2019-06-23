@@ -40,10 +40,20 @@ namespace QuickSplit.Application.Users.Queries
                 .ThenInclude(purchase => purchase.Participants)
                 .ToListAsync(cancellationToken: cancellationToken);
 
-            return participants
+            var purchases = participants
                 .Where(participant => participant.Purchase.Group != null)
                 .Select(participant => new PurchaseModel(participant.Purchase))
                 .ToList();
+
+            purchases.AddRange(await _context
+                .Purchases
+                .Include(p => p.Group)
+                .Include(p => p.Participants)
+                .Where(p => p.Purchaser.Id == user.Id)
+                .Select(p => new PurchaseModel(p))
+                .ToListAsync(cancellationToken: cancellationToken));
+            
+            return purchases;
         }
     }
 
