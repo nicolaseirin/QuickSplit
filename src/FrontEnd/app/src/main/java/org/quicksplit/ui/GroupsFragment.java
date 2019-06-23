@@ -28,6 +28,7 @@ import org.quicksplit.models.LeaveGroup;
 import org.quicksplit.service.GroupClient;
 import org.quicksplit.service.UserClient;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -229,7 +230,11 @@ public class GroupsFragment extends Fragment implements View.OnClickListener {
                     loading.dismiss();
                 } else {
                     loading.dismiss();
-                    System.out.println("Error: " + response.errorBody());
+                    try {
+                        Toast.makeText(getActivity(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
