@@ -71,6 +71,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_CAMERA = 1;
     private static final int PICK_IMAGE_GALLERY = 2;
     private static final int SCANN_QR_CAMERA = 3;
+    private static final int PICK_LOCATION_MAP = 4;
 
     private ImageView mImagePurchase;
     private LinearLayout mLinearLayoutPurchaseImage;
@@ -179,7 +180,7 @@ public class CreatePurchaseActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CreatePurchaseActivity.this, MapActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, PICK_LOCATION_MAP);
             }
         });
 
@@ -192,7 +193,6 @@ public class CreatePurchaseActivity extends AppCompatActivity {
             }
         });
 
-        myBundle = this.getIntent().getExtras();
         getData();
     }
 
@@ -559,6 +559,10 @@ public class CreatePurchaseActivity extends AppCompatActivity {
                     }
                 }
                 break;
+            case PICK_LOCATION_MAP:
+                myBundle = data.getExtras();
+                break;
+
         }
     }
 
