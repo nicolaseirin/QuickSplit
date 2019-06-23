@@ -42,6 +42,9 @@ namespace QuickSplit.Application.Groups.Commands
             group.Memberships.Remove(membership);
             _context.Memberships.Remove(membership);
 
+            var toDelete = _context.Participants.Where(p => p.Purchase.Group.Id == group.Id && p.UserId == user.Id);
+            _context.Participants.RemoveRange(toDelete);
+
             await _context.SaveChangesAsync();
 
             return Unit.Value;
