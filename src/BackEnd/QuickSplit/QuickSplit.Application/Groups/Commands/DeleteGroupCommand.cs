@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using QuickSplit.Application.Exceptions;
 using QuickSplit.Application.Interfaces;
 using QuickSplit.Domain;
@@ -18,12 +19,16 @@ namespace QuickSplit.Application.Groups.Commands
 
         public async Task<Unit> Handle(DeleteGroupCommand request, CancellationToken cancellationToken)
         {
-            Group toDelete = await _context.Groups.FindAsync(request.Id);
+            Group toDelete = await _context
+                .Groups
+                .FirstOrDefaultAsync(g => g.Id == request.Id, cancellationToken: cancellationToken);
             if (toDelete == null)
                 throw new InvalidCommandException($"No existe el grupo con id {request.Id}");
 
             DeleteMemberships(toDelete);
             _context.Groups.Remove(toDelete);
+            _context.Purchases.RemoveRange(toDelete.Purchases);
+            
             await _context.SaveChangesAsync();
 
             return Unit.Value;
